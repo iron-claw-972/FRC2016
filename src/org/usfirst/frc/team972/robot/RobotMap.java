@@ -47,6 +47,8 @@ public class RobotMap {
 	 // BUTTONS
 	 
 	 public static final int JOYSTICK_SPEED_TOGGLE_BUTTON = 1;
+	 public static final int JOYSTICK_USE_FRONT_CAM_BUTTON = 4;
+	 public static final int JOYSTICK_USE_BACK_CAM_BUTTON = 3;
 	 
 	 // VALUES
 	 
