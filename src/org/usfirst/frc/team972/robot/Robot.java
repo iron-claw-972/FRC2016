@@ -33,6 +33,7 @@ public class Robot extends IterativeRobot {
 	CANTalon frontRightMotor = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
 	CANTalon backLeftMotor = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CAN_ID);
 	CANTalon backRightMotor = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CAN_ID);
+	
 	// CANTalon shooterBottomMotor = new
 	// CANTalon(RobotMap.SHOOTER_BOTTOM_MOTOR_CAN_ID);
 	// CANTalon shooterTopMotor = new
@@ -61,17 +62,11 @@ public class Robot extends IterativeRobot {
 	// this should always be 0 because if not there's something wrong.
 	double rightDriveSpeed = 0.0;
 
-	boolean lastTimeButtonPressed = false;
+	boolean speedBoostPressedLastTime = false;
+	boolean cameraSwitchPressedLastTime = false;
 
-	boolean oldJoy1 = false;
-	// makes sure that it doesn't start capture many times; toggle variable
-	boolean oldJoy2 = false;
-	// makes sure that it doesn't start capture many times; toggle variable
 	Image img = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-	boolean lastTime = false;
-	// lastTime is whether the button was pressed last time
-	boolean button = false;
+	
 	boolean rearCam = false;
 	// stores whether the front camera is on
 	
@@ -120,7 +115,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
-
+	
 	}
 
 	/**
@@ -128,28 +123,22 @@ public class Robot extends IterativeRobot {
 	 */
 	
 	public void teleopPeriodic() {
-		if (joystickRight.getRawButton(RobotMap.JOYSTICK_USE_FRONT_CAM_BUTTON)) {
-			if (!oldJoy1) {
-				cameraBack.stopCapture(); // stops using the back camera so it
-											// can start the front camera
-				cameraFront.startCapture(); // turns on the front camera
-				rearCam = false;
+		boolean cameraToggleButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+		if (cameraToggleButtonPressed) {
+			if (cameraSwitchPressedLastTime == false) {
+				if (rearCam) {
+					cameraBack.stopCapture();
+					cameraFront.startCapture();
+					rearCam = false;
+				} else { 
+					cameraFront.stopCapture();
+					cameraBack.startCapture();
+					rearCam = true;
+				}
+				driveMultiplier *= -1;
 			}
-			oldJoy1 = true;
-		} else {
-			oldJoy1 = false;
 		}
-
-		if (joystickRight.getRawButton(RobotMap.JOYSTICK_USE_BACK_CAM_BUTTON)) {
-			if (!oldJoy2) {
-				cameraFront.stopCapture(); // stops using the front camera so it
-											// can start the back one
-				cameraBack.startCapture(); // turns on the back camera
-				rearCam = true;
-			}
-		} else {
-			oldJoy2 = false;
-		}
+		cameraSwitchPressedLastTime = cameraToggleButtonPressed;
 
 		if (rearCam == true) {
 			cameraBack.getImage(img);
@@ -160,7 +149,7 @@ public class Robot extends IterativeRobot {
 		
 		boolean driveSpeedToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_TOGGLE_BUTTON);
 		if (driveSpeedToggleButtonPressed) {
-			if (!lastTimeButtonPressed) {
+			if (!speedBoostPressedLastTime) {
 				if (driveMultiplier == RobotMap.STARTING_DRIVE_MULTIPLIER) {
 					driveMultiplier = RobotMap.FAST_MODE_DRIVE_MULTIPLIER;
 				} else {
@@ -168,7 +157,7 @@ public class Robot extends IterativeRobot {
 				}
 			}
 		}
-		lastTimeButtonPressed = driveSpeedToggleButtonPressed;
+		speedBoostPressedLastTime = driveSpeedToggleButtonPressed;
 
 		leftDriveSpeed = joystickLeft.getY() * driveMultiplier;
 		rightDriveSpeed = joystickRight.getY() * driveMultiplier;
