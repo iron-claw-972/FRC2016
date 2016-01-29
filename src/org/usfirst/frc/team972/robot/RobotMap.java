@@ -47,13 +47,21 @@ public class RobotMap {
 	 // BUTTONS
 	 
 	 // LEFT JOYSTICK
-	 public static final int JOYSTICK_SPEED_TOGGLE_BUTTON = 1;
+	 public static final int JOYSTICK_CAMERA_TOGGLE_BUTTON = 1;
+	 public static final int JOYSTICK_SPEED_1_BUTTON = 3;
+	 public static final int JOYSTICK_SPEED_2_BUTTON = 5;
+	 public static final int JOYSTICK_SPEED_3_BUTTON = 2;
+	 public static final int JOYSTICK_SPEED_4_BUTTON = 6;
+	 public static final int JOYSTICK_SPEED_5_BUTTON = 4;
 
 	 // RIGHT JOYSTICK
-	 public static final int JOYSTICK_CAMERA_TOGGLE_BUTTON = 1;
 	 
-	 // VALUES
+	 // DRIVE MULTIPLIERS
 	 
-	 public static final double STARTING_DRIVE_MULTIPLIER = 0.5;
-	 public static final double FAST_MODE_DRIVE_MULTIPLIER = 0.8;
+	 public static final double DRIVE_MODE_1 = 0.6;
+	 public static final double DRIVE_MODE_2 = 0.7;
+	 public static final double DRIVE_MODE_3 = 0.8;
+	 public static final double DRIVE_MODE_4 = 0.9;
+	 public static final double DRIVE_MODE_5 = 1.0;
+	 public static final double DEFAULT_DRIVE_MODE = DRIVE_MODE_3;
 }

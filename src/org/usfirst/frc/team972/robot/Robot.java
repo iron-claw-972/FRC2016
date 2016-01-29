@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,7 +41,7 @@ public class Robot extends IterativeRobot {
 	// CANTalon(RobotMap.SHOOTER_TOP_MOTOR_CAN_ID);
 	// CANTalon intakeMotor = new CANTalon(RobotMap.INTAKE_MOTOR_CAN_ID);
 	// CANTalon obstacleMotor = new CANTalon(RobotMap.OBSTACLE_MOTOR_CAN_ID);
-	//
+	
 	// Encoder leftDriveEncoder = new
 	// Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
 	// RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
@@ -56,13 +57,11 @@ public class Robot extends IterativeRobot {
 
 	RobotDrive robotDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
-	double driveMultiplier = RobotMap.STARTING_DRIVE_MULTIPLIER;
-	// Multiplied with joystick values to set the speed of the drive motor
+	double driveMultiplier = RobotMap.DEFAULT_DRIVE_MODE;
 	double leftDriveSpeed = 0.0;
 	// this should always be 0 because if not there's something wrong.
 	double rightDriveSpeed = 0.0;
 
-	boolean speedBoostPressedLastTime = false;
 	boolean cameraSwitchPressedLastTime = false;
 
 	Image img = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
@@ -123,7 +122,7 @@ public class Robot extends IterativeRobot {
 	 */
 	
 	public void teleopPeriodic() {
-		boolean cameraToggleButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+		boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
 		if (cameraToggleButtonPressed) {
 			if (cameraSwitchPressedLastTime == false) {
 				if (rearCam) {
@@ -135,34 +134,45 @@ public class Robot extends IterativeRobot {
 					cameraBack.startCapture();
 					rearCam = true;
 				}
-				driveMultiplier *= -1;
 			}
 		}
 		cameraSwitchPressedLastTime = cameraToggleButtonPressed;
 
 		if (rearCam == true) {
 			cameraBack.getImage(img);
+			SmartDashboard.putString("Front", "LED"); // TODO Change for real robot
 		} else {
 			cameraFront.getImage(img);
+			SmartDashboard.putString("Front", "PISTON"); // TODO Change for real robot
 		}
 		camServer.setImage(img); // puts image on the dashboard
 		
-		boolean driveSpeedToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_TOGGLE_BUTTON);
-		if (driveSpeedToggleButtonPressed) {
-			if (!speedBoostPressedLastTime) {
-				if (driveMultiplier == RobotMap.STARTING_DRIVE_MULTIPLIER) {
-					driveMultiplier = RobotMap.FAST_MODE_DRIVE_MULTIPLIER;
-				} else {
-					driveMultiplier = RobotMap.STARTING_DRIVE_MULTIPLIER;
-				}
-			}
+		// NOTE -- SMART DASHBOARD CAMERA FEED ISN'T ENABLED PROGRAMMATICALLY
+		// USE View->Add...->USBWebcamViewer
+		
+		if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_1_BUTTON)) {
+			driveMultiplier = RobotMap.DRIVE_MODE_1;
+		} else if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_2_BUTTON)) {
+			driveMultiplier = RobotMap.DRIVE_MODE_2;
+		} else if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_3_BUTTON)) {
+			driveMultiplier = RobotMap.DRIVE_MODE_3;
+		} else if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_4_BUTTON)) {
+			driveMultiplier = RobotMap.DRIVE_MODE_4;
+		} else if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_5_BUTTON)) {
+			driveMultiplier = RobotMap.DRIVE_MODE_5;
 		}
-		speedBoostPressedLastTime = driveSpeedToggleButtonPressed;
-
+		
+		if (rearCam) {
+			driveMultiplier = -Math.abs(driveMultiplier);
+			// If using the rear cam, we always want the drive multiplier to be negative
+		} else {
+			driveMultiplier = Math.abs(driveMultiplier);
+		}
+		
 		leftDriveSpeed = joystickLeft.getY() * driveMultiplier;
 		rightDriveSpeed = joystickRight.getY() * driveMultiplier;
 
-		SmartDashboard.putNumber("Drive Multiplier", driveMultiplier);
+		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
 
