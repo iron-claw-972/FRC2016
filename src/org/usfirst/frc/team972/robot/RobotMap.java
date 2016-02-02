@@ -35,8 +35,8 @@ public class RobotMap {
 	 
 	 // ENCODERS
 	 
-	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 0;
-	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 1;
+	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 1;
+	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 2;
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 2;
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 3;
 	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_A_PORT = 4;
@@ -55,6 +55,8 @@ public class RobotMap {
 	 public static final int JOYSTICK_SPEED_5_BUTTON = 4;
 
 	 // RIGHT JOYSTICK
+	 
+	 public static final int JOYSTICK_BRAKE_MODE_BUTTON = 1;
 	 
 	 // DRIVE MULTIPLIERS
 	 

@@ -4,10 +4,10 @@ package org.usfirst.frc.team972.robot;
 import com.ni.vision.NIVision;
 import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
-
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Encoder;
+//import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -42,18 +42,15 @@ public class Robot extends IterativeRobot {
 	// CANTalon intakeMotor = new CANTalon(RobotMap.INTAKE_MOTOR_CAN_ID);
 	// CANTalon obstacleMotor = new CANTalon(RobotMap.OBSTACLE_MOTOR_CAN_ID);
 	
-	// Encoder leftDriveEncoder = new
-	// Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
-	// RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
-	// Encoder rightDriveEncoder = new
-	// Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
-	// RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
-	// Encoder shooterBottomEncoder = new
-	// Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT,
-	// RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_B_PORT);
-	// Encoder shooterTopEncoder = new
-	// Encoder(RobotMap.SHOOTER_TOP_ENCODER_DIO_A_PORT,
-	// RobotMap.SHOOTER_TOP_ENCODER_DIO_B_PORT);
+//	 Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT, RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT) ;
+//	 Encoder rightDriveEncoder = new
+//	 Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
+//	 RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
+//	 Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT,
+//	 RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_B_PORT);
+//	 Encoder shooterTopEncoder = new
+//	 Encoder(RobotMap.SHOOTER_TOP_ENCODER_DIO_A_PORT,
+//	 RobotMap.SHOOTER_TOP_ENCODER_DIO_B_PORT);
 
 	RobotDrive robotDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
@@ -63,14 +60,13 @@ public class Robot extends IterativeRobot {
 	double rightDriveSpeed = 0.0;
 
 	boolean cameraSwitchPressedLastTime = false;
-
 	Image img = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 	
 	boolean rearCam = false;
 	// stores whether the front camera is on
 	
-	USBCamera cameraFront = new USBCamera("cam0");
-	USBCamera cameraBack = new USBCamera("cam1");
+	USBCamera cameraFront;
+	USBCamera cameraBack;
 	
 	CameraServer camServer = CameraServer.getInstance();
 
@@ -84,7 +80,13 @@ public class Robot extends IterativeRobot {
 		robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
 		robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
 		
+//		leftDriveEncoder.reset();
+//		rightDriveEncoder.reset();
+		
+		
 		try {
+			cameraFront = new USBCamera("cam0");
+			cameraBack = new USBCamera("cam1");
 			cameraFront.openCamera();
 	    	cameraBack.openCamera();
 	    	cameraFront.startCapture(); // startCapture so that it doesn't try to take a picture 
@@ -94,7 +96,7 @@ public class Robot extends IterativeRobot {
 			System.out.println("VISION EXCEPTION ~ " + e);
 		}
 	}
-
+	
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
 	 * between different autonomous modes using the dashboard. The sendable
@@ -113,6 +115,7 @@ public class Robot extends IterativeRobot {
 	/**
 	 * This function is called periodically during autonomous
 	 */
+
 	public void autonomousPeriodic() {
 	
 	}
@@ -140,10 +143,10 @@ public class Robot extends IterativeRobot {
 
 		if (rearCam == true) {
 			cameraBack.getImage(img);
-			SmartDashboard.putString("Front", "LED"); // TODO Change for real robot
+			SmartDashboard.putString("Front", "LED"); // TODO Change for real robot :)
 		} else {
 			cameraFront.getImage(img);
-			SmartDashboard.putString("Front", "PISTON"); // TODO Change for real robot
+			SmartDashboard.putString("Front", "PISTON"); // TODO Change for real robot :)
 		}
 		camServer.setImage(img); // puts image on the dashboard
 		
@@ -175,8 +178,23 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
+//		SmartDashboard.putNumber("Encoder Left", leftDriveEncoder.getPeriod());
+		//SmartDashboard.putNumber("Encoder Right", rightDriveEncoder.getDistance());
+		//TODO
 
 		robotDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
+		
+		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
+			frontLeftMotor.enableBrakeMode(true);
+			frontRightMotor.enableBrakeMode(true);
+			backLeftMotor.enableBrakeMode(true);
+			backRightMotor.enableBrakeMode(true); 
+		} else {
+			frontLeftMotor.enableBrakeMode(false);
+			frontRightMotor.enableBrakeMode(false);
+			backLeftMotor.enableBrakeMode(false);
+			backRightMotor.enableBrakeMode(false);
+		}
 	}
 
 	/**
