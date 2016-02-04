@@ -22,7 +22,7 @@ public class RobotMap {
 	 public static final int JOYSTICK_RIGHT_USB_PORT = 1;
 	 public static final int JOYSTICK_OP_USB_PORT = 2;
 	 
-	 // MOTORS
+	 // CAN IDs
 	 
 	 public static final int FRONT_LEFT_MOTOR_CAN_ID = 1;
 	 public static final int FRONT_RIGHT_MOTOR_CAN_ID = 2;
@@ -32,6 +32,7 @@ public class RobotMap {
 	 public static final int SHOOTER_TOP_MOTOR_CAN_ID = 6;
 	 public static final int INTAKE_MOTOR_CAN_ID = 7;
 	 public static final int OBSTACLE_MOTOR_CAN_ID = 8;
+	 public static final int PCM_CAN_ID = 10;
 	 
 	 // ENCODERS
 	 
@@ -47,6 +48,7 @@ public class RobotMap {
 	 // BUTTONS
 	 
 	 // LEFT JOYSTICK
+	 
 	 public static final int JOYSTICK_CAMERA_TOGGLE_BUTTON = 1;
 	 public static final int JOYSTICK_SPEED_1_BUTTON = 3;
 	 public static final int JOYSTICK_SPEED_2_BUTTON = 5;
@@ -58,6 +60,10 @@ public class RobotMap {
 	 
 	 public static final int JOYSTICK_BRAKE_MODE_BUTTON = 1;
 	 
+	 // OPERATOR JOYSTICK
+	 
+	 public static final int JOYSTICK_GEARBOX_PISTON_BUTTON = 1;
+	 
 	 // DRIVE MULTIPLIERS
 	 
 	 public static final double DRIVE_MODE_1 = 0.6;
@@ -66,4 +72,9 @@ public class RobotMap {
 	 public static final double DRIVE_MODE_4 = 0.9;
 	 public static final double DRIVE_MODE_5 = 1.0;
 	 public static final double DEFAULT_DRIVE_MODE = DRIVE_MODE_3;
+	 
+	 // PISTONS
+	 
+	 public static final int PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL = 0;
+	 public static final int PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL = 1;
 }

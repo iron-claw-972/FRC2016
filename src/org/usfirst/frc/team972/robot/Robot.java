@@ -7,6 +7,8 @@ import com.ni.vision.NIVision.Image;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 //import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -28,12 +30,13 @@ public class Robot extends IterativeRobot {
 
 	Joystick joystickLeft = new Joystick(RobotMap.JOYSTICK_LEFT_USB_PORT);
 	Joystick joystickRight = new Joystick(RobotMap.JOYSTICK_RIGHT_USB_PORT);
-	// Joystick joystickOp = new Joystick(RobotMap.JOYSTICK_OP_USB_PORT);
+	Joystick joystickOp = new Joystick(RobotMap.JOYSTICK_OP_USB_PORT);
 
 	CANTalon frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
 	CANTalon frontRightMotor = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
 	CANTalon backLeftMotor = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CAN_ID);
 	CANTalon backRightMotor = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CAN_ID);
+	
 	
 	// CANTalon shooterBottomMotor = new
 	// CANTalon(RobotMap.SHOOTER_BOTTOM_MOTOR_CAN_ID);
@@ -41,6 +44,8 @@ public class Robot extends IterativeRobot {
 	// CANTalon(RobotMap.SHOOTER_TOP_MOTOR_CAN_ID);
 	// CANTalon intakeMotor = new CANTalon(RobotMap.INTAKE_MOTOR_CAN_ID);
 	// CANTalon obstacleMotor = new CANTalon(RobotMap.OBSTACLE_MOTOR_CAN_ID);
+	
+	Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
 	
 //	 Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT, RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT) ;
 //	 Encoder rightDriveEncoder = new
@@ -69,12 +74,18 @@ public class Robot extends IterativeRobot {
 	USBCamera cameraBack;
 	
 	CameraServer camServer = CameraServer.getInstance();
-
+	
+	DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL);
+	boolean gearboxSwitchingPressedLastTime = false;
+	boolean gearboxSwitchingButtonIsPressed = false;
+	boolean gearboxPistonLeftForward = false;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
+		compressor.start();
+		
 		robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
 		robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
 		robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
@@ -125,6 +136,20 @@ public class Robot extends IterativeRobot {
 	 */
 	
 	public void teleopPeriodic() {
+		gearboxSwitchingButtonIsPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_GEARBOX_PISTON_BUTTON);
+		if (gearboxSwitchingButtonIsPressed) {
+			if (!gearboxSwitchingPressedLastTime) {
+				if (gearboxPistonLeftForward == false) {
+					gearboxPistonLeft.set(DoubleSolenoid.Value.kForward);
+					gearboxPistonLeftForward = true;
+				} else {
+					gearboxPistonLeft.set(DoubleSolenoid.Value.kReverse);
+					gearboxPistonLeftForward = false;
+				}
+			}
+		}
+		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
+		
 		boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
 		if (cameraToggleButtonPressed) {
 			if (cameraSwitchPressedLastTime == false) {
@@ -205,3 +230,4 @@ public class Robot extends IterativeRobot {
 	}
 
 }
+//
