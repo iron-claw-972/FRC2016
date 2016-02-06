@@ -30,7 +30,7 @@ public class RobotMap {
 	 public static final int BACK_RIGHT_MOTOR_CAN_ID = 4;
 	 public static final int SHOOTER_BOTTOM_MOTOR_CAN_ID = 5;
 	 public static final int SHOOTER_TOP_MOTOR_CAN_ID = 6;
-	 public static final int INTAKE_MOTOR_CAN_ID = 7;
+	 public static final int INTAKE_MOTOR_CAN_ID = 5; // TODO
 	 public static final int OBSTACLE_MOTOR_CAN_ID = 8;
 	 public static final int PCM_CAN_ID = 10;
 	 
@@ -76,8 +76,8 @@ public class RobotMap {
 	 public static final double SHOOTER_FAST_SPEED = 0.6;
 	 public static final double SHOOTER_MEDIUM_SPEED = 0.5;
 	 public static final double SHOOTER_SLOW_SPEED = 0.4;
-	 public static final double INTAKE_MOTOR_SPEED = 0.5;
-	 public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.75;
+	 public static final double INTAKE_MOTOR_SPEED = 0.3;
+	 public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.3;
 	 
 	 // DRIVE MULTIPLIERS
 	 
@@ -94,8 +94,8 @@ public class RobotMap {
 	 public static final int PISTON_GEARBOX_LEFT_SHIFTING_REVERSE_CHANNEL = 1;
 	 public static final int PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL = 2;
 	 public static final int PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL = 3;
-	 public static final int PISTON_BALL_PUSHER_FORWARD_CHANNEL = 4;
-	 public static final int PISTON_BALL_PUSHER_REVERSE_CHANNEL = 5;
+	 public static final int PISTON_BALL_PUSHER_FORWARD_CHANNEL = 0;
+	 public static final int PISTON_BALL_PUSHER_REVERSE_CHANNEL = 1;
 	 
 	 // SHOOTER PISTON STATE MACHINE
 	 public static final int DO_NOTHING_STATE = 1;
