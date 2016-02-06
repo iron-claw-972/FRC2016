@@ -64,7 +64,7 @@ public class RobotMap {
 	 
 	 // OPERATOR JOYSTICK
 	
-	 public static final int JOYSTICK_BALL_PUSHER_BUTTON = 1;
+	 public static final int JOYSTICK_ACTIVATE_PISTON_BUTTON = 1;
 	 public static final int JOYSTICK_START_INTAKE_BUTTON = 2;
 	 public static final int JOYSTICK_REVERSE_INTAKE_BUTTON = 7;
 	 public static final int JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON = 3;
@@ -96,5 +96,11 @@ public class RobotMap {
 	 public static final int PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL = 3;
 	 public static final int PISTON_BALL_PUSHER_FORWARD_CHANNEL = 4;
 	 public static final int PISTON_BALL_PUSHER_REVERSE_CHANNEL = 5;
+	 
+	 // SHOOTER PISTON STATE MACHINE
+	 public static final int DO_NOTHING_STATE = 1;
+	 public static final int SHOOTER_PISTON_UP_STATE = 2;
+	 public static final int SHOOTER_PISTON_DOWN_STATE = 3;
+	 public static int currentState = DO_NOTHING_STATE;
 	 
 }
