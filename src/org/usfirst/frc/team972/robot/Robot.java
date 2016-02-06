@@ -1,17 +1,23 @@
 
 package org.usfirst.frc.team972.robot;
 
+import javax.swing.text.StyleContext.SmallAttributeSet;
+
 import com.ni.vision.NIVision;
 import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.LegFeature;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
 //import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Timer;
@@ -37,7 +43,6 @@ public class Robot extends IterativeRobot {
 	CANTalon backLeftMotor = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CAN_ID);
 	CANTalon backRightMotor = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CAN_ID);
 	
-	
 	// CANTalon shooterBottomMotor = new
 	// CANTalon(RobotMap.SHOOTER_BOTTOM_MOTOR_CAN_ID);
 	// CANTalon shooterTopMotor = new
@@ -45,9 +50,10 @@ public class Robot extends IterativeRobot {
 	// CANTalon intakeMotor = new CANTalon(RobotMap.INTAKE_MOTOR_CAN_ID);
 	// CANTalon obstacleMotor = new CANTalon(RobotMap.OBSTACLE_MOTOR_CAN_ID);
 	
+	
 	Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
 	
-//	 Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT, RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT) ;
+	 Encoder rightDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT, RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT) ;
 //	 Encoder rightDriveEncoder = new
 //	 Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
 //	 RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
@@ -57,6 +63,8 @@ public class Robot extends IterativeRobot {
 //	 Encoder(RobotMap.SHOOTER_TOP_ENCODER_DIO_A_PORT,
 //	 RobotMap.SHOOTER_TOP_ENCODER_DIO_B_PORT);
 
+	PIDController pid = new PIDController(0, 0, 0, rightDriveEncoder, frontLeftMotor);
+	
 	RobotDrive robotDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
 	double driveMultiplier = RobotMap.DEFAULT_DRIVE_MODE;
@@ -79,6 +87,10 @@ public class Robot extends IterativeRobot {
 	boolean gearboxSwitchingPressedLastTime = false;
 	boolean gearboxSwitchingButtonIsPressed = false;
 	boolean gearboxPistonLeftForward = false;
+	boolean pidMode = false;
+	boolean leftDistance = false;
+	
+	int start = 0;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -91,7 +103,8 @@ public class Robot extends IterativeRobot {
 		robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
 		robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
 		
-//		leftDriveEncoder.reset();
+		pid.setSetpoint(0);
+		rightDriveEncoder.reset();
 //		rightDriveEncoder.reset();
 		
 		
@@ -150,6 +163,7 @@ public class Robot extends IterativeRobot {
 		}
 		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
 		
+		
 		boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
 		if (cameraToggleButtonPressed) {
 			if (cameraSwitchPressedLastTime == false) {
@@ -206,8 +220,61 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Encoder Left", leftDriveEncoder.getPeriod());
 		//SmartDashboard.putNumber("Encoder Right", rightDriveEncoder.getDistance());
 		//TODO
+		
+		double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.1;
+		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.1;
+		double kD = (((joystickOp.getZ() * -1) + 1) / 2.0) * 0.1;
+		
+		double error = rightDriveEncoder.get() - 0;
+		
+		SmartDashboard.putNumber("Error", error);
+		SmartDashboard.putNumber("P", kP);
+		SmartDashboard.putNumber("I", kI);
+		SmartDashboard.putNumber("D", kD);
 
-		robotDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
+		frontRightMotor.reverseOutput(true);
+		backRightMotor.reverseOutput(true);
+
+		if (joystickLeft.getRawButton(2)) {
+			if (!pidMode) {
+				pidMode = true;
+				rightDriveEncoder.reset();
+			}
+			backRightMotor.changeControlMode(TalonControlMode.Follower);
+			backLeftMotor.changeControlMode(TalonControlMode.Follower);
+			frontRightMotor.changeControlMode(TalonControlMode.Follower);
+			pid.setPID(kP, kI, kD); 
+			pid.enable();
+			backRightMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+			backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+			frontRightMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+		} else {
+			pidMode = false;
+			backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+			backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
+			frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+			pid.disable();
+			
+			boolean buttonPressed = joystickLeft.getRawButton(5);
+			if (buttonPressed) {
+				if (!leftDistance) {
+					start = rightDriveEncoder.get();
+				}
+				System.out.println(Math.abs(rightDriveEncoder.get() - start));
+				System.out.println(Math.abs(rightDriveEncoder.get()));
+				if (Math.abs(rightDriveEncoder.get() - start) < 10) {
+					frontRightMotor.set(0.5);
+					backRightMotor.set(0.5);					
+				} else {
+					System.out.println("STOP");
+					frontRightMotor.set(0);
+					backRightMotor.set(0);
+				}
+			} else {
+				robotDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
+			}
+			leftDistance = buttonPressed;
+		}
 		
 		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
 			frontLeftMotor.enableBrakeMode(true);
@@ -227,6 +294,17 @@ public class Robot extends IterativeRobot {
 	 */
 	public void testPeriodic() {
 
+	}
+	
+	public void disabled() {
+		pid.disable();
+		frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+		backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
+		frontRightMotor.set(0);
+		backLeftMotor.set(0);
+		backRightMotor.set(0);
+		frontLeftMotor.set(0);
 	}
 
 }
