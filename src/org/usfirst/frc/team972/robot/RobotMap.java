@@ -59,10 +59,25 @@ public class RobotMap {
 	 // RIGHT JOYSTICK
 	 
 	 public static final int JOYSTICK_BRAKE_MODE_BUTTON = 1;
+	 public static final int JOYSTICK_GEARSHIFT_BUTTON = 2;
+	 public static final int JOYSTICK_DRIVE_SET_DISTANCE_BUTTON = 5;
 	 
 	 // OPERATOR JOYSTICK
+	
+	 public static final int JOYSTICK_BALL_PUSHER_BUTTON = 1;
+	 public static final int JOYSTICK_START_INTAKE_BUTTON = 2;
+	 public static final int JOYSTICK_REVERSE_INTAKE_BUTTON = 7;
+	 public static final int JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON = 3;
+	 public static final int JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON = 4;
+	 public static final int JOYTSTICK_START_LOW_SPEED_SHOOTER_BUTTON = 5;
+	 public static final int JOYSTICK_STOP_SHOOTER_BUTTON = 6;
 	 
-	 public static final int JOYSTICK_GEARBOX_PISTON_BUTTON = 1;
+	 // SPEEDS
+	 public static final double SHOOTER_FAST_SPEED = 0.6;
+	 public static final double SHOOTER_MEDIUM_SPEED = 0.5;
+	 public static final double SHOOTER_SLOW_SPEED = 0.4;
+	 public static final double INTAKE_MOTOR_SPEED = 0.5;
+	 public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.75;
 	 
 	 // DRIVE MULTIPLIERS
 	 
@@ -75,6 +90,11 @@ public class RobotMap {
 	 
 	 // PISTONS
 	 
-	 public static final int PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL = 0;
-	 public static final int PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL = 1;
+	 public static final int PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL = 0;
+	 public static final int PISTON_GEARBOX_LEFT_SHIFTING_REVERSE_CHANNEL = 1;
+	 public static final int PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL = 2;
+	 public static final int PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL = 3;
+	 public static final int PISTON_BALL_PUSHER_FORWARD_CHANNEL = 4;
+	 public static final int PISTON_BALL_PUSHER_REVERSE_CHANNEL = 5;
+	 
 }
