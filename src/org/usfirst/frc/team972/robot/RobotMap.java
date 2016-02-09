@@ -31,7 +31,7 @@ public class RobotMap {
 	 public static final int SHOOTER_BOTTOM_MOTOR_CAN_ID = 5;
 	 public static final int SHOOTER_TOP_MOTOR_CAN_ID = 6;
 	 public static final int INTAKE_MOTOR_CAN_ID = 5; // TODO
-	 public static final int OBSTACLE_MOTOR_CAN_ID = 8;
+	 public static final int OBSTACLE_MOTOR_CAN_ID = 5;
 	 public static final int PCM_CAN_ID = 10;
 	 
 	 // ENCODERS
