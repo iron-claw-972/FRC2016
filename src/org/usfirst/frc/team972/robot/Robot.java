@@ -4,7 +4,6 @@ package org.usfirst.frc.team972.robot;
 import com.ni.vision.NIVision;
 import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.LegFeature;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
