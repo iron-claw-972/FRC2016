@@ -1,7 +1,5 @@
 package org.usfirst.frc.team972.robot;
 
-import edu.wpi.first.wpilibj.Encoder;
-
 public class RobotMap {
 	/*
 	 * Constants style guide:

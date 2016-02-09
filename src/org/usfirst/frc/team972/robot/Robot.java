@@ -299,9 +299,13 @@ public class Robot extends IterativeRobot {
 		// finish drive code
 
 		// PID Brake
-		double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.1;
-		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.1;
-		double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.1;
+//		double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.1;
+//		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.1;
+//		double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.1;
+		
+		double kP = 0.008;
+		double kI = 0.001;
+		double kD = 0.006;
 
 		double error = rightDriveEncoder.get() - 0;
 
