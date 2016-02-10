@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -78,6 +79,8 @@ public class Robot extends IterativeRobot {
 
 	CameraServer camServer = CameraServer.getInstance();
 
+	SendableChooser autonomousChooser = new SendableChooser();
+
 	// DoubleSolenoid gearboxPistonLeft = new
 	// DoubleSolenoid(RobotMap.PCM_CAN_ID,
 	// RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL,
@@ -105,12 +108,12 @@ public class Robot extends IterativeRobot {
 	boolean shooterMediumSpeedMotorButtonPressed = false;
 	boolean shooterSlowSpeedMotorButtonPressed = false;
 	boolean shooterStopMotorButtonPressed = false;
-	
+
 	boolean goingSetDistance = false;
 
 	int start = 0;
-	
-	int count = 0; //TODO remove
+
+	int count = 0; // TODO remove
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -123,6 +126,12 @@ public class Robot extends IterativeRobot {
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
+		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" message -- Need to set to true in teleop
+
+		autonomousChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
+		autonomousChooser.addObject("Defense", new Integer(RobotMap.DEFENSE_MODE));
+		autonomousChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
+		SmartDashboard.putData("Autonomous Chooser", autonomousChooser);
 
 		// pid.setSetpoint(0);
 		rightDriveEncoder.reset();
@@ -154,17 +163,41 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
+		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" error message
+		
+		RobotMap.autonomousMode = ((Integer) (autonomousChooser.getSelected())).intValue();
+		// This line stores the value of the Autonomous Chooser as an int
 
-	}
+		switch (RobotMap.autonomousMode) {
+			case RobotMap.LOW_BAR_MODE:
+				SmartDashboard.putString("Autonomous Mode", "Low Bar");
+				break;
+			case RobotMap.DEFENSE_MODE:
+				SmartDashboard.putString("Autonomous Mode", "Defense");
+				break;
+			case RobotMap.DO_NOTHING_MODE:
+				SmartDashboard.putString("Autonomous Mode", "Do Nothing");
+				break;
+			default:
+				// This should never happen
+				SmartDashboard.putString("Autonomous Mode", "Default error!!!");
+				System.out.println("Default Autonomous Mode Error!!!");
+				break;
+		} //switch brace
+	} //autonomous brace  
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 
 	public void autonomousPeriodic() {
-
+		
 	}
 
+	public void teleopInit() {
+		botDrive.setSafetyEnabled(true); // Originally set as false during autonomous to prevent the "output not updated enough" error
+	}
+	
 	/**
 	 * This function is called periodically during operator control
 	 */
@@ -298,10 +331,10 @@ public class Robot extends IterativeRobot {
 		// finish drive code
 
 		// PID Brake
-//		double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.1;
-//		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.1;
-//		double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.1;
-		
+		// double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.1;
+		// double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.1;
+		// double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.1;
+
 		double kP = 0.008;
 		double kI = 0.001;
 		double kD = 0.006;
@@ -346,19 +379,19 @@ public class Robot extends IterativeRobot {
 			boolean encoderValueButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_DRIVE_SET_DISTANCE_BUTTON);
 			if (encoderValueButtonPressed && !goingSetDistance) {
 				goingSetDistance = true;
-//				leftDriveEncoder.reset();
+				// leftDriveEncoder.reset();
 				rightDriveEncoder.reset();
 			}
 			if (goingSetDistance && joystickRight.getRawButton(7)) {
 				count++; // TODO remove
-				SmartDashboard.putNumber("Count", count); //TODO Remove
-//				if (Math.abs(leftDriveEncoder.get()) > 10) {
-//					frontLeftMotor.set(0);
-//					backLeftMotor.set(0);
-//				} else {
-//					frontLeftMotor.set(0.1);
-//					backLeftMotor.set(0.1);
-//				}
+				SmartDashboard.putNumber("Count", count); // TODO Remove
+				// if (Math.abs(leftDriveEncoder.get()) > 10) {
+				// frontLeftMotor.set(0);
+				// backLeftMotor.set(0);
+				// } else {
+				// frontLeftMotor.set(0.1);
+				// backLeftMotor.set(0.1);
+				// }
 				if (Math.abs(rightDriveEncoder.get()) > 100) {
 					frontRightMotor.set(0);
 					backRightMotor.set(0);
@@ -366,21 +399,22 @@ public class Robot extends IterativeRobot {
 					frontRightMotor.set(0.15);
 					backRightMotor.set(0.15);
 				}
-				if (/*Math.abs(leftDriveEncoder.get()) > 100 &&*/ Math.abs(rightDriveEncoder.get()) > 100) {
+				if (/* Math.abs(leftDriveEncoder.get()) > 100 && */ Math.abs(rightDriveEncoder.get()) > 100) {
 					goingSetDistance = false;
 				}
 			} else {
 				count = 0; // TODO remove
-				botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);		
+				botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
 			}
 
 		}
 		// finish PID Brake
 
-//		SmartDashboard.putNumber("Left Encoder Value", Math.abs(leftDriveEncoder.get()));
+		// SmartDashboard.putNumber("Left Encoder Value",
+		// Math.abs(leftDriveEncoder.get()));
 		SmartDashboard.putNumber("Right Encoder Value", Math.abs(rightDriveEncoder.get()));
 		SmartDashboard.putBoolean("Going Set Distance", goingSetDistance);
-		
+
 		// intake motor
 		intakeButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON);
 		intakeReverseButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON);

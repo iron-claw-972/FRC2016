@@ -101,4 +101,10 @@ public class RobotMap {
 	 public static final int SHOOTER_PISTON_DOWN_STATE = 3;
 	 public static int currentState = DO_NOTHING_STATE;
 	 
+	 // AUTONOMOUS MODES
+	 public static int autonomousMode = 0;
+	 public static final int LOW_BAR_MODE = 0;
+	 public static final int DEFENSE_MODE = 1;
+	 public static final int DO_NOTHING_MODE = 2;
+	 
 }
