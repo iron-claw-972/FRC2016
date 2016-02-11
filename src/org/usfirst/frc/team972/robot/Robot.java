@@ -468,13 +468,13 @@ public class Robot extends IterativeRobot {
 		shooterSlowSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYTSTICK_START_LOW_SPEED_SHOOTER_BUTTON);
 		shooterStopMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON);
 		if (shooterHighSpeedMotorButtonPressed) {
-			shooterSpeed = 0.6;
-		} else if (shooterMediumSpeedMotorButtonPressed) {
 			shooterSpeed = RobotMap.SHOOTER_FAST_SPEED;
 		} else if (shooterMediumSpeedMotorButtonPressed) {
 			shooterSpeed = RobotMap.SHOOTER_MEDIUM_SPEED;
 		} else if (shooterSlowSpeedMotorButtonPressed) {
 			shooterSpeed = RobotMap.SHOOTER_SLOW_SPEED;
+		} else if (shooterStopMotorButtonPressed) {
+			shooterSpeed = 0;
 		}
 		shooterBottomMotor.set(shooterSpeed);
 		shooterTopMotor.set(shooterSpeed);
@@ -485,8 +485,6 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during test mode
 	 */
 	public void testPeriodic() {
-		System.out.println(rightDriveEncoder.get());
-
 	}
 
 	public void disabled() {
