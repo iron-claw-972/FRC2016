@@ -28,14 +28,14 @@ public class RobotMap {
 	 public static final int BACK_RIGHT_MOTOR_CAN_ID = 4;
 	 public static final int SHOOTER_BOTTOM_MOTOR_CAN_ID = 5;
 	 public static final int SHOOTER_TOP_MOTOR_CAN_ID = 6;
-	 public static final int INTAKE_MOTOR_CAN_ID = 5; // TODO
-	 public static final int OBSTACLE_MOTOR_CAN_ID = 5;
+	 public static final int INTAKE_MOTOR_CAN_ID = 7; // TODO Check online
+	 public static final int OBSTACLE_MOTOR_CAN_ID = 8; // TODO Check online
 	 public static final int PCM_CAN_ID = 10;
 	 
 	 // ENCODERS
 	 
-	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 1;
-	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 2;
+	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 0;
+	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 1;
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 2;
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 3;
 	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_A_PORT = 4;
@@ -71,6 +71,7 @@ public class RobotMap {
 	 public static final int JOYSTICK_STOP_SHOOTER_BUTTON = 6;
 	 
 	 // SPEEDS
+	 
 	 public static final double SHOOTER_FAST_SPEED = 0.6;
 	 public static final double SHOOTER_MEDIUM_SPEED = 0.5;
 	 public static final double SHOOTER_SLOW_SPEED = 0.4;
@@ -103,8 +104,15 @@ public class RobotMap {
 	 
 	 // AUTONOMOUS MODES
 	 public static int autonomousMode = 0;
+	 public static int delayAutonomousMode = 0;
 	 public static final int LOW_BAR_MODE = 0;
-	 public static final int DEFENSE_MODE = 1;
-	 public static final int DO_NOTHING_MODE = 2;
+	 public static final int DEFEND_MODE = 1;
+	 public static final int DRIVE_OVER_DEFENSE_MODE = 2;
+	 public static final int CHEVAL_DE_FRISE_MODE = 3;
+	 public static final int PORTCULLIS_MODE = 4;
+	 public static final int DO_NOTHING_MODE = 5;
+	 public static final int NO_DELAY = 0;
+	 public static final int YES_DELAY = 1;
+
 	 
 }

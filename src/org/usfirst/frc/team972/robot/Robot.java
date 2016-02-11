@@ -50,9 +50,9 @@ public class Robot extends IterativeRobot {
 
 	Encoder rightDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
 			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
-	// Encoder leftDriveEncoder = new
-	// Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
-	// RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
+//	 Encoder leftDriveEncoder = new
+//	 Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
+//	 RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
 	// Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT,
 	// RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_B_PORT);
 	// Encoder shooterTopEncoder = new
@@ -80,6 +80,7 @@ public class Robot extends IterativeRobot {
 	CameraServer camServer = CameraServer.getInstance();
 
 	SendableChooser autonomousChooser = new SendableChooser();
+	SendableChooser delayAutonomousChooser = new SendableChooser();
 
 	// DoubleSolenoid gearboxPistonLeft = new
 	// DoubleSolenoid(RobotMap.PCM_CAN_ID,
@@ -129,13 +130,20 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" message -- Need to set to true in teleop
 
 		autonomousChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
-		autonomousChooser.addObject("Defense", new Integer(RobotMap.DEFENSE_MODE));
+		autonomousChooser.addObject("Defend", new Integer(RobotMap.DEFEND_MODE));
+		autonomousChooser.addObject("Drive Over Defense", new Integer(RobotMap.DRIVE_OVER_DEFENSE_MODE));
+		autonomousChooser.addObject("Cheval de Frise", new Integer(RobotMap.CHEVAL_DE_FRISE_MODE));
+		autonomousChooser.addObject("Portcullis", new Integer(RobotMap.PORTCULLIS_MODE));
 		autonomousChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
 		SmartDashboard.putData("Autonomous Chooser", autonomousChooser);
 
-		// pid.setSetpoint(0);
+		delayAutonomousChooser.addObject("Delay", new Integer(RobotMap.YES_DELAY));
+		delayAutonomousChooser.addDefault("No Delay", new Integer(RobotMap.NO_DELAY));
+		SmartDashboard.putData("Delay Autonomous Chooser", delayAutonomousChooser);
+		
+		 pid.setSetpoint(0);
 		rightDriveEncoder.reset();
-		// rightDriveEncoder.reset();
+		 rightDriveEncoder.reset();
 
 		try {
 			cameraFront = new USBCamera("cam0");
@@ -167,13 +175,24 @@ public class Robot extends IterativeRobot {
 		
 		RobotMap.autonomousMode = ((Integer) (autonomousChooser.getSelected())).intValue();
 		// This line stores the value of the Autonomous Chooser as an int
+		
+		RobotMap.delayAutonomousMode = ((Integer) (delayAutonomousChooser.getSelected())).intValue();
 
 		switch (RobotMap.autonomousMode) {
 			case RobotMap.LOW_BAR_MODE:
 				SmartDashboard.putString("Autonomous Mode", "Low Bar");
 				break;
-			case RobotMap.DEFENSE_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Defense");
+			case RobotMap.DEFEND_MODE:
+				SmartDashboard.putString("Autonomous Mode", "Defend");
+				break;
+			case RobotMap.DRIVE_OVER_DEFENSE_MODE:
+				SmartDashboard.putString("Autonomous Mode", "Drive Over Defense");
+				break;
+			case RobotMap.CHEVAL_DE_FRISE_MODE:
+				SmartDashboard.putString("Autonomous Mode", "Cheval de Frise");
+				break;
+			case RobotMap.PORTCULLIS_MODE:
+				SmartDashboard.putString("Autonomous Mode", "Portcullis");
 				break;
 			case RobotMap.DO_NOTHING_MODE:
 				SmartDashboard.putString("Autonomous Mode", "Do Nothing");
@@ -184,6 +203,21 @@ public class Robot extends IterativeRobot {
 				System.out.println("Default Autonomous Mode Error!!!");
 				break;
 		} //switch brace
+		
+		switch (RobotMap.delayAutonomousMode) {
+			case RobotMap.YES_DELAY:
+				SmartDashboard.putString("Delay Autonomous Mode", "Yes");
+				break;
+			case RobotMap.NO_DELAY:
+				SmartDashboard.putString("Delay Autonomous Mode", "No");
+				break;
+			default:
+				// This should never happen
+				SmartDashboard.putString("Delay Autonomous Mode", "Default error!!!");
+				System.out.println("Default Delay Autonomous Mode Error!!!");
+				break;
+		}
+		
 	} //autonomous brace  
 
 	/**
@@ -451,6 +485,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during test mode
 	 */
 	public void testPeriodic() {
+		System.out.println(rightDriveEncoder.get());
 
 	}
 
