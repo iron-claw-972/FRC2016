@@ -33,36 +33,36 @@ import edu.wpi.first.wpilibj.vision.USBCamera;
  */
 public class Robot extends IterativeRobot {
 
-	Joystick joystickLeft = new Joystick(RobotMap.JOYSTICK_LEFT_USB_PORT);
-	Joystick joystickRight = new Joystick(RobotMap.JOYSTICK_RIGHT_USB_PORT);
-	Joystick joystickOp = new Joystick(RobotMap.JOYSTICK_OP_USB_PORT);
+	static Joystick joystickLeft = new Joystick(RobotMap.JOYSTICK_LEFT_USB_PORT);
+	static Joystick joystickRight = new Joystick(RobotMap.JOYSTICK_RIGHT_USB_PORT);
+	static Joystick joystickOp = new Joystick(RobotMap.JOYSTICK_OP_USB_PORT);
 
-	CANTalon frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-	CANTalon frontRightMotor = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
-	CANTalon backLeftMotor = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CAN_ID);
-	CANTalon backRightMotor = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CAN_ID);
+	static CANTalon frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+	static CANTalon frontRightMotor = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
+	static CANTalon backLeftMotor = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CAN_ID);
+	static CANTalon backRightMotor = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CAN_ID);
 
-	CANTalon shooterBottomMotor = new CANTalon(RobotMap.SHOOTER_BOTTOM_MOTOR_CAN_ID);
-	CANTalon shooterTopMotor = new CANTalon(RobotMap.SHOOTER_TOP_MOTOR_CAN_ID);
-	CANTalon intakeMotor = new CANTalon(RobotMap.INTAKE_MOTOR_CAN_ID);
-	CANTalon obstacleMotor = new CANTalon(RobotMap.OBSTACLE_MOTOR_CAN_ID);
+	static CANTalon shooterBottomMotor = new CANTalon(RobotMap.SHOOTER_BOTTOM_MOTOR_CAN_ID);
+	static CANTalon shooterTopMotor = new CANTalon(RobotMap.SHOOTER_TOP_MOTOR_CAN_ID);
+	static CANTalon intakeMotor = new CANTalon(RobotMap.INTAKE_MOTOR_CAN_ID);
+	static CANTalon obstacleMotor = new CANTalon(RobotMap.OBSTACLE_MOTOR_CAN_ID);
 
-	Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
+	static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
 
-	Encoder rightDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
-			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
-	// Encoder leftDriveEncoder = new
-	// Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
+	static Encoder rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
+			RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
+	// static Encoder leftDriveEncoder = new
+	// static Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
 	// RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
-	// Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT,
+	// static Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT,
 	// RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_B_PORT);
-	// Encoder shooterTopEncoder = new
-	// Encoder(RobotMap.SHOOTER_TOP_ENCODER_DIO_A_PORT,
+	// static Encoder shooterTopEncoder = new
+	// static Encoder(RobotMap.SHOOTER_TOP_ENCODER_DIO_A_PORT,
 	// RobotMap.SHOOTER_TOP_ENCODER_DIO_B_PORT);
 
-	PIDController pid = new PIDController(0, 0, 0, rightDriveEncoder, frontLeftMotor);
+	static PIDController pid = new PIDController(0, 0, 0, rightDriveEncoder, frontLeftMotor);
 
-	RobotDrive botDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+	static RobotDrive botDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
 	double driveMultiplier = RobotMap.DEFAULT_DRIVE_MODE;
 	double leftDriveSpeed = 0.0;
@@ -75,11 +75,11 @@ public class Robot extends IterativeRobot {
 	boolean rearCam = false;
 	// stores whether the front camera is on
 
-	USBCamera cameraFront;
-	USBCamera cameraBack;
+	static USBCamera cameraFront;
+	static USBCamera cameraBack;
 
-	CameraServer camServer = CameraServer.getInstance();
-
+	static CameraServer camServer = CameraServer.getInstance();
+	
 	SendableChooser autonomousChooser = new SendableChooser();
 	SendableChooser delayAutonomousChooser = new SendableChooser();
 
@@ -96,7 +96,7 @@ public class Robot extends IterativeRobot {
 	boolean pidMode = false;
 	boolean leftDistance = false;
 
-	DoubleSolenoid shooterPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL,
+	static DoubleSolenoid shooterPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL,
 			RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
 	boolean shooterPistonPressedLastTime = false;
 	boolean shooterPistonForward = false;
@@ -117,6 +117,10 @@ public class Robot extends IterativeRobot {
 
 	int count = 0; // TODO remove
 
+	boolean autonomousDelay;
+	long autonomousDelayStartTime;
+	long chevalDeFriseStartTime = -1; // This means the timer has not been set
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -133,7 +137,6 @@ public class Robot extends IterativeRobot {
 											// true in teleop
 
 		autonomousChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
-		autonomousChooser.addObject("Defend", new Integer(RobotMap.DEFEND_MODE));
 		autonomousChooser.addObject("Drive Over Defense", new Integer(RobotMap.DRIVE_OVER_DEFENSE_MODE));
 		autonomousChooser.addObject("Cheval de Frise", new Integer(RobotMap.CHEVAL_DE_FRISE_MODE));
 		autonomousChooser.addObject("Portcullis", new Integer(RobotMap.PORTCULLIS_MODE));
@@ -156,7 +159,7 @@ public class Robot extends IterativeRobot {
 			cameraFront.startCapture(); // startCapture so that it doesn't try
 										// to take a picture
 										// before the camera is on
-			camServer.setQuality(50); // 50 is currently perfect
+			camServer.setQuality(100); // 50 is currently perfect
 		} catch (VisionException e) {
 			System.out.println("VISION EXCEPTION ~ " + e);
 		}
@@ -182,45 +185,24 @@ public class Robot extends IterativeRobot {
 
 		RobotMap.delayAutonomousMode = ((Integer) (delayAutonomousChooser.getSelected())).intValue();
 
-		switch (RobotMap.autonomousMode) {
-		case RobotMap.LOW_BAR_MODE:
-			SmartDashboard.putString("Autonomous Mode", "Low Bar");
-			break;
-		case RobotMap.DEFEND_MODE:
-			SmartDashboard.putString("Autonomous Mode", "Defend");
-			break;
-		case RobotMap.DRIVE_OVER_DEFENSE_MODE:
-			SmartDashboard.putString("Autonomous Mode", "Drive Over Defense");
-			break;
-		case RobotMap.CHEVAL_DE_FRISE_MODE:
-			SmartDashboard.putString("Autonomous Mode", "Cheval de Frise");
-			break;
-		case RobotMap.PORTCULLIS_MODE:
-			SmartDashboard.putString("Autonomous Mode", "Portcullis");
-			break;
-		case RobotMap.DO_NOTHING_MODE:
-			SmartDashboard.putString("Autonomous Mode", "Do Nothing");
-			break;
-		default:
-			// This should never happen
-			SmartDashboard.putString("Autonomous Mode", "Default error!!!");
-			System.out.println("Default Autonomous Mode Error!!!");
-			break;
-		} // switch brace
-
 		switch (RobotMap.delayAutonomousMode) {
 		case RobotMap.YES_DELAY:
 			SmartDashboard.putString("Delay Autonomous Mode", "Yes");
+			autonomousDelay = true;
 			break;
 		case RobotMap.NO_DELAY:
 			SmartDashboard.putString("Delay Autonomous Mode", "No");
+			autonomousDelay = false;
 			break;
 		default:
 			// This should never happen
 			SmartDashboard.putString("Delay Autonomous Mode", "Default error!!!");
 			System.out.println("Default Delay Autonomous Mode Error!!!");
+			autonomousDelay = false;
 			break;
 		}
+		
+		autonomousDelayStartTime = System.currentTimeMillis();
 
 	} // autonomous brace
 
@@ -229,7 +211,37 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void autonomousPeriodic() {
-
+		if (autonomousDelay) {
+			if (Autonomous.autonomousDelay(autonomousDelayStartTime, 5000)) {
+				autonomousDelay = false;
+			}
+		} else {
+			switch (RobotMap.autonomousMode) {
+				case RobotMap.LOW_BAR_MODE:
+					SmartDashboard.putString("Autonomous Mode", "Low Bar");
+					Autonomous.autonomousLowBar();
+					break;
+				case RobotMap.DRIVE_OVER_DEFENSE_MODE:
+					SmartDashboard.putString("Autonomous Mode", "Drive Over Defense");
+					break;
+				case RobotMap.CHEVAL_DE_FRISE_MODE:
+					SmartDashboard.putString("Autonomous Mode", "Cheval de Frise");
+//					if 
+					break;
+				case RobotMap.PORTCULLIS_MODE:
+					SmartDashboard.putString("Autonomous Mode", "Portcullis");
+					break;
+				case RobotMap.DO_NOTHING_MODE:
+					SmartDashboard.putString("Autonomous Mode", "Do Nothing");
+					Autonomous.autonomousDoNothing();
+					break;
+			default:
+				// This should never happen
+				SmartDashboard.putString("Autonomous Mode", "Default error!!!");
+				System.out.println("Default Autonomous Mode Error!!!");
+				break;
+			} // switch brace
+		}
 	}
 
 	public void teleopInit() {
@@ -243,7 +255,6 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void teleopPeriodic() {
-
 		if (joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315) {
 			obstacleMotor.set(0.8);
 		} else if (joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135) {
@@ -325,7 +336,6 @@ public class Robot extends IterativeRobot {
 
 			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
 			// finish switching
-
 			// camera streaming
 			if (rearCam == true) {
 				cameraBack.getImage(img);

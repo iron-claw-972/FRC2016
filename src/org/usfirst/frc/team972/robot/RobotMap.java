@@ -34,10 +34,10 @@ public class RobotMap {
 	 
 	 // ENCODERS
 	 
-	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 0;
-	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 1;
-	 public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 2;
-	 public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 3;
+	 public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 0;
+	 public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 1;
+	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 2;
+	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 3;
 	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_A_PORT = 4;
 	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_B_PORT = 5;
 	 public static final int SHOOTER_TOP_ENCODER_DIO_A_PORT = 6;
@@ -106,7 +106,6 @@ public class RobotMap {
 	 public static int autonomousMode = 0;
 	 public static int delayAutonomousMode = 0;
 	 public static final int LOW_BAR_MODE = 0;
-	 public static final int DEFEND_MODE = 1;
 	 public static final int DRIVE_OVER_DEFENSE_MODE = 2;
 	 public static final int CHEVAL_DE_FRISE_MODE = 3;
 	 public static final int PORTCULLIS_MODE = 4;
@@ -114,5 +113,11 @@ public class RobotMap {
 	 public static final int NO_DELAY = 0;
 	 public static final int YES_DELAY = 1;
 
+	 // AUTONOMOUS DRIVE SPEEDS
+	 
+	 public static final double LOW_BAR_LEFT_DRIVE_SPEED = 0.5;
+	 public static final double LOW_BAR_RIGHT_DRIVE_SPEED = 0.5;
+	 public static final int LOW_BAR_LEFT_DRIVE_DISTANCE = 500;
+	 public static final int LOW_BAR_RIGHT_DRIVE_DISTANCE = 500;
 	 
 }
