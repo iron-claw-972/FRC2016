@@ -72,9 +72,9 @@ public class RobotMap {
 	 
 	 // SPEEDS
 	 
-	 public static final double SHOOTER_FAST_SPEED = 0.6;
-	 public static final double SHOOTER_MEDIUM_SPEED = 0.5;
-	 public static final double SHOOTER_SLOW_SPEED = 0.4;
+	 public static final double SHOOTER_FAST_SPEED = 1; // TODO change to .6
+	 public static final double SHOOTER_MEDIUM_SPEED = 0.6; // TODO change to .5
+	 public static final double SHOOTER_SLOW_SPEED = 0.3; // TODO change to .4
 	 public static final double INTAKE_MOTOR_SPEED = 0.3;
 	 public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.3;
 	 

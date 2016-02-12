@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.vision.USBCamera;
@@ -50,9 +51,9 @@ public class Robot extends IterativeRobot {
 
 	Encoder rightDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
 			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
-//	 Encoder leftDriveEncoder = new
-//	 Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
-//	 RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
+	// Encoder leftDriveEncoder = new
+	// Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
+	// RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
 	// Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT,
 	// RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_B_PORT);
 	// Encoder shooterTopEncoder = new
@@ -127,7 +128,9 @@ public class Robot extends IterativeRobot {
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
-		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" message -- Need to set to true in teleop
+		botDrive.setSafetyEnabled(false); // Prevents "output not updated
+											// enough" message -- Need to set to
+											// true in teleop
 
 		autonomousChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
 		autonomousChooser.addObject("Defend", new Integer(RobotMap.DEFEND_MODE));
@@ -140,10 +143,10 @@ public class Robot extends IterativeRobot {
 		delayAutonomousChooser.addObject("Delay", new Integer(RobotMap.YES_DELAY));
 		delayAutonomousChooser.addDefault("No Delay", new Integer(RobotMap.NO_DELAY));
 		SmartDashboard.putData("Delay Autonomous Chooser", delayAutonomousChooser);
-		
-		 pid.setSetpoint(0);
+
+		pid.setSetpoint(0);
 		rightDriveEncoder.reset();
-		 rightDriveEncoder.reset();
+		rightDriveEncoder.reset();
 
 		try {
 			cameraFront = new USBCamera("cam0");
@@ -171,67 +174,70 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
-		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" error message
-		
+		botDrive.setSafetyEnabled(false); // Prevents "output not updated
+											// enough" error message
+
 		RobotMap.autonomousMode = ((Integer) (autonomousChooser.getSelected())).intValue();
 		// This line stores the value of the Autonomous Chooser as an int
-		
+
 		RobotMap.delayAutonomousMode = ((Integer) (delayAutonomousChooser.getSelected())).intValue();
 
 		switch (RobotMap.autonomousMode) {
-			case RobotMap.LOW_BAR_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Low Bar");
-				break;
-			case RobotMap.DEFEND_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Defend");
-				break;
-			case RobotMap.DRIVE_OVER_DEFENSE_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Drive Over Defense");
-				break;
-			case RobotMap.CHEVAL_DE_FRISE_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Cheval de Frise");
-				break;
-			case RobotMap.PORTCULLIS_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Portcullis");
-				break;
-			case RobotMap.DO_NOTHING_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Do Nothing");
-				break;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Autonomous Mode", "Default error!!!");
-				System.out.println("Default Autonomous Mode Error!!!");
-				break;
-		} //switch brace
-		
+		case RobotMap.LOW_BAR_MODE:
+			SmartDashboard.putString("Autonomous Mode", "Low Bar");
+			break;
+		case RobotMap.DEFEND_MODE:
+			SmartDashboard.putString("Autonomous Mode", "Defend");
+			break;
+		case RobotMap.DRIVE_OVER_DEFENSE_MODE:
+			SmartDashboard.putString("Autonomous Mode", "Drive Over Defense");
+			break;
+		case RobotMap.CHEVAL_DE_FRISE_MODE:
+			SmartDashboard.putString("Autonomous Mode", "Cheval de Frise");
+			break;
+		case RobotMap.PORTCULLIS_MODE:
+			SmartDashboard.putString("Autonomous Mode", "Portcullis");
+			break;
+		case RobotMap.DO_NOTHING_MODE:
+			SmartDashboard.putString("Autonomous Mode", "Do Nothing");
+			break;
+		default:
+			// This should never happen
+			SmartDashboard.putString("Autonomous Mode", "Default error!!!");
+			System.out.println("Default Autonomous Mode Error!!!");
+			break;
+		} // switch brace
+
 		switch (RobotMap.delayAutonomousMode) {
-			case RobotMap.YES_DELAY:
-				SmartDashboard.putString("Delay Autonomous Mode", "Yes");
-				break;
-			case RobotMap.NO_DELAY:
-				SmartDashboard.putString("Delay Autonomous Mode", "No");
-				break;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Delay Autonomous Mode", "Default error!!!");
-				System.out.println("Default Delay Autonomous Mode Error!!!");
-				break;
+		case RobotMap.YES_DELAY:
+			SmartDashboard.putString("Delay Autonomous Mode", "Yes");
+			break;
+		case RobotMap.NO_DELAY:
+			SmartDashboard.putString("Delay Autonomous Mode", "No");
+			break;
+		default:
+			// This should never happen
+			SmartDashboard.putString("Delay Autonomous Mode", "Default error!!!");
+			System.out.println("Default Delay Autonomous Mode Error!!!");
+			break;
 		}
-		
-	} //autonomous brace  
+
+	} // autonomous brace
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 
 	public void autonomousPeriodic() {
-		
+
 	}
 
 	public void teleopInit() {
-		botDrive.setSafetyEnabled(true); // Originally set as false during autonomous to prevent the "output not updated enough" error
+		botDrive.setSafetyEnabled(true); // Originally set as false during
+											// autonomous to prevent the "output
+											// not updated enough" error
 	}
-	
+
 	/**
 	 * This function is called periodically during operator control
 	 */
@@ -302,33 +308,78 @@ public class Robot extends IterativeRobot {
 		shooterPistonPressedLastTime = shooterPistonButtonIsPressed;
 		// end shooter piston
 
-		// reverse drive mode (with camera switching)
-		boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-		if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-			if (rearCam) {
-				cameraBack.stopCapture();
-				cameraFront.startCapture();
-				rearCam = false;
-			} else {
-				cameraFront.stopCapture();
-				cameraBack.startCapture();
-				rearCam = true;
+		try {
+			// reverse drive mode (with camera switching)
+			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+				if (rearCam) {
+					cameraBack.stopCapture();
+					cameraFront.startCapture();
+					rearCam = false;
+				} else {
+					cameraFront.stopCapture();
+					cameraBack.startCapture();
+					rearCam = true;
+				}
 			}
-		}
-		cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-		// finish switching
 
-		// camera streaming
-		if (rearCam == true) {
-			cameraBack.getImage(img);
-			SmartDashboard.putString("Front", "LED");
-		} else {
-			cameraFront.getImage(img);
-			SmartDashboard.putString("Front", "PISTON");
-		}
-		camServer.setImage(img); // puts image on the dashboard
-		// finish camera streaming
+			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+			// finish switching
 
+			// camera streaming
+			if (rearCam == true) {
+				cameraBack.getImage(img);
+				SmartDashboard.putString("Front", "LED");
+			} else {
+				cameraFront.getImage(img);
+				SmartDashboard.putString("Front", "PISTON");
+			}
+			camServer.setImage(img); // puts image on the dashboard
+			// finish camera streaming
+		} catch (NullPointerException e) { // TODO check :/
+			System.out.println(e);
+			
+			// In this catch, we are switching drive modes, like in the try, but without cameras, since we have no cameras
+			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+				if (rearCam) {
+					rearCam = false;
+				} else {
+					rearCam = true;
+				}
+			}
+			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+			// finish switching
+
+			// camera streaming
+			if (rearCam == true) {
+				SmartDashboard.putString("Front", "LED");
+			} else {
+				SmartDashboard.putString("Front", "PISTON");
+			}
+		} catch (VisionException e) { // TODO check :/
+			System.out.println(e);
+			
+			// In this catch, we are switching drive modes, like in the try, but without cameras, since we have no cameras
+			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+				if (rearCam) {
+					rearCam = false;
+				} else {
+					rearCam = true;
+				}
+			}
+			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+			// finish switching
+
+			// camera streaming
+			if (rearCam == true) {
+				SmartDashboard.putString("Front", "LED");
+			} else {
+				SmartDashboard.putString("Front", "PISTON");
+			}
+		} // end catch
+		
 		// drive multiplier
 		if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_1_BUTTON)) {
 			driveMultiplier = RobotMap.DRIVE_MODE_1;
@@ -478,6 +529,9 @@ public class Robot extends IterativeRobot {
 		}
 		shooterBottomMotor.set(shooterSpeed);
 		shooterTopMotor.set(shooterSpeed);
+
+		SmartDashboard.putNumber("Shooter Bottom Motor", shooterSpeed);
+		SmartDashboard.putNumber("Shooter Top Motor", shooterSpeed);
 		// shooter motors
 	}
 
