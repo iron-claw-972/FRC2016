@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 //import edu.wpi.first.wpilibj.Encoder;
@@ -49,10 +50,10 @@ public class Robot extends IterativeRobot {
 
 	static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
 
-	static Encoder rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
-			RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
-	static Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
-			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
+//	static Encoder rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
+//			RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
+//	static Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
+//			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
 
 	// static Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT,
 	// RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_B_PORT);
@@ -60,7 +61,7 @@ public class Robot extends IterativeRobot {
 	// Encoder(RobotMap.SHOOTER_TOP_ENCODER_DIO_A_PORT,
 	// RobotMap.SHOOTER_TOP_ENCODER_DIO_B_PORT);
 
-	static PIDController pid = new PIDController(0, 0, 0, rightDriveEncoder, frontLeftMotor);
+//	static PIDController pid = new PIDController(0, 0, 0, rightDriveEncoder, frontLeftMotor);
 
 	static RobotDrive botDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
@@ -85,6 +86,8 @@ public class Robot extends IterativeRobot {
 	SendableChooser autonomousPositionChooser = new SendableChooser();
 	SendableChooser autonomousShooterChooser = new SendableChooser();
 
+	DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
+	
 	// DoubleSolenoid gearboxPistonLeft = new
 	// DoubleSolenoid(RobotMap.PCM_CAN_ID,
 	// RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL,
@@ -172,9 +175,9 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Autonomous Shooting Chooser", autonomousShooterChooser);
 
 
-		pid.setSetpoint(0);
-		rightDriveEncoder.reset();
-		rightDriveEncoder.reset();
+//		pid.setSetpoint(0);
+//		rightDriveEncoder.reset();
+//		rightDriveEncoder.reset();
 
 		try {
 			cameraFront = new USBCamera("cam0");
@@ -520,81 +523,82 @@ public class Robot extends IterativeRobot {
 		double kI = 0.001;
 		double kD = 0.006;
 
-		double error = rightDriveEncoder.get() - 0;
+//		double error = rightDriveEncoder.get() - 0;
 
-		SmartDashboard.putNumber("Error", error);
-		SmartDashboard.putNumber("P", kP);
-		SmartDashboard.putNumber("I", kI);
-		SmartDashboard.putNumber("D", kD);
+//		SmartDashboard.putNumber("Error", error);
+//		SmartDashboard.putNumber("P", kP);
+//		SmartDashboard.putNumber("I", kI);
+//		SmartDashboard.putNumber("D", kD);
 
 		frontRightMotor.reverseOutput(true);
 		backRightMotor.reverseOutput(true);
 
-		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
-			if (!pidMode) {
-				pidMode = true;
-				rightDriveEncoder.reset();
-
-				// this sets all the motors except front left to be followers
-				// this way they will do the same thing that the front left
-				// motor does
-				// the front left motor is controlled by the PID Controller
-				// object
-				backRightMotor.changeControlMode(TalonControlMode.Follower);
-				backLeftMotor.changeControlMode(TalonControlMode.Follower);
-				frontRightMotor.changeControlMode(TalonControlMode.Follower);
-			}
-			// has the other motors follow the PID controlled motor
-			backRightMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-			backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-			frontRightMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-			pid.setPID(kP, kI, kD);
-			pid.enable();
-		} else {
-			pidMode = false;
-			backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
-			backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
-			frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
-			pid.disable();
-
-			boolean encoderValueButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_DRIVE_SET_DISTANCE_BUTTON);
-			if (encoderValueButtonPressed && !goingSetDistance) {
-				goingSetDistance = true;
-				// leftDriveEncoder.reset();
-				rightDriveEncoder.reset();
-			}
-			if (goingSetDistance && joystickRight.getRawButton(7)) {
-				count++; // TODO remove
-				SmartDashboard.putNumber("Count", count); // TODO Remove
-				// if (Math.abs(leftDriveEncoder.get()) > 10) {
-				// frontLeftMotor.set(0);
-				// backLeftMotor.set(0);
-				// } else {
-				// frontLeftMotor.set(0.1);
-				// backLeftMotor.set(0.1);
-				// }
-				if (Math.abs(rightDriveEncoder.get()) > 100) {
-					frontRightMotor.set(0);
-					backRightMotor.set(0);
-				} else {
-					frontRightMotor.set(0.15);
-					backRightMotor.set(0.15);
-				}
-				if (/* Math.abs(leftDriveEncoder.get()) > 100 && */ Math.abs(rightDriveEncoder.get()) > 100) {
-					goingSetDistance = false;
-				}
-			} else {
-				count = 0; // TODO remove
-				botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
-			}
-
-		}
+//		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
+//			if (!pidMode) {
+//				pidMode = true;
+//				rightDriveEncoder.reset();
+//
+//				// this sets all the motors except front left to be followers
+//				// this way they will do the same thing that the front left
+//				// motor does
+//				// the front left motor is controlled by the PID Controller
+//				// object
+//				backRightMotor.changeControlMode(TalonControlMode.Follower);
+//				backLeftMotor.changeControlMode(TalonControlMode.Follower);
+//				frontRightMotor.changeControlMode(TalonControlMode.Follower);
+//			}
+//			// has the other motors follow the PID controlled motor
+//			backRightMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+//			backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+//			frontRightMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+//			pid.setPID(kP, kI, kD);
+//			pid.enable();
+//		} else {
+//			pidMode = false;
+//			backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+//			backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
+//			frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+//			pid.disable();
+//
+//			boolean encoderValueButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_DRIVE_SET_DISTANCE_BUTTON);
+//			if (encoderValueButtonPressed && !goingSetDistance) {
+//				goingSetDistance = true;
+//				// leftDriveEncoder.reset();
+//				rightDriveEncoder.reset();
+//			}
+//			if (goingSetDistance && joystickRight.getRawButton(7)) {
+//				count++; // TODO remove
+//				SmartDashboard.putNumber("Count", count); // TODO Remove
+//				// if (Math.abs(leftDriveEncoder.get()) > 10) {
+//				// frontLeftMotor.set(0);
+//				// backLeftMotor.set(0);
+//				// } else {
+//				// frontLeftMotor.set(0.1);
+//				// backLeftMotor.set(0.1);
+//				// }
+//				if (Math.abs(rightDriveEncoder.get()) > 100) {
+//					frontRightMotor.set(0);
+//					backRightMotor.set(0);
+//				} else {
+//					frontRightMotor.set(0.15);
+//					backRightMotor.set(0.15);
+//				}
+//				if (/* Math.abs(leftDriveEncoder.get()) > 100 && */ Math.abs(rightDriveEncoder.get()) > 100) {
+//					goingSetDistance = false;
+//				}
+//			} else {
+//				count = 0; // TODO remove
+//				botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
+//			}
+//		}
 		// finish PID Brake
 
 		// SmartDashboard.putNumber("Left Encoder Value",
 		// Math.abs(leftDriveEncoder.get()));
-		SmartDashboard.putNumber("Right Encoder Value", Math.abs(rightDriveEncoder.get()));
+//		SmartDashboard.putNumber("Right Encoder Value", Math.abs(rightDriveEncoder.get()));
 		SmartDashboard.putBoolean("Going Set Distance", goingSetDistance);
+		
+		SmartDashboard.putBoolean("Ball Present", ballOpticalSensor.get());
 
 		// intake motor
 		intakeButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON);

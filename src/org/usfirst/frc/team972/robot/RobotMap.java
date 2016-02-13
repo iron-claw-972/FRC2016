@@ -43,6 +43,9 @@ public class RobotMap {
 	 public static final int SHOOTER_TOP_ENCODER_DIO_A_PORT = 6;
 	 public static final int SHOOTER_TOP_ENCODER_DIO_B_PORT = 7;
 	 
+	 // SENSORS
+	 public static final int BALL_OPTICAL_SENSOR_PORT = 0; // TODO Change value
+	 
 	 // BUTTONS
 	 
 	 // LEFT JOYSTICK
