@@ -65,8 +65,8 @@ public class RobotMap {
 	 public static final int JOYSTICK_ACTIVATE_PISTON_BUTTON = 1;
 	 public static final int JOYSTICK_START_INTAKE_BUTTON = 2;
 	 public static final int JOYSTICK_REVERSE_INTAKE_BUTTON = 7;
-	 public static final int JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON = 3;
-	 public static final int JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON = 4;
+	 public static final int JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON = 4;
+	 public static final int JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON = 3;
 	 public static final int JOYTSTICK_START_LOW_SPEED_SHOOTER_BUTTON = 5;
 	 public static final int JOYSTICK_STOP_SHOOTER_BUTTON = 6;
 	 
@@ -102,17 +102,49 @@ public class RobotMap {
 	 public static final int SHOOTER_PISTON_DOWN_STATE = 3;
 	 public static int currentState = DO_NOTHING_STATE;
 	 
-	 // AUTONOMOUS MODES
-	 public static int autonomousMode = 0;
-	 public static int delayAutonomousMode = 0;
+	 // AUTONOMOUS DEFENSES
 	 public static final int LOW_BAR_MODE = 0;
-	 public static final int DRIVE_OVER_DEFENSE_MODE = 2;
-	 public static final int CHEVAL_DE_FRISE_MODE = 3;
-	 public static final int PORTCULLIS_MODE = 4;
-	 public static final int DO_NOTHING_MODE = 5;
+	 public static final int PORTCULLIS_MODE = 1;
+	 public static final int CHEVAL_DE_FRISE_MODE = 2;
+	 public static final int MOAT_MODE = 3;
+	 public static final int RAMPARTS_MODE = 4;
+	 public static final int DRAWBRIDGE_MODE = 5;
+	 public static final int SALLY_PORT_MODE = 6;
+	 public static final int ROCK_WALL_MODE = 7;
+	 public static final int ROUGH_TERRAIN_MODE = 8;
+	 public static final int DO_NOTHING_MODE = 9;
+	 
+	 // AUTONOMOUS DELAYS
+	 
 	 public static final int NO_DELAY = 0;
-	 public static final int YES_DELAY = 1;
+	 public static final int TWO_SECOND_DELAY = 1;
+	 public static final int FOUR_SECOND_DELAY = 2;
+	 public static final int SIX_SECOND_DELAY = 3;
+	 
+	 // AUTONOMOUS START POSITIONS
+	 
+	 public static final int POSITION_SPY = 0;
+	 public static final int POSITION_1 = 1;
+	 public static final int POSITION_2 = 2;
+	 public static final int POSITION_3 = 3;
+	 public static final int POSITION_4 = 4;
+	 public static final int POSITION_5 = 5;
 
+	 // AUTONOMOUS SHOOTER MODES
+	 
+	 public static final int DO_NOT_SHOOT = 0;
+	 public static final int SHOOTER_LEFT_HIGH_GOAL = 1;
+	 public static final int SHOOTER_CENTER_HIGH_GOAL = 2;
+	 public static final int SHOOTER_RIGHT_HIGH_GOAL = 3;
+	 public static final int ASSIST_SHOOT = 4;
+	 
+	 // AUTONOMOUS MODES
+	 
+	 public static int autonomousDefenseMode = LOW_BAR_MODE;
+	 public static int autonomousDelayMode = NO_DELAY;
+	 public static int autonomousShooterMode = DO_NOT_SHOOT;
+	 public static int autonomousPositionMode = POSITION_1;
+	
 	 // AUTONOMOUS DRIVE SPEEDS
 	 
 	 public static final double LOW_BAR_LEFT_DRIVE_SPEED = 0.5;
