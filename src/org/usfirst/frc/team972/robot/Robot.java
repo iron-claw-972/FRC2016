@@ -12,10 +12,11 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
-//import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.*;
@@ -38,7 +39,7 @@ public class Robot extends IterativeRobot {
 	static Joystick joystickRight = new Joystick(RobotMap.JOYSTICK_RIGHT_USB_PORT);
 	static Joystick joystickOp = new Joystick(RobotMap.JOYSTICK_OP_USB_PORT);
 
-	static CANTalon frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+	static PIDReverseCANTalon frontLeftMotor = new PIDReverseCANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
 	static CANTalon frontRightMotor = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
 	static CANTalon backLeftMotor = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CAN_ID);
 	static CANTalon backRightMotor = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CAN_ID);
@@ -53,15 +54,15 @@ public class Robot extends IterativeRobot {
 //	static Encoder rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
 //			RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
 //	static Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
-//			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
+//			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT); // TODO Uncomment
 
-	// static Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT,
-	// RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_B_PORT);
-	// static Encoder shooterTopEncoder = new
-	// Encoder(RobotMap.SHOOTER_TOP_ENCODER_DIO_A_PORT,
-	// RobotMap.SHOOTER_TOP_ENCODER_DIO_B_PORT);
-
-//	static PIDController pid = new PIDController(0, 0, 0, rightDriveEncoder, frontLeftMotor);
+	 static Encoder shooterBottomEncoder = new Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT, RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_B_PORT);
+	 static Encoder shooterTopEncoder = new Encoder(RobotMap.SHOOTER_TOP_ENCODER_DIO_A_PORT, RobotMap.SHOOTER_TOP_ENCODER_DIO_B_PORT);
+	 
+//	static PIDController pidRightDrive = new PIDController(0, 0, 0, rightDriveEncoder, frontRightMotor);
+//	static PIDController pidLeftDrive = new PIDController(0, 0, 0, leftDriveEncoder, frontLeftMotor); // TODO Uncomment
+	static PIDController pidBottomShooter = new PIDController(0, 0, 0, shooterBottomEncoder, shooterBottomMotor);
+	static PIDController pidTopShooter = new PIDController(0, 0, 0, shooterTopEncoder, shooterTopMotor);
 
 	static RobotDrive botDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
@@ -133,6 +134,9 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		compressor.start();
 
+		shooterBottomEncoder.setPIDSourceType(PIDSourceType.kRate);
+		shooterTopEncoder.setPIDSourceType(PIDSourceType.kRate);
+		
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
@@ -174,10 +178,10 @@ public class Robot extends IterativeRobot {
 		autonomousShooterChooser.addObject("Assist", new Integer(RobotMap.ASSIST_SHOOT));
 		SmartDashboard.putData("Autonomous Shooting Chooser", autonomousShooterChooser);
 
-
-//		pid.setSetpoint(0);
+//		pidLeftDrive.setSetpoint(0);
+//		pidRightDrive.setSetpoint(0); // TODO Uncomment
 //		rightDriveEncoder.reset();
-//		rightDriveEncoder.reset();
+//		leftDriveEncoder.reset(); // TODO Uncomment
 
 		try {
 			cameraFront = new USBCamera("cam0");
@@ -335,6 +339,8 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(true); // Originally set as false during
 											// autonomous to prevent the "output
 											// not updated enough" error
+		
+		stopEverything();
 	}
 
 	/**
@@ -393,6 +399,8 @@ public class Robot extends IterativeRobot {
 			}
 			break;
 		}
+		
+		
 		boolean shooterPistonButtonIsPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_ACTIVATE_PISTON_BUTTON);
 		if (shooterPistonButtonIsPressed && !shooterPistonPressedLastTime) {
 			if (shooterPistonForward) {
@@ -508,16 +516,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-		// SmartDashboard.putNumber("Encoder Left",
-		// leftDriveEncoder.getPeriod());
-		// SmartDashboard.putNumber("Encoder Right",
-		// rightDriveEncoder.getDistance());
+//		SmartDashboard.putNumber("Encoder Left", leftDriveEncoder.get());
+//		SmartDashboard.putNumber("Encoder Right", rightDriveEncoder.get()); // TODO Uncomment
 		// finish drive code
 
 		// PID Brake
-		// double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.1;
-		// double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.1;
-		// double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.1;
+//		double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.1;
+//		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.1;
+//		double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.1;
 
 		double kP = 0.008;
 		double kI = 0.001;
@@ -526,17 +532,25 @@ public class Robot extends IterativeRobot {
 //		double error = rightDriveEncoder.get() - 0;
 
 //		SmartDashboard.putNumber("Error", error);
-//		SmartDashboard.putNumber("P", kP);
-//		SmartDashboard.putNumber("I", kI);
-//		SmartDashboard.putNumber("D", kD);
-
-		frontRightMotor.reverseOutput(true);
-		backRightMotor.reverseOutput(true);
+		SmartDashboard.putNumber("P", kP);
+		SmartDashboard.putNumber("I", kI);
+		SmartDashboard.putNumber("D", kD);
 
 //		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
 //			if (!pidMode) {
 //				pidMode = true;
+//				
+//				pidLeftDrive.reset(); //resets past error
+//				pidRightDrive.reset();
+//				
+//				leftDriveEncoder.reset();
 //				rightDriveEncoder.reset();
+//				
+//				pidLeftDrive.setSetpoint(0);
+//				pidRightDrive.setSetpoint(0);
+//				
+//				SmartDashboard.putNumber("Left Error", pidLeftDrive.getError());
+//				SmartDashboard.putNumber("Right Error", pidRightDrive.getError());
 //
 //				// this sets all the motors except front left to be followers
 //				// this way they will do the same thing that the front left
@@ -545,51 +559,51 @@ public class Robot extends IterativeRobot {
 //				// object
 //				backRightMotor.changeControlMode(TalonControlMode.Follower);
 //				backLeftMotor.changeControlMode(TalonControlMode.Follower);
-//				frontRightMotor.changeControlMode(TalonControlMode.Follower);
 //			}
 //			// has the other motors follow the PID controlled motor
-//			backRightMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+//			backRightMotor.set(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
 //			backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-//			frontRightMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-//			pid.setPID(kP, kI, kD);
-//			pid.enable();
+//			pidLeftDrive.setPID(kP, kI, kD);
+//			pidRightDrive.setPID(kP, kI, kD);
+//			pidLeftDrive.enable();
+//			pidRightDrive.enable();
 //		} else {
 //			pidMode = false;
 //			backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
 //			backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
-//			frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
-//			pid.disable();
+//			pidLeftDrive.disable();
+//			pidRightDrive.disable();
 //
-//			boolean encoderValueButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_DRIVE_SET_DISTANCE_BUTTON);
-//			if (encoderValueButtonPressed && !goingSetDistance) {
-//				goingSetDistance = true;
-//				// leftDriveEncoder.reset();
-//				rightDriveEncoder.reset();
-//			}
-//			if (goingSetDistance && joystickRight.getRawButton(7)) {
-//				count++; // TODO remove
-//				SmartDashboard.putNumber("Count", count); // TODO Remove
-//				// if (Math.abs(leftDriveEncoder.get()) > 10) {
-//				// frontLeftMotor.set(0);
-//				// backLeftMotor.set(0);
-//				// } else {
-//				// frontLeftMotor.set(0.1);
-//				// backLeftMotor.set(0.1);
-//				// }
-//				if (Math.abs(rightDriveEncoder.get()) > 100) {
-//					frontRightMotor.set(0);
-//					backRightMotor.set(0);
-//				} else {
-//					frontRightMotor.set(0.15);
-//					backRightMotor.set(0.15);
-//				}
-//				if (/* Math.abs(leftDriveEncoder.get()) > 100 && */ Math.abs(rightDriveEncoder.get()) > 100) {
-//					goingSetDistance = false;
-//				}
-//			} else {
-//				count = 0; // TODO remove
+////			boolean encoderValueButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_DRIVE_SET_DISTANCE_BUTTON);
+////			if (encoderValueButtonPressed && !goingSetDistance) {
+////				goingSetDistance = true;
+////				leftDriveEncoder.reset();
+////				rightDriveEncoder.reset();
+////			}
+////			if (goingSetDistance && joystickRight.getRawButton(7)) {
+////				count++; // TODO remove
+////				SmartDashboard.putNumber("Count", count); // TODO Remove
+////				// if (Math.abs(leftDriveEncoder.get()) > 10) {
+////				// frontLeftMotor.set(0);
+////				// backLeftMotor.set(0);
+////				// } else {
+////				// frontLeftMotor.set(0.1);
+////				// backLeftMotor.set(0.1);
+////				// }
+////				if (Math.abs(rightDriveEncoder.get()) > 100) {
+////					frontRightMotor.set(0);
+////					backRightMotor.set(0);
+////				} else {
+////					frontRightMotor.set(0.15);
+////					backRightMotor.set(0.15);
+////				}
+////				if (/* Math.abs(leftDriveEncoder.get()) > 100 && */ Math.abs(rightDriveEncoder.get()) > 100) {
+////					goingSetDistance = false;
+////				}
+////			} else {
+////				count = 0; // TODO remove
 //				botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
-//			}
+////			}
 //		}
 		// finish PID Brake
 
@@ -612,10 +626,12 @@ public class Robot extends IterativeRobot {
 		}
 		// end intake motor
 
+		SmartDashboard.putNumber("Bottom Shooter Encoder Rate", shooterBottomEncoder.getRate());
+		SmartDashboard.putNumber("Top Shooter Encoder Rate", shooterTopEncoder.getRate());
+		
 		// shooter motors
 		shooterHighSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON);
-		shooterMediumSpeedMotorButtonPressed = joystickOp
-				.getRawButton(RobotMap.JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON);
+		shooterMediumSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON);
 		shooterSlowSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYTSTICK_START_LOW_SPEED_SHOOTER_BUTTON);
 		shooterStopMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON);
 		if (shooterHighSpeedMotorButtonPressed) {
@@ -627,9 +643,13 @@ public class Robot extends IterativeRobot {
 		} else if (shooterStopMotorButtonPressed) {
 			shooterSpeed = 0;
 		}
-		shooterBottomMotor.set(shooterSpeed);
-		shooterTopMotor.set(shooterSpeed);
-
+//		shooterBottomMotor.set(shooterSpeed);
+//		shooterTopMotor.set(shooterSpeed);
+		frontLeftMotor.set(shooterSpeed);
+		frontRightMotor.set(shooterSpeed);
+		backLeftMotor.set(shooterSpeed);
+		backRightMotor.set(shooterSpeed);
+		
 		SmartDashboard.putNumber("Shooter Bottom Motor", shooterSpeed);
 		SmartDashboard.putNumber("Shooter Top Motor", shooterSpeed);
 		// shooter motors
@@ -642,8 +662,12 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void disabled() {
-		// pid.disable();
-		frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+		stopEverything();
+	}
+	
+	public void stopEverything() {
+//		pidLeftDrive.disable();
+//		pidRightDrive.disable(); // TODO Uncomment
 		backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
 		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
 		frontRightMotor.set(0);
@@ -655,5 +679,28 @@ public class Robot extends IterativeRobot {
 		shooterBottomMotor.set(0);
 		shooterTopMotor.set(0);
 		obstacleMotor.set(0);
+		
+		shooterSpeed = 0;
+		
+		pidMode = false;
 	}
+}
+
+/**
+ * PIDReverseCANTalon is a subclass of CANTalon that reverses outputs to PID.
+ * This is used for a PIDController, which is unable to reverse its outputs, to the author's knowledge.
+ * 
+ * @author Iron Claw Programming Team
+ *
+ */
+class PIDReverseCANTalon extends CANTalon {
+	
+	public PIDReverseCANTalon(int deviceNumber) {
+		super(deviceNumber);
+	}
+
+	public void pidWrite(double output) {
+		super.pidWrite(output*-1);
+	}
+	
 }
