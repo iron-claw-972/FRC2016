@@ -70,7 +70,7 @@ public class RobotMap {
 	 public static final int JOYSTICK_REVERSE_INTAKE_BUTTON = 7;
 	 public static final int JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON = 4;
 	 public static final int JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON = 3;
-	 public static final int JOYTSTICK_START_LOW_SPEED_SHOOTER_BUTTON = 5;
+	 public static final int JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON = 5;
 	 public static final int JOYSTICK_STOP_SHOOTER_BUTTON = 6;
 	 
 	 // SPEEDS
@@ -155,4 +155,25 @@ public class RobotMap {
 	 public static final int LOW_BAR_LEFT_DRIVE_DISTANCE = 500;
 	 public static final int LOW_BAR_RIGHT_DRIVE_DISTANCE = 500;
 	 
+	 public static final double HIGH_SPEED_SHOOTER_MOTOR_SETPOINT = 2800.0; // P=0.001, I=0.009, D=0.000
+	 public static final double MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT = 1600.0;// P=0.001, I=0.024, D=0.000
+	 public static final double LOW_SPEED_SHOOTER_MOTOR_SETPOINT = 700.0;// P=0.001, I=0.024, D=0.000
+	 // P is very low; increasing causes violent oscillation
+	 // I increases as setpoint decreases; this is to prevent the rate from reversing and making robot oscillate between directions
+	 // D is not necessary and does not help oscillation
+	 public static final double P_LOW_SPEED_SHOOTER = 0.001;
+	 public static final double I_LOW_SPEED_SHOOTER = 0.024;
+	 public static final double D_LOW_SPEED_SHOOTER = 0.000;
+	 
+	 public static final double P_MEDIUM_SPEED_SHOOTER = 0.001;
+	 public static final double I_MEDIUM_SPEED_SHOOTER = 0.024;
+	 public static final double D_MEDIUM_SPEED_SHOOTER = 0.000;
+	 
+	 public static final double P_HIGH_SPEED_SHOOTER = 0.001;
+	 public static final double I_HIGH_SPEED_SHOOTER = 0.009;
+	 public static final double D_HIGH_SPEED_SHOOTER = 0.000;
+	 
+	 public static final double P_BRAKE = 0.008;
+	 public static final double I_BRAKE = 0.001;
+	 public static final double D_BRAKE = 0.006;
 }
