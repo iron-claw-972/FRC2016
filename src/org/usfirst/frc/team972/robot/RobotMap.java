@@ -7,6 +7,7 @@ public class RobotMap {
 	 * Define all constants in capital letters with underscores between each word.
 	 * End the name of the constant with a general word describing what it is, like CHANNEL.
 	 * 
+	 * 
 	 * Always define a constant as a public static final int or double
 	 * public means that any class can access the constant, not just RobotMap
 	 * static means that you don't have to make an instance of RobotMap to access the constant
@@ -34,14 +35,16 @@ public class RobotMap {
 	 
 	 // ENCODERS
 	 
-	 public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 0;
-	 public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 1;
+	 public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 2;
+	 public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 3;
 	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 6;
 	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 7;
-	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_A_PORT = 4;
-	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_B_PORT = 5;
-	 public static final int SHOOTER_TOP_ENCODER_DIO_A_PORT = 2;
-	 public static final int SHOOTER_TOP_ENCODER_DIO_B_PORT = 3;
+	 
+	 //TODO change shooter encoders to go with Talons
+//	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_A_PORT = 4;
+//	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_B_PORT = 5;
+//	 public static final int SHOOTER_TOP_ENCODER_DIO_A_PORT = 2;
+//	 public static final int SHOOTER_TOP_ENCODER_DIO_B_PORT = 3;
 	 
 	 // SENSORS
 	 public static final int BALL_OPTICAL_SENSOR_PORT = 0; // TODO Change value
