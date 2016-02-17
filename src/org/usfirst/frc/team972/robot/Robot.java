@@ -73,8 +73,8 @@ public class Robot extends IterativeRobot {
 
 	// pneumatics
 	public static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
-//	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_REVERSE_CHANNEL);
-//	public static DoubleSolenoid gearboxPistonRight = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
+	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_REVERSE_CHANNEL);
+	public static DoubleSolenoid gearboxPistonRight = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
 //	public static DoubleSolenoid shooterPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
 
 	// sensors
@@ -139,8 +139,8 @@ public class Robot extends IterativeRobot {
 	 */
 	public void robotInit() {
 		System.out.println("Robot Init");
-//		compressor.start();
-		compressor.stop();
+		compressor.start();
+//		compressor.stop();
 
 		/*
 		 * shooterBottomEncoder.setPIDSourceType(PIDSourceType.kRate);
@@ -368,19 +368,19 @@ public class Robot extends IterativeRobot {
 		}
 
 		// gearbox switch
-//		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
-//		if (gearboxSwitchingButtonIsPressed && !gearboxSwitchingPressedLastTime) {
-//			if (gearboxPistonForward == false) {
-//				gearboxPistonLeft.set(DoubleSolenoid.Value.kForward);
-//				gearboxPistonRight.set(DoubleSolenoid.Value.kForward);
-//				gearboxPistonForward = true;
-//			} else {
-//				gearboxPistonLeft.set(DoubleSolenoid.Value.kReverse);
-//				gearboxPistonRight.set(DoubleSolenoid.Value.kReverse);
-//				gearboxPistonForward = false;
-//			}
-//		}
-//		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
+		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
+		if (gearboxSwitchingButtonIsPressed && !gearboxSwitchingPressedLastTime) {
+			if (gearboxPistonForward == false) {
+				gearboxPistonLeft.set(DoubleSolenoid.Value.kForward);
+				gearboxPistonRight.set(DoubleSolenoid.Value.kReverse);
+				gearboxPistonForward = true;
+			} else {
+				gearboxPistonLeft.set(DoubleSolenoid.Value.kReverse);
+				gearboxPistonRight.set(DoubleSolenoid.Value.kForward);
+				gearboxPistonForward = false;
+			}
+		}
+		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
 
 		// shooter piston
 //		switch (RobotMap.currentState) {

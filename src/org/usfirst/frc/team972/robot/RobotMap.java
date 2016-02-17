@@ -37,8 +37,8 @@ public class RobotMap {
 	 
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 2;
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 3;
-	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 6;
-	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 7;
+	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 0;
+	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 1;
 	 
 	 //TODO change shooter encoders to go with Talons
 //	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_A_PORT = 4;
@@ -86,12 +86,12 @@ public class RobotMap {
 	 
 	 // DRIVE MULTIPLIERS
 	 
-	 public static final double DRIVE_MODE_1 = 0.6;
-	 public static final double DRIVE_MODE_2 = 0.7;
-	 public static final double DRIVE_MODE_3 = 0.8;
-	 public static final double DRIVE_MODE_4 = 0.9;
-	 public static final double DRIVE_MODE_5 = 1.0;
-	 public static final double DEFAULT_DRIVE_MODE = DRIVE_MODE_3;
+	 public static final double DRIVE_MODE_1 = 0.6;// TODO 0.6
+	 public static final double DRIVE_MODE_2 = 0.7;// TODO 0.7
+	 public static final double DRIVE_MODE_3 = 0.8;// TODO 0.8
+	 public static final double DRIVE_MODE_4 = 0.9;// TODO 0.9
+	 public static final double DRIVE_MODE_5 = 1.0;// TODO 1.0
+	 public static final double DEFAULT_DRIVE_MODE = DRIVE_MODE_5;
 	 
 	 // PISTONS
 	 
