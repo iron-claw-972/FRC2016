@@ -413,9 +413,9 @@ public class Robot extends IterativeRobot {
 
 		// obstacle motor "flippy thing"
 		if (joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315) {
-			obstacleMotor.set(0.8);
+			obstacleMotor.set(RobotMap.OBSTACLE_MOTOR_SPEED);
 		} else if (joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135) {
-			obstacleMotor.set(-0.8);
+			obstacleMotor.set(RobotMap.OBSTACLE_MOTOR_SPEED);
 		} else {
 			obstacleMotor.set(0);
 		}
