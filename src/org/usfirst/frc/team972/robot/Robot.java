@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
 	public static Joystick joystickOp = new Joystick(RobotMap.JOYSTICK_OP_USB_PORT);
 
 	// motors
-	public static PIDReverseCANTalon frontLeftMotor = new PIDReverseCANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+	public static CANTalon frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
 //	public static CANTalon frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
 	// NOTE: this is called a PID Reverse CAN Talon because PIDControllers cannot reverse output on their own.
 	// Therefore, we subclassed the CANTalon object and reversed all PID Outputs
@@ -129,7 +129,7 @@ public class Robot extends IterativeRobot {
 	boolean goingSetDistance = false;
 
 	// autonomous variables
-	boolean autonomousDelay;
+	int autonomousDelay; // How long we delay
 	long autonomousDelayStartTime;
 	long chevalDeFriseStartTime = -1; // This means the timer has not been set
 
@@ -142,6 +142,8 @@ public class Robot extends IterativeRobot {
 		compressor.start();
 //		compressor.stop();
 
+		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" message -- Need to set to true in teleop
+
 		/*
 		 * shooterBottomEncoder.setPIDSourceType(PIDSourceType.kRate);
 		 * shooterTopEncoder.setPIDSourceType(PIDSourceType.kRate);
@@ -153,7 +155,6 @@ public class Robot extends IterativeRobot {
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
-		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" message -- Need to set to true in teleop
 
 		autonomousDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
 		autonomousDefenseChooser.addObject("Portcullis", new Integer(RobotMap.PORTCULLIS_MODE));
@@ -217,6 +218,7 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
+//		System.out.println("autonomous init");
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" error message
 
 		RobotMap.autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
@@ -225,26 +227,30 @@ public class Robot extends IterativeRobot {
 		RobotMap.autonomousShooterMode = ((Integer) (autonomousShooterChooser.getSelected())).intValue();
 		// These lines store the value of the Autonomous Chooser as an int
 
+		
 		switch (RobotMap.autonomousDelayMode) {
 			case RobotMap.NO_DELAY:
 				SmartDashboard.putString("Autonomous Delay Mode", "No Delay");
+				autonomousDelay = 0;
 				break;
 			case RobotMap.TWO_SECOND_DELAY:
 				SmartDashboard.putString("Autonomous Delay Mode", "Two Second Delay");
+				autonomousDelay = 2;
 				break;
 			case RobotMap.FOUR_SECOND_DELAY:
 				SmartDashboard.putString("Autonomous Delay Mode", "Four Second Delay");
+				autonomousDelay = 4;
 				break;
 			case RobotMap.SIX_SECOND_DELAY:
 				SmartDashboard.putString("Autonomous Delay Mode", "Six Second Delay");
+				autonomousDelay = 6;
 				break;
 			default:
 				// This should never happen
 				SmartDashboard.putString("Autonomous Delay Mode", "Default error!!!");
-				System.out.println("Default Delay Autonomous Mode Error!!!");
+				System.out.println("Default Autonomous Delay Mode Error!!!");
 				break;
 		}
-
 
 		switch (RobotMap.autonomousPositionMode) {
 			case RobotMap.POSITION_SPY:
@@ -268,30 +274,30 @@ public class Robot extends IterativeRobot {
 			default:
 				// This should never happen
 				SmartDashboard.putString("Autonomous Position Mode", "Default error!!!");
-				System.out.println("Default Autonomous Mode Error!!!");
+				System.out.println("Default Autonomous Position Mode Error!!!");
 				break;
 		}
 
 		switch (RobotMap.autonomousShooterMode) {
 			case RobotMap.DO_NOT_SHOOT:
-				SmartDashboard.putString("Autonomous Shoot Mode", "Do Not Shoot");
+				SmartDashboard.putString("Autonomous Shooter Mode", "Do Not Shoot");
 				break;
 			case RobotMap.SHOOTER_LEFT_HIGH_GOAL:
-				SmartDashboard.putString("Autonomous Shoot Mode", "Left High Goal");
+				SmartDashboard.putString("Autonomous Shooter Mode", "Left High Goal");
 				break;
 			case RobotMap.SHOOTER_CENTER_HIGH_GOAL:
-				SmartDashboard.putString("Autonomous Shoot Mode", "Center High Goal");
+				SmartDashboard.putString("Autonomous Shooter Mode", "Center High Goal");
 				break;
 			case RobotMap.SHOOTER_RIGHT_HIGH_GOAL:
-				SmartDashboard.putString("Autonomous Shoot Mode", "Right High Goal");
+				SmartDashboard.putString("Autonomous Shooter Mode", "Right High Goal");
 				break;
 			case RobotMap.ASSIST_SHOOT:
-				SmartDashboard.putString("Autonomous Shoot Mode", "Assist For Shooting");
+				SmartDashboard.putString("Autonomous Shooter Mode", "Assist For Shooting");
 				break;
 			default:
 				// This should never happen
-				SmartDashboard.putString("Autonomous Shoot Mode", "Default error!!!");
-				System.out.println("Default Autonomous Mode Error!!!");
+				SmartDashboard.putString("Autonomous Shooter Mode", "Default error!!!");
+				System.out.println("Default Autonomous Shooter Mode Error!!!");
 				break;
 		}
 
@@ -325,13 +331,59 @@ public class Robot extends IterativeRobot {
 				break;
 			case RobotMap.DO_NOTHING_MODE:
 				SmartDashboard.putString("Autonomous Defense Mode", "Do Nothing");
+				return;
+			default:
+				// This should never happen
+				SmartDashboard.putString("Autonomous Defense Mode", "Default error!!!");
+				System.out.println("Default Autonomous Defense Mode Error!!!");
+				break;
+		} // switch brace
+
+		autonomousDelayStartTime = System.currentTimeMillis();
+		boolean finishedDelaying = false;
+		while (isAutonomous() && isEnabled() && !finishedDelaying) {
+			finishedDelaying = Autonomous.autonomousDelay(autonomousDelayStartTime, autonomousDelay * 1000); // Converting from seconds to milliseconds and
+		}
+		
+		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough" error message
+		System.out.println("finished autonomous delay");
+		
+		switch (RobotMap.autonomousDefenseMode) {
+			case RobotMap.LOW_BAR_MODE:
+				Autonomous.autonomousDriveOverDefense(RobotMap.LOW_BAR_DEFENSE_DRIVE_DISTANCE);
+				break;
+			case RobotMap.PORTCULLIS_MODE:
+				Autonomous.autonomousFlippyThing(true);
+				break;
+			case RobotMap.CHEVAL_DE_FRISE_MODE:
+				Autonomous.autonomousFlippyThing(false);
+				break;
+			case RobotMap.MOAT_MODE:
+				Autonomous.autonomousDriveOverDefense(RobotMap.MOAT_DEFENSE_DRIVE_DISTANCE);
+				break;
+			case RobotMap.RAMPARTS_MODE:
+				Autonomous.autonomousDriveOverDefense(RobotMap.RAMPARTS_DEFENSE_DRIVE_DISTANCE); 
+				break;
+			case RobotMap.DRAWBRIDGE_MODE:
+				Autonomous.autonomousDriveOverDefense(RobotMap.DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE);
+				break;
+			case RobotMap.SALLY_PORT_MODE:
+				Autonomous.autonomousDriveOverDefense(RobotMap.SALLY_PORT_DEFENSE_DRIVE_DISTANCE);
+				break;
+			case RobotMap.ROCK_WALL_MODE:
+				Autonomous.autonomousDriveOverDefense(RobotMap.ROCK_WALL_DEFENSE_DRIVE_DISTANCE); // May need to be tuned
+				break;
+			case RobotMap.ROUGH_TERRAIN_MODE:
+				Autonomous.autonomousDriveOverDefense(RobotMap.ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE); // May need to be tuned
 				break;
 			default:
 				// This should never happen
 				SmartDashboard.putString("Autonomous Defense Mode", "Default error!!!");
-				System.out.println("Default Autonomous Mode Error!!!");
+				System.out.println("Default Autonomous Defense Mode Error -- Actually driving!!!");
 				break;
 		} // switch brace
+		
+		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" error message
 	} // autonomous brace
 
 	/**
@@ -343,7 +395,6 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
-//		botDrive.setSafetyEnabled(true); // Originally set as false during autonomous to prevent the "output not updated enough" error
 		stopEverything(); // stops all motors
 	}
 
@@ -352,6 +403,8 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void teleopPeriodic() {
+		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough" error message
+		
 		SmartDashboard.putNumber("Back Left Motor Speed", backLeftMotor.get());
 		SmartDashboard.putNumber("Back Right Motor Speed", backRightMotor.get());
 		SmartDashboard.putNumber("Front Left Motor Speed", frontLeftMotor.get());
@@ -374,10 +427,12 @@ public class Robot extends IterativeRobot {
 				gearboxPistonLeft.set(DoubleSolenoid.Value.kForward);
 				gearboxPistonRight.set(DoubleSolenoid.Value.kReverse);
 				gearboxPistonForward = true;
+				SmartDashboard.putNumber("Current Gear", 1);
 			} else {
 				gearboxPistonLeft.set(DoubleSolenoid.Value.kReverse);
 				gearboxPistonRight.set(DoubleSolenoid.Value.kForward);
 				gearboxPistonForward = false;
+				SmartDashboard.putNumber("Current Gear", 2);
 			}
 		}
 		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
@@ -468,9 +523,9 @@ public class Robot extends IterativeRobot {
 
 			// camera streaming
 			if (rearCam == true) {
-				SmartDashboard.putString("Front", "LED");
+				SmartDashboard.putString("Front Side", "INTAKE");
 			} else {
-				SmartDashboard.putString("Front", "PISTON");
+				SmartDashboard.putString("Front Side", "BATTERY");
 			}
 		} catch (VisionException e) {
 			System.out.println(e);
@@ -490,9 +545,9 @@ public class Robot extends IterativeRobot {
 
 			// camera streaming
 			if (rearCam == true) {
-				SmartDashboard.putString("Front", "LED");
+				SmartDashboard.putString("Front Side", "INTAKE");
 			} else {
-				SmartDashboard.putString("Front", "PISTON");
+				SmartDashboard.putString("Front Side", "BATTERY");
 			}
 		} // end catch
 
@@ -512,34 +567,32 @@ public class Robot extends IterativeRobot {
 
 		// drive code
 		if (rearCam) {
-			driveMultiplier = -Math.abs(driveMultiplier);
+			leftDriveSpeed = joystickLeft.getY() * driveMultiplier * -1;
+			rightDriveSpeed = joystickRight.getY() * driveMultiplier * -1;
 			// If using the rear cam, we always want the drive multiplier to be
 			// negative
 		} else {
-			driveMultiplier = Math.abs(driveMultiplier);
+			leftDriveSpeed = joystickRight.getY() * driveMultiplier;
+			rightDriveSpeed = joystickLeft.getY() * driveMultiplier;
 		}
 
-		leftDriveSpeed = joystickLeft.getY() * driveMultiplier;
-		rightDriveSpeed = joystickRight.getY() * driveMultiplier;
 
 		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-		SmartDashboard.putNumber("Encoder Left", leftDriveEncoder.get());
-		SmartDashboard.putNumber("Encoder Right", rightDriveEncoder.get());
 		// finish drive code
 
 		// PID Brake
-//		double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.1;
-//		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.1;
-//		double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.1;
+		double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
+		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
+		double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
 
-		double kP = RobotMap.P_BRAKE;
-		double kI = RobotMap.I_BRAKE;
-		double kD = RobotMap.D_BRAKE;
+//		double kP = RobotMap.P_BRAKE;
+//		double kI = RobotMap.I_BRAKE;
+//		double kD = RobotMap.D_BRAKE;
 
 //		double error = rightDriveEncoder.get() - 0;
-
+//
 //		SmartDashboard.putNumber("Error", error);
 		SmartDashboard.putNumber("P", kP);
 		SmartDashboard.putNumber("I", kI);
@@ -550,16 +603,16 @@ public class Robot extends IterativeRobot {
 			if (!pidMode) {
 				botDrive.setSafetyEnabled(false); // stops "Robot Drive not updated enough" error during PID
 				pidMode = true;
-				
-				pidLeftDrive.reset(); //resets past error
+
+				pidLeftDrive.reset(); // resets past error
 				pidRightDrive.reset();
-				
+
 				leftDriveEncoder.reset();
 				rightDriveEncoder.reset();
-				
+
 				pidLeftDrive.setSetpoint(0);
 				pidRightDrive.setSetpoint(0);
-				
+
 				SmartDashboard.putNumber("Left Error", pidLeftDrive.getError());
 				SmartDashboard.putNumber("Right Error", pidRightDrive.getError());
 
@@ -614,7 +667,7 @@ public class Robot extends IterativeRobot {
 //				}
 //			} else {
 //				count = 0; // TODO remove
-				botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed); //in else above
+			botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed); // in else above
 //			}
 		}
 		// finish PID Brake
@@ -703,6 +756,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void disabled() {
+		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" error message
 		stopEverything();
 	}
 

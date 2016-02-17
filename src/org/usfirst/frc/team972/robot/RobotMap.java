@@ -109,6 +109,7 @@ public class RobotMap {
 	 public static int currentState = DO_NOTHING_STATE;
 	 
 	 // AUTONOMOUS DEFENSES
+	 
 	 public static final int LOW_BAR_MODE = 0;
 	 public static final int PORTCULLIS_MODE = 1;
 	 public static final int CHEVAL_DE_FRISE_MODE = 2;
@@ -157,6 +158,18 @@ public class RobotMap {
 	 public static final double LOW_BAR_RIGHT_DRIVE_SPEED = 0.5;
 	 public static final int LOW_BAR_LEFT_DRIVE_DISTANCE = 500;
 	 public static final int LOW_BAR_RIGHT_DRIVE_DISTANCE = 500;
+	 
+	 // AUTONOMOUS DEFENSE DRIVE DISTANCE
+	 
+	 public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 12; // TODO add actual number
+	 public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 28; // TODO add actual number
+	 public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 62; // TODO add actual number
+	 public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 39; // TODO add actual number
+	 public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 72; // TODO add actual number
+	 public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 93; // TODO add actual number
+	 public static final int ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE = 2; // TODO add actual number
+	 
+	 // SHOOTER MOTOR PID
 	 
 	 public static final double HIGH_SPEED_SHOOTER_MOTOR_SETPOINT = 2800.0; // P=0.001, I=0.009, D=0.000
 	 public static final double MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT = 1600.0;// P=0.001, I=0.024, D=0.000
