@@ -408,7 +408,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 
-	public void teleopPeriodic() {
+	public void teleopPeriodic() {		
 		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough" error message
 
 		double flippySpeed = (((-joystickOp.getThrottle())+1)/2);
@@ -563,10 +563,16 @@ public class Robot extends IterativeRobot {
 		}
 		// finish drive multiplier
 
+		double leftJoystickSpeed = joystickLeft.getY();
+		double rightJoystickSpeed = joystickRight.getY();
+		
+		SmartDashboard.putNumber("Left Joystick Y", leftJoystickSpeed);
+		SmartDashboard.putNumber("Right Joystick Y", rightJoystickSpeed);
+		
 		// drive code
 		if (rearCam) {
-			leftDriveSpeed = joystickLeft.getY() * driveMultiplier * -1;
-			rightDriveSpeed = joystickRight.getY() * driveMultiplier * -1;
+			leftDriveSpeed = leftJoystickSpeed * driveMultiplier * -1;
+			rightDriveSpeed = rightJoystickSpeed * driveMultiplier * -1;
 			// If using the rear cam, we always want the drive multiplier to be
 			// negative
 		} else {
