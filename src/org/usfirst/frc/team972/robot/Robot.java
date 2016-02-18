@@ -74,11 +74,18 @@ public class Robot extends IterativeRobot {
 	// pneumatics
 	public static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
 	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_REVERSE_CHANNEL);
-	public static DoubleSolenoid gearboxPistonRight = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
+//	public static DoubleSolenoid gearboxPistonRight = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
 //	public static DoubleSolenoid shooterPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
 
 	// sensors
 //	DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
+	public static DigitalInput flippyThingUpperLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
+	public static DigitalInput flippyThingLowerLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
+
+	// intake
+
+	static Intake intakeSystem = new Intake(intakeMotor);
+	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
 
 	// speeds and multipliers
 	double driveMultiplier = RobotMap.DEFAULT_DRIVE_MODE;
@@ -103,7 +110,6 @@ public class Robot extends IterativeRobot {
 
 	// gearbox switching variables
 	boolean gearboxSwitchingPressedLastTime = false;
-	boolean gearboxPistonForward = false;
 
 	// PID variables
 	boolean pidMode = false;
@@ -227,7 +233,7 @@ public class Robot extends IterativeRobot {
 		RobotMap.autonomousShooterMode = ((Integer) (autonomousShooterChooser.getSelected())).intValue();
 		// These lines store the value of the Autonomous Chooser as an int
 
-		
+
 		switch (RobotMap.autonomousDelayMode) {
 			case RobotMap.NO_DELAY:
 				SmartDashboard.putString("Autonomous Delay Mode", "No Delay");
@@ -344,10 +350,10 @@ public class Robot extends IterativeRobot {
 		while (isAutonomous() && isEnabled() && !finishedDelaying) {
 			finishedDelaying = Autonomous.autonomousDelay(autonomousDelayStartTime, autonomousDelay * 1000); // Converting from seconds to milliseconds and
 		}
-		
+
 		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough" error message
 		System.out.println("finished autonomous delay");
-		
+
 		switch (RobotMap.autonomousDefenseMode) {
 			case RobotMap.LOW_BAR_MODE:
 				Autonomous.autonomousDriveOverDefense(RobotMap.LOW_BAR_DEFENSE_DRIVE_DISTANCE);
@@ -362,7 +368,7 @@ public class Robot extends IterativeRobot {
 				Autonomous.autonomousDriveOverDefense(RobotMap.MOAT_DEFENSE_DRIVE_DISTANCE);
 				break;
 			case RobotMap.RAMPARTS_MODE:
-				Autonomous.autonomousDriveOverDefense(RobotMap.RAMPARTS_DEFENSE_DRIVE_DISTANCE); 
+				Autonomous.autonomousDriveOverDefense(RobotMap.RAMPARTS_DEFENSE_DRIVE_DISTANCE);
 				break;
 			case RobotMap.DRAWBRIDGE_MODE:
 				Autonomous.autonomousDriveOverDefense(RobotMap.DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE);
@@ -382,7 +388,7 @@ public class Robot extends IterativeRobot {
 				System.out.println("Default Autonomous Defense Mode Error -- Actually driving!!!");
 				break;
 		} // switch brace
-		
+
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" error message
 	} // autonomous brace
 
@@ -404,36 +410,28 @@ public class Robot extends IterativeRobot {
 
 	public void teleopPeriodic() {
 		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough" error message
-		
-		SmartDashboard.putNumber("Back Left Motor Speed", backLeftMotor.get());
-		SmartDashboard.putNumber("Back Right Motor Speed", backRightMotor.get());
-		SmartDashboard.putNumber("Front Left Motor Speed", frontLeftMotor.get());
-		SmartDashboard.putNumber("Front Right Motor Speed", frontRightMotor.get());
-		// Prints motor speed to the smart dashboard
 
+		double flippySpeed = (((-joystickOp.getThrottle())+1)/2);
 		// obstacle motor "flippy thing"
-		if (joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315) {
-			obstacleMotor.set(RobotMap.OBSTACLE_MOTOR_SPEED);
-		} else if (joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135) {
-			obstacleMotor.set(RobotMap.OBSTACLE_MOTOR_SPEED);
+		if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)/* && !flippyThingUpperLimitSwitch.get()*/) {
+			obstacleMotor.set(-flippySpeed); // Go up
+		} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)/* && !flippyThingLowerLimitSwitch.get()*/) {
+			obstacleMotor.set(flippySpeed); // Go down
 		} else {
 			obstacleMotor.set(0);
 		}
-
+		// MAKE SURE YOU HAVE FLIPPY SPEED AT NOT ZERO (not down)
+		
+		SmartDashboard.putNumber("Flippy Speed", flippySpeed);
+		
+		SmartDashboard.putBoolean("Upper LS", flippyThingUpperLimitSwitch.get());
+		SmartDashboard.putBoolean("Lower LS", flippyThingLowerLimitSwitch.get());
+		
+		
 		// gearbox switch
 		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
 		if (gearboxSwitchingButtonIsPressed && !gearboxSwitchingPressedLastTime) {
-			if (gearboxPistonForward == false) {
-				gearboxPistonLeft.set(DoubleSolenoid.Value.kForward);
-				gearboxPistonRight.set(DoubleSolenoid.Value.kReverse);
-				gearboxPistonForward = true;
-				SmartDashboard.putNumber("Current Gear", 1);
-			} else {
-				gearboxPistonLeft.set(DoubleSolenoid.Value.kReverse);
-				gearboxPistonRight.set(DoubleSolenoid.Value.kForward);
-				gearboxPistonForward = false;
-				SmartDashboard.putNumber("Current Gear", 2);
-			}
+			driveController.switchModes(gearboxPistonLeft/*, gearboxPistonRight*/);
 		}
 		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
 
@@ -499,10 +497,10 @@ public class Robot extends IterativeRobot {
 			// camera streaming
 			if (rearCam == true) {
 				cameraBack.getImage(img);
-				SmartDashboard.putString("Front", "LED");
+				SmartDashboard.putString("Front", "BATTERY");
 			} else {
 				cameraFront.getImage(img);
-				SmartDashboard.putString("Front", "PISTON");
+				SmartDashboard.putString("Front", "INTAKE");
 			}
 			camServer.setImage(img); // puts image on the dashboard
 			// finish camera streaming
@@ -523,9 +521,9 @@ public class Robot extends IterativeRobot {
 
 			// camera streaming
 			if (rearCam == true) {
-				SmartDashboard.putString("Front Side", "INTAKE");
-			} else {
 				SmartDashboard.putString("Front Side", "BATTERY");
+			} else {
+				SmartDashboard.putString("Front Side", "INTAKE");
 			}
 		} catch (VisionException e) {
 			System.out.println(e);
@@ -545,9 +543,9 @@ public class Robot extends IterativeRobot {
 
 			// camera streaming
 			if (rearCam == true) {
-				SmartDashboard.putString("Front Side", "INTAKE");
-			} else {
 				SmartDashboard.putString("Front Side", "BATTERY");
+			} else {
+				SmartDashboard.putString("Front Side", "INTAKE");
 			}
 		} // end catch
 
@@ -576,20 +574,19 @@ public class Robot extends IterativeRobot {
 			rightDriveSpeed = joystickLeft.getY() * driveMultiplier;
 		}
 
-
 		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
 		// finish drive code
 
 		// PID Brake
-		double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
-		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
-		double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
+//		double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
+//		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
+//		double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
 
-//		double kP = RobotMap.P_BRAKE;
-//		double kI = RobotMap.I_BRAKE;
-//		double kD = RobotMap.D_BRAKE;
+		double kP = RobotMap.P_BRAKE;
+		double kI = RobotMap.I_BRAKE;
+		double kD = RobotMap.D_BRAKE;
 
 //		double error = rightDriveEncoder.get() - 0;
 //
@@ -600,45 +597,15 @@ public class Robot extends IterativeRobot {
 
 		// TODO fix set forward code and use PID for it
 		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
-			if (!pidMode) {
-				botDrive.setSafetyEnabled(false); // stops "Robot Drive not updated enough" error during PID
-				pidMode = true;
-
-				pidLeftDrive.reset(); // resets past error
-				pidRightDrive.reset();
-
-				leftDriveEncoder.reset();
-				rightDriveEncoder.reset();
-
-				pidLeftDrive.setSetpoint(0);
-				pidRightDrive.setSetpoint(0);
-
-				SmartDashboard.putNumber("Left Error", pidLeftDrive.getError());
-				SmartDashboard.putNumber("Right Error", pidRightDrive.getError());
-
-				// this sets all the motors except front left to be followers
-				// this way they will do the same thing that the front left
-				// motor does
-				// the front left motor is controlled by the PID Controller
-				// object
-				backRightMotor.changeControlMode(TalonControlMode.Follower);
-				backLeftMotor.changeControlMode(TalonControlMode.Follower);
-			}
-			// has the other motors follow the PID controlled motor
-			backRightMotor.set(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
-			backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-			pidLeftDrive.setPID(kP, kI, kD);
-			pidRightDrive.setPID(kP, kI, kD);
-			pidLeftDrive.enable();
-			pidRightDrive.enable();
+			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI, kD);
 		} else {
-			pidMode = false;
-			botDrive.setSafetyEnabled(true);
-			backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
-			backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
-			pidLeftDrive.disable();
-			pidRightDrive.disable();
-
+			driveController.stopPIDBrake(pidMode, pidLeftDrive, pidRightDrive);
+			if (joystickRight.getRawButton(3)) { // TODO
+				botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier);
+			} else {
+				driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
+			}
+		}
 //			boolean encoderValueButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_DRIVE_SET_DISTANCE_BUTTON);
 //			if (encoderValueButtonPressed && !goingSetDistance) {
 //				goingSetDistance = true;
@@ -667,27 +634,22 @@ public class Robot extends IterativeRobot {
 //				}
 //			} else {
 //				count = 0; // TODO remove
-			botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed); // in else above
+//			botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed); // in else above
 //			}
-		}
 		// finish PID Brake
 
-		SmartDashboard.putNumber("Left Encoder Value", leftDriveEncoder.get());
-		SmartDashboard.putNumber("Right Encoder Value", rightDriveEncoder.get());
-		SmartDashboard.putBoolean("Going Set Distance", goingSetDistance);
-
-//		SmartDashboard.putBoolean("Ball Present", ballOpticalSensor.get());
 
 		// intake motor
 		intakeButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON);
 		intakeReverseButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON);
 		if (intakeButtonPressed) {
-			intakeMotor.set(RobotMap.INTAKE_MOTOR_SPEED);
+			intakeSystem.spinForward();
 		} else if (intakeReverseButtonPressed) {
-			intakeMotor.set(RobotMap.INTAKE_REVERSE_MOTOR_SPEED);
+			intakeSystem.spinBackwards();
 		} else {
-			intakeMotor.set(0);
+			intakeSystem.stop();
 		}
+		// TODO test this code
 		// end intake motor
 
 //		SmartDashboard.putNumber("Bottom Shooter Encoder Rate", shooterBottomEncoder.getRate());
@@ -747,6 +709,19 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Shooter Bottom Motor", shooterSpeed);
 //		SmartDashboard.putNumber("Shooter Top Motor", shooterSpeed);
 		// shooter motors
+		
+		// Smart Dashboard Prints
+		
+		SmartDashboard.putNumber("Back Left Motor Speed", backLeftMotor.get());
+		SmartDashboard.putNumber("Back Right Motor Speed", backRightMotor.get());
+		SmartDashboard.putNumber("Front Left Motor Speed", frontLeftMotor.get());
+		SmartDashboard.putNumber("Front Right Motor Speed", frontRightMotor.get());
+		// Prints motor speed to the smart dashboard
+		SmartDashboard.putNumber("Left Encoder Value", leftDriveEncoder.get());
+		SmartDashboard.putNumber("Right Encoder Value", rightDriveEncoder.get());
+		SmartDashboard.putBoolean("Going Set Distance", goingSetDistance);
+		
+//		SmartDashboard.putBoolean("Ball Present", ballOpticalSensor.get());
 	}
 
 	/**

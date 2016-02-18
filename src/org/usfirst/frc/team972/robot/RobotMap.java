@@ -84,7 +84,7 @@ public class RobotMap {
 	 //shooter speeds will not happen in actual bot because of PID
 	 public static final double INTAKE_MOTOR_SPEED = 0.3;
 	 public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.3;
-	 public static final double OBSTACLE_MOTOR_SPEED = 0.8;
+	 public static final double OBSTACLE_MOTOR_SPEED = 0.2;
 	 
 	 // DRIVE MULTIPLIERS
 	 
@@ -94,6 +94,11 @@ public class RobotMap {
 	 public static final double DRIVE_MODE_4 = 0.9;// TODO 0.9
 	 public static final double DRIVE_MODE_5 = 1.0;// TODO 1.0
 	 public static final double DEFAULT_DRIVE_MODE = DRIVE_MODE_5;
+	 
+	 // SENSORS
+	 
+	 public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 7;
+	 public static final int FLIPPY_THING_LOWER_LIMIT_SWITCH = 6;
 	 
 	 // PISTONS
 	 
@@ -191,7 +196,7 @@ public class RobotMap {
 	 public static final double I_HIGH_SPEED_SHOOTER = 0.009;
 	 public static final double D_HIGH_SPEED_SHOOTER = 0.000;
 	 
-	 public static final double P_BRAKE = 0.008;
-	 public static final double I_BRAKE = 0.001;
-	 public static final double D_BRAKE = 0.006;
+	 public static final double P_BRAKE = 0.003;
+	 public static final double I_BRAKE = 0.000;
+	 public static final double D_BRAKE = 0.000;
 }
