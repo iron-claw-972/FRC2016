@@ -75,10 +75,10 @@ public class Robot extends IterativeRobot {
 	public static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
 	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_REVERSE_CHANNEL);
 //	public static DoubleSolenoid gearboxPistonRight = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
-//	public static DoubleSolenoid shooterPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
+	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
 
 	// sensors
-//	DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
+	DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
 	public static DigitalInput flippyThingUpperLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
 	public static DigitalInput flippyThingLowerLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
 
@@ -644,18 +644,18 @@ public class Robot extends IterativeRobot {
 //			}
 		// finish PID Brake
 
-
+		intakeSystem.intakeStateMachine(spoonPiston, intakeMotor, ballOpticalSensor);
+		
 		// intake motor
-		intakeButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON);
-		intakeReverseButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON);
-		if (intakeButtonPressed) {
-			intakeSystem.spinForward();
-		} else if (intakeReverseButtonPressed) {
-			intakeSystem.spinBackwards();
-		} else {
-			intakeSystem.stop();
-		}
-		// TODO test this code
+//		intakeButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON);
+//		intakeReverseButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON);
+//		if (intakeButtonPressed) {
+//			intakeSystem.spinForward();
+//		} else if (intakeReverseButtonPressed) {
+//			intakeSystem.spinBackwards();
+//		} else {
+//			intakeSystem.stop();
+//		}
 		// end intake motor
 
 //		SmartDashboard.putNumber("Bottom Shooter Encoder Rate", shooterBottomEncoder.getRate());

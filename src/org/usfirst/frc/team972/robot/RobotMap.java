@@ -47,7 +47,7 @@ public class RobotMap {
 //	 public static final int SHOOTER_TOP_ENCODER_DIO_B_PORT = 3;
 	 
 	 // SENSORS
-	 public static final int BALL_OPTICAL_SENSOR_PORT = 0; // TODO Change value
+	 public static final int BALL_OPTICAL_SENSOR_PORT = 7;
 	 
 	 // BUTTONS
 	 
@@ -97,8 +97,8 @@ public class RobotMap {
 	 
 	 // SENSORS
 	 
-	 public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 7;
-	 public static final int FLIPPY_THING_LOWER_LIMIT_SWITCH = 6;
+	 public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 4;
+	 public static final int FLIPPY_THING_LOWER_LIMIT_SWITCH = 5;
 	 
 	 // PISTONS
 	 
@@ -199,4 +199,16 @@ public class RobotMap {
 	 public static final double P_BRAKE = 0.003;
 	 public static final double I_BRAKE = 0.000;
 	 public static final double D_BRAKE = 0.000;
+	 
+	 // INTAKE STATE MACHINE
+	 
+	 public static final int INTAKE_WAIT_STATE = 0;
+	 public static final int INTAKE_SPOON_DOWN_STATE = 1;
+	 public static final int INTAKE_START_INTAKE_STATE = 2;
+	 public static final int INTAKE_WAIT_FOR_OPTICAL_STATE = 3;
+	 public static final int INTAKE_SPOON_UP_STATE = 4;
+	 public static int intakeState = INTAKE_WAIT_STATE;
+	 
+	 public static final int BALL_OPTICAL_DELAY_TIME = 2000; // In ms and also TODO move this
+	 
 }
