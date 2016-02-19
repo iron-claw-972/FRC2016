@@ -73,7 +73,7 @@ public class Robot extends IterativeRobot {
 
 	// pneumatics
 	public static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
-	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_REVERSE_CHANNEL);
+//	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_LEFT_SHIFTING_REVERSE_CHANNEL);
 //	public static DoubleSolenoid gearboxPistonRight = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
 	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
 
@@ -85,6 +85,8 @@ public class Robot extends IterativeRobot {
 	// intake
 
 	static Intake intakeSystem = new Intake(intakeMotor);
+	static Shooter shooterSystem = new Shooter();
+//	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
 
 	// speeds and multipliers
@@ -429,53 +431,12 @@ public class Robot extends IterativeRobot {
 		
 		
 		// gearbox switch
-		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
-		if (gearboxSwitchingButtonIsPressed && !gearboxSwitchingPressedLastTime) {
-			driveController.switchModes(gearboxPistonLeft/*, gearboxPistonRight*/);
-		}
-		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
-
-		// shooter piston
-//		switch (RobotMap.currentState) {
-//			case RobotMap.SHOOTER_PISTON_UP_STATE:
-//				SmartDashboard.putString("Piston State", "Forward");
-//				shooterPiston.set(DoubleSolenoid.Value.kForward);
-//				if (pistonTimer < 0) {
-//					pistonTimer = System.currentTimeMillis();
-//				}
-//				if (System.currentTimeMillis() - pistonTimer > 1000) {
-//					RobotMap.currentState = RobotMap.SHOOTER_PISTON_DOWN_STATE;
-//					pistonTimer = -1;
-//				}
-//				break;
-//			case RobotMap.SHOOTER_PISTON_DOWN_STATE:
-//				SmartDashboard.putString("Piston State", "Reverse");
-//				shooterPiston.set(DoubleSolenoid.Value.kReverse);
-//				RobotMap.currentState = RobotMap.DO_NOTHING_STATE;
-//
-//				break;
-//			case RobotMap.DO_NOTHING_STATE:
-//				SmartDashboard.putString("Piston State", "Do Nothing");
-//				if (joystickOp.getRawButton(RobotMap.JOYSTICK_ACTIVATE_PISTON_BUTTON)) {
-//					RobotMap.currentState = RobotMap.SHOOTER_PISTON_UP_STATE;
-//				}
-//				break;
+		// TODO uncomment
+//		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
+//		if (gearboxSwitchingButtonIsPressed && !gearboxSwitchingPressedLastTime) {
+//			driveController.switchModes(gearboxPistonLeft/*, gearboxPistonRight*/);
 //		}
-
-
-		// TODO delete this
-//		boolean shooterPistonButtonIsPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_ACTIVATE_PISTON_BUTTON);
-//		if (shooterPistonButtonIsPressed && !shooterPistonPressedLastTime) {
-//			if (shooterPistonForward) {
-//				shooterPiston.set(DoubleSolenoid.Value.kReverse);
-//				shooterPistonForward = false;
-//			} else {
-//				shooterPiston.set(DoubleSolenoid.Value.kForward);
-//				shooterPistonForward = true;
-//			}
-//		}
-//		shooterPistonPressedLastTime = shooterPistonButtonIsPressed;
-		// end shooter piston
+//		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
 
 		try {
 			// reverse drive mode (with camera switching)
@@ -606,8 +567,8 @@ public class Robot extends IterativeRobot {
 			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI, kD);
 		} else {
 			driveController.stopPIDBrake(pidMode, pidLeftDrive, pidRightDrive);
-			if (joystickRight.getRawButton(3)) { // TODO
-				botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier);
+			if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
+				botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier); // Split arcade
 			} else {
 				driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
 			}
@@ -619,8 +580,8 @@ public class Robot extends IterativeRobot {
 //				rightDriveEncoder.reset();
 //			}
 //			if (goingSetDistance && joystickRight.getRawButton(7)) {
-//				count++; // TODO remove
-//				SmartDashboard.putNumber("Count", count); // TODO Remove
+//				count++;
+//				SmartDashboard.putNumber("Count", count);
 //				// if (Math.abs(leftDriveEncoder.get()) > 10) {
 //				// frontLeftMotor.set(0);
 //				// backLeftMotor.set(0);
@@ -639,12 +600,13 @@ public class Robot extends IterativeRobot {
 //					goingSetDistance = false;
 //				}
 //			} else {
-//				count = 0; // TODO remove
+//				count = 0;
 //			botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed); // in else above
 //			}
 		// finish PID Brake
 
-		intakeSystem.intakeStateMachine(spoonPiston, intakeMotor, ballOpticalSensor);
+		intakeSystem.intakeStateMachine(spoonPiston, ballOpticalSensor);
+//		shooterSystem.shooterStateMachine(spoonPiston);
 		
 		// intake motor
 //		intakeButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON);

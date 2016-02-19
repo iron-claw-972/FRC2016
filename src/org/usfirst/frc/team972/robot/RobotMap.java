@@ -35,19 +35,18 @@ public class RobotMap {
 	 
 	 // ENCODERS
 	 
+	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 0;
+	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 1;	 
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 2;
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 3;
-	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 0;
-	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 1;
-	 
+	 public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 4;
+	 public static final int FLIPPY_THING_LOWER_LIMIT_SWITCH = 5;
+	 public static final int BALL_OPTICAL_SENSOR_PORT = 7;
 	 //TODO change shooter encoders to go with Talons
 //	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_A_PORT = 4;
 //	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_B_PORT = 5;
 //	 public static final int SHOOTER_TOP_ENCODER_DIO_A_PORT = 2;
 //	 public static final int SHOOTER_TOP_ENCODER_DIO_B_PORT = 3;
-	 
-	 // SENSORS
-	 public static final int BALL_OPTICAL_SENSOR_PORT = 7;
 	 
 	 // BUTTONS
 	 
@@ -64,11 +63,12 @@ public class RobotMap {
 	 
 	 public static final int JOYSTICK_BRAKE_MODE_BUTTON = 1;
 	 public static final int JOYSTICK_GEARSHIFT_BUTTON = 2;
+	 public static final int JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON = 3;
 	 public static final int JOYSTICK_DRIVE_SET_DISTANCE_BUTTON = 5;
 	 
 	 // OPERATOR JOYSTICK
 	
-	 public static final int JOYSTICK_ACTIVATE_PISTON_BUTTON = 1;
+	 public static final int JOYSTICK_USE_SHOOTER_BUTTON = 1;
 	 public static final int JOYSTICK_START_INTAKE_BUTTON = 2;
 	 public static final int JOYSTICK_REVERSE_INTAKE_BUTTON = 7;
 	 public static final int JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON = 4;
@@ -94,11 +94,6 @@ public class RobotMap {
 	 public static final double DRIVE_MODE_4 = 0.9;// TODO 0.9
 	 public static final double DRIVE_MODE_5 = 1.0;// TODO 1.0
 	 public static final double DEFAULT_DRIVE_MODE = DRIVE_MODE_5;
-	 
-	 // SENSORS
-	 
-	 public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 4;
-	 public static final int FLIPPY_THING_LOWER_LIMIT_SWITCH = 5;
 	 
 	 // PISTONS
 	 
@@ -209,6 +204,20 @@ public class RobotMap {
 	 public static final int INTAKE_SPOON_UP_STATE = 4;
 	 public static int intakeState = INTAKE_WAIT_STATE;
 	 
-	 public static final int BALL_OPTICAL_DELAY_TIME = 2000; // In ms and also TODO move this
+	 // SHOOTER STATE MACHINE
 	 
+	 public static final int SHOOTER_WAIT_STATE = 0;
+	 public static final int SHOOTER_SPOON_DOWN_STATE = 1;
+	 public static final int SHOOTER_LOW_SPEED_STATE = 2;
+	 public static final int SHOOTER_MEDIUM_SPEED_STATE = 3;
+	 public static final int SHOOTER_HIGH_SPEED_STATE = 4;
+	 public static final int SHOOTER_SPOON_UP_STATE = 5;
+	 public static final int SHOOTER_STOP_SHOOTER_STATE = 6;
+	 public static int shooterState = SHOOTER_WAIT_STATE;
+	 
+	 
+	 // CONSTANTS
+	 
+	 public static final int BALL_OPTICAL_DELAY_TIME = 500; // In ms
+	 public static final int SHOOTER_DELAY_TIME = 1000; // In ms
 }
