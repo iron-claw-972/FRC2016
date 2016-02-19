@@ -11,18 +11,10 @@ public class Intake {
 	public Intake(CANTalon intakeMotor) {
 		this.intakeMotor = intakeMotor;
 	}
-	
-//	public void spinForward() {
-//		intakeMotor.set(RobotMap.INTAKE_MOTOR_SPEED); 		
-//	}
-//	
-//	public void spinBackwards() {
-//		intakeMotor.set(RobotMap.INTAKE_REVERSE_MOTOR_SPEED);
-//	}
-//	
-//	public void stop() {
-//		intakeMotor.set(0);
-//	}
+
+	public void spoonUp(DoubleSolenoid spoonPiston) {
+		spoonPiston.set(DoubleSolenoid.Value.kReverse);
+	}
 	
 	public void intakeStateMachine(DoubleSolenoid spoonPiston, DigitalInput ballSensor) {
 		if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON) && RobotMap.intakeState != RobotMap.INTAKE_REVERSE_STATE) {

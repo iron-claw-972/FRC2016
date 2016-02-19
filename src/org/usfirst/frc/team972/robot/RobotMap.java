@@ -29,8 +29,8 @@ public class RobotMap {
 	 public static final int BACK_RIGHT_MOTOR_CAN_ID = 4;
 	 public static final int SHOOTER_BOTTOM_MOTOR_CAN_ID = 5;
 	 public static final int SHOOTER_TOP_MOTOR_CAN_ID = 6;
-	 public static final int INTAKE_MOTOR_CAN_ID = 7; // TODO Check online
-	 public static final int OBSTACLE_MOTOR_CAN_ID = 8; // TODO Check online
+	 public static final int INTAKE_MOTOR_CAN_ID = 7;
+	 public static final int OBSTACLE_MOTOR_CAN_ID = 8;
 	 public static final int PCM_CAN_ID = 10;
 	 
 	 // ENCODERS
@@ -76,6 +76,7 @@ public class RobotMap {
 	 public static final int JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON = 3;
 	 public static final int JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON = 5;
 	 public static final int JOYSTICK_STOP_SHOOTER_BUTTON = 6;
+	 public static final int JOYSTICK_OBSTACLE_MOTOR_MANUAL_OVERRIDE_BUTTON = 11; // TODO change
 	 
 	 // SPEEDS
 	 

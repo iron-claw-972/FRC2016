@@ -62,7 +62,6 @@ public class Drive {
 		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
 		pidLeftDrive.disable();
 		pidRightDrive.disable();
-
 	}
 	
 	public void tankDrive(double leftDriveSpeed, double rightDriveSpeed) {
