@@ -87,7 +87,8 @@ public class Robot extends IterativeRobot {
 	static Intake intakeSystem = new Intake(intakeMotor);
 	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
-
+	static AutonomousChooser autonomousChooserSystem = new AutonomousChooser();
+	
 	// speeds and multipliers
 	double driveMultiplier = RobotMap.DEFAULT_DRIVE_MODE;
 	double leftDriveSpeed = 0.0;
@@ -103,12 +104,6 @@ public class Robot extends IterativeRobot {
 
 	public static CameraServer camServer = CameraServer.getInstance();
 
-	// autonomous stuff
-	SendableChooser autonomousDefenseChooser = new SendableChooser();
-	SendableChooser autonomousDelayChooser = new SendableChooser();
-	SendableChooser autonomousPositionChooser = new SendableChooser();
-	SendableChooser autonomousShooterChooser = new SendableChooser();
-
 	// gearbox switching variables
 	boolean gearboxSwitchingPressedLastTime = false;
 
@@ -123,7 +118,11 @@ public class Robot extends IterativeRobot {
 	// intake button variables
 	boolean intakeButtonPressed = false;
 	boolean intakeReverseButtonPressed = false;
-
+	
+	static long autonomousDelayStartTime;
+	
+	double flippySpeed;
+	
 	// shooter variables
 	double shooterSpeed = 0;
 	boolean shooterHighSpeedMotorButtonPressed = false;
@@ -134,11 +133,6 @@ public class Robot extends IterativeRobot {
 	// set distance variables
 	boolean leftDistance = false;
 	boolean goingSetDistance = false;
-
-	// autonomous variables
-	int autonomousDelay; // How long we delay
-	long autonomousDelayStartTime;
-	long chevalDeFriseStartTime = -1; // This means the timer has not been set
 
 	double kP, kI, kD;
 	
@@ -153,50 +147,19 @@ public class Robot extends IterativeRobot {
 
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" message -- Need to set to true in teleop
 
+		autonomousChooserSystem.createChooser();
+		
 		/*
 		 * shooterBottomEncoder.setPIDSourceType(PIDSourceType.kRate);
 		 * shooterTopEncoder.setPIDSourceType(PIDSourceType.kRate);
 		 */
 		// backLeftMotor.changeControlMode(TalonControlMode.Follower);
 		// backRightMotor.changeControlMode(TalonControlMode.Follower); // only for testing shooter PID on practice bot
-//		
+
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
 		botDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
-
-		autonomousDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
-		autonomousDefenseChooser.addObject("Portcullis", new Integer(RobotMap.PORTCULLIS_MODE));
-		autonomousDefenseChooser.addObject("Cheval de Frise", new Integer(RobotMap.CHEVAL_DE_FRISE_MODE));
-		autonomousDefenseChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
-		autonomousDefenseChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
-		autonomousDefenseChooser.addObject("Drawbridge", new Integer(RobotMap.DRAWBRIDGE_MODE));
-		autonomousDefenseChooser.addObject("Sally Port", new Integer(RobotMap.SALLY_PORT_MODE));
-		autonomousDefenseChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
-		autonomousDefenseChooser.addObject("Rough Terrain", new Integer(RobotMap.ROUGH_TERRAIN_MODE));
-		autonomousDefenseChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
-		SmartDashboard.putData("Autonomous Defense Chooser", autonomousDefenseChooser);
-
-		autonomousPositionChooser.addObject("Spy Position", new Integer(RobotMap.POSITION_SPY));
-		autonomousPositionChooser.addDefault("Position 1", new Integer(RobotMap.POSITION_1));
-		autonomousPositionChooser.addObject("Position 2", new Integer(RobotMap.POSITION_2));
-		autonomousPositionChooser.addObject("Position 3", new Integer(RobotMap.POSITION_3));
-		autonomousPositionChooser.addObject("Position 4", new Integer(RobotMap.POSITION_4));
-		autonomousPositionChooser.addObject("Position 5", new Integer(RobotMap.POSITION_5));
-		SmartDashboard.putData("Autonomous Position Chooser", autonomousPositionChooser);
-
-		autonomousDelayChooser.addDefault("No Delay", new Integer(RobotMap.NO_DELAY));
-		autonomousDelayChooser.addObject("2 Sec Delay", new Integer(RobotMap.TWO_SECOND_DELAY));
-		autonomousDelayChooser.addObject("4 Sec Delay", new Integer(RobotMap.FOUR_SECOND_DELAY));
-		autonomousDelayChooser.addObject("6 Sec Delay", new Integer(RobotMap.SIX_SECOND_DELAY));
-		SmartDashboard.putData("Autonomous Delay Chooser", autonomousDelayChooser);
-
-		autonomousShooterChooser.addDefault("Do Not Shoot", new Integer(RobotMap.DO_NOT_SHOOT));
-		autonomousShooterChooser.addObject("Left High Goal", new Integer(RobotMap.SHOOTER_LEFT_HIGH_GOAL));
-		autonomousShooterChooser.addObject("Center High Goal", new Integer(RobotMap.SHOOTER_CENTER_HIGH_GOAL));
-		autonomousShooterChooser.addObject("Right High Goal", new Integer(RobotMap.SHOOTER_RIGHT_HIGH_GOAL));
-		autonomousShooterChooser.addObject("Assist", new Integer(RobotMap.ASSIST_SHOOT));
-		SmartDashboard.putData("Autonomous Shooting Chooser", autonomousShooterChooser);
 
 		pidLeftDrive.setSetpoint(0);
 		pidRightDrive.setSetpoint(0);
@@ -230,168 +193,9 @@ public class Robot extends IterativeRobot {
 //		System.out.println("autonomous init");
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" error message
 
-		RobotMap.autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
-		RobotMap.autonomousDelayMode = ((Integer) (autonomousDelayChooser.getSelected())).intValue();
-		RobotMap.autonomousPositionMode = ((Integer) (autonomousPositionChooser.getSelected())).intValue();
-		RobotMap.autonomousShooterMode = ((Integer) (autonomousShooterChooser.getSelected())).intValue();
-		// These lines store the value of the Autonomous Chooser as an int
-
-
-		switch (RobotMap.autonomousDelayMode) {
-			case RobotMap.NO_DELAY:
-				SmartDashboard.putString("Autonomous Delay Mode", "No Delay");
-				autonomousDelay = 0;
-				break;
-			case RobotMap.TWO_SECOND_DELAY:
-				SmartDashboard.putString("Autonomous Delay Mode", "Two Second Delay");
-				autonomousDelay = 2;
-				break;
-			case RobotMap.FOUR_SECOND_DELAY:
-				SmartDashboard.putString("Autonomous Delay Mode", "Four Second Delay");
-				autonomousDelay = 4;
-				break;
-			case RobotMap.SIX_SECOND_DELAY:
-				SmartDashboard.putString("Autonomous Delay Mode", "Six Second Delay");
-				autonomousDelay = 6;
-				break;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Autonomous Delay Mode", "Default error!!!");
-				System.out.println("Default Autonomous Delay Mode Error!!!");
-				break;
-		}
-
-		switch (RobotMap.autonomousPositionMode) {
-			case RobotMap.POSITION_SPY:
-				SmartDashboard.putString("Autonomous Position Mode", "Spy Position");
-				break;
-			case RobotMap.POSITION_1:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 1");
-				break;
-			case RobotMap.POSITION_2:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 2");
-				break;
-			case RobotMap.POSITION_3:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 3");
-				break;
-			case RobotMap.POSITION_4:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 4");
-				break;
-			case RobotMap.POSITION_5:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 5");
-				break;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Autonomous Position Mode", "Default error!!!");
-				System.out.println("Default Autonomous Position Mode Error!!!");
-				break;
-		}
-
-		switch (RobotMap.autonomousShooterMode) {
-			case RobotMap.DO_NOT_SHOOT:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Do Not Shoot");
-				break;
-			case RobotMap.SHOOTER_LEFT_HIGH_GOAL:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Left High Goal");
-				break;
-			case RobotMap.SHOOTER_CENTER_HIGH_GOAL:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Center High Goal");
-				break;
-			case RobotMap.SHOOTER_RIGHT_HIGH_GOAL:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Right High Goal");
-				break;
-			case RobotMap.ASSIST_SHOOT:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Assist For Shooting");
-				break;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Autonomous Shooter Mode", "Default error!!!");
-				System.out.println("Default Autonomous Shooter Mode Error!!!");
-				break;
-		}
-
-		switch (RobotMap.autonomousDefenseMode) {
-			case RobotMap.LOW_BAR_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Low Bar");
-				break;
-			case RobotMap.PORTCULLIS_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Portcullis");
-				break;
-			case RobotMap.CHEVAL_DE_FRISE_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Cheval de Frise");
-				break;
-			case RobotMap.MOAT_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Moat");
-				break;
-			case RobotMap.RAMPARTS_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Ramparts");
-				break;
-			case RobotMap.DRAWBRIDGE_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Drawbridge");
-				break;
-			case RobotMap.SALLY_PORT_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Sally Port");
-				break;
-			case RobotMap.ROCK_WALL_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Rock Wall");
-				break;
-			case RobotMap.ROUGH_TERRAIN_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Rough Terrain");
-				break;
-			case RobotMap.DO_NOTHING_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Do Nothing");
-				return;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Autonomous Defense Mode", "Default error!!!");
-				System.out.println("Default Autonomous Defense Mode Error!!!");
-				break;
-		} // switch brace
-
-		autonomousDelayStartTime = System.currentTimeMillis();
-		boolean finishedDelaying = false;
-		while (isAutonomous() && isEnabled() && !finishedDelaying) {
-			finishedDelaying = Autonomous.autonomousDelay(autonomousDelayStartTime, autonomousDelay * 1000); // Converting from seconds to milliseconds and
-		}
-
-		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough" error message
-		System.out.println("finished autonomous delay");
-
-		switch (RobotMap.autonomousDefenseMode) {
-			case RobotMap.LOW_BAR_MODE:
-				Autonomous.autonomousDriveOverDefense(RobotMap.LOW_BAR_DEFENSE_DRIVE_DISTANCE);
-				break;
-			case RobotMap.PORTCULLIS_MODE:
-				Autonomous.autonomousFlippyThing(true);
-				break;
-			case RobotMap.CHEVAL_DE_FRISE_MODE:
-				Autonomous.autonomousFlippyThing(false);
-				break;
-			case RobotMap.MOAT_MODE:
-				Autonomous.autonomousDriveOverDefense(RobotMap.MOAT_DEFENSE_DRIVE_DISTANCE);
-				break;
-			case RobotMap.RAMPARTS_MODE:
-				Autonomous.autonomousDriveOverDefense(RobotMap.RAMPARTS_DEFENSE_DRIVE_DISTANCE);
-				break;
-			case RobotMap.DRAWBRIDGE_MODE:
-				Autonomous.autonomousDriveOverDefense(RobotMap.DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE);
-				break;
-			case RobotMap.SALLY_PORT_MODE:
-				Autonomous.autonomousDriveOverDefense(RobotMap.SALLY_PORT_DEFENSE_DRIVE_DISTANCE);
-				break;
-			case RobotMap.ROCK_WALL_MODE:
-				Autonomous.autonomousDriveOverDefense(RobotMap.ROCK_WALL_DEFENSE_DRIVE_DISTANCE); // May need to be tuned
-				break;
-			case RobotMap.ROUGH_TERRAIN_MODE:
-				Autonomous.autonomousDriveOverDefense(RobotMap.ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE); // May need to be tuned
-				break;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Autonomous Defense Mode", "Default error!!!");
-				System.out.println("Default Autonomous Defense Mode Error -- Actually driving!!!");
-				break;
-		} // switch brace
-
+		autonomousChooserSystem.checkChoices();
+//		Autonomous.startAutonomous();
+		
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" error message
 	} // autonomous brace
 
@@ -414,7 +218,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {	
 		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough" error message
 
-		double flippySpeed = (((-joystickOp.getThrottle())+1)/2);
+		flippySpeed = (((-joystickOp.getThrottle())+1)/2);
 		// obstacle motor "flippy thing"
 		if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)/* && !flippyThingUpperLimitSwitch.get()*/) {
 			obstacleMotor.set(-flippySpeed); // Go up
@@ -423,13 +227,7 @@ public class Robot extends IterativeRobot {
 		} else {
 			obstacleMotor.set(0);
 		}
-		// MAKE SURE YOU HAVE FLIPPY SPEED AT NOT ZERO (not down)
-		
-		SmartDashboard.putNumber("Flippy Speed", flippySpeed);
-		
-		SmartDashboard.putBoolean("Upper LS", flippyThingUpperLimitSwitch.get());
-		SmartDashboard.putBoolean("Lower LS", flippyThingLowerLimitSwitch.get());
-		
+		// MAKE SURE YOU HAVE FLIPPY SPEED AT NOT ZERO (not down)		
 		
 		// gearbox switch
 		// TODO uncomment
@@ -557,8 +355,6 @@ public class Robot extends IterativeRobot {
 		kD = RobotMap.D_BRAKE;
 
 //		double error = rightDriveEncoder.get() - 0;
-//
-
 
 		// TODO fix set forward code and use PID for it
 		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
@@ -678,17 +474,20 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Left Encoder Value", leftDriveEncoder.get());
 		SmartDashboard.putNumber("Right Encoder Value", rightDriveEncoder.get());
 		SmartDashboard.putBoolean("Going Set Distance", goingSetDistance);
+		SmartDashboard.putBoolean("Ball Present", ballOpticalSensor.get());
+		SmartDashboard.putNumber("Flippy Speed", flippySpeed);
 		
-//		SmartDashboard.putBoolean("Ball Present", ballOpticalSensor.get());
+		SmartDashboard.putBoolean("Upper LS", flippyThingUpperLimitSwitch.get());
+		SmartDashboard.putBoolean("Lower LS", flippyThingLowerLimitSwitch.get());
 	}
 	/**
 	 * This function is called periodically during test mode
 	 */
 	public void testPeriodic() {
-
+		printEverything();
 	}
 
-	public void disabled() {
+	public void disabledInit() {
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated enough" error message
 		stopEverything();
 	}

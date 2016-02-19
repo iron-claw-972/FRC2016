@@ -42,6 +42,7 @@ public class RobotMap {
 	 public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 4;
 	 public static final int FLIPPY_THING_LOWER_LIMIT_SWITCH = 5;
 	 public static final int BALL_OPTICAL_SENSOR_PORT = 7;
+	 
 	 //TODO change shooter encoders to go with Talons
 //	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_A_PORT = 4;
 //	 public static final int SHOOTER_BOTTOM_ENCODER_DIO_B_PORT = 5;
