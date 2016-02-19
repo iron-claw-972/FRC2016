@@ -85,8 +85,7 @@ public class Robot extends IterativeRobot {
 	// intake
 
 	static Intake intakeSystem = new Intake(intakeMotor);
-	static Shooter shooterSystem = new Shooter();
-//	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor);
+	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
 
 	// speeds and multipliers
@@ -141,6 +140,8 @@ public class Robot extends IterativeRobot {
 	long autonomousDelayStartTime;
 	long chevalDeFriseStartTime = -1; // This means the timer has not been set
 
+	double kP, kI, kD;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -410,7 +411,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 
-	public void teleopPeriodic() {		
+	public void teleopPeriodic() {	
 		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough" error message
 
 		double flippySpeed = (((-joystickOp.getThrottle())+1)/2);
@@ -551,21 +552,20 @@ public class Robot extends IterativeRobot {
 //		double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
 //		double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
 
-		double kP = RobotMap.P_BRAKE;
-		double kI = RobotMap.I_BRAKE;
-		double kD = RobotMap.D_BRAKE;
+		kP = RobotMap.P_BRAKE;
+		kI = RobotMap.I_BRAKE;
+		kD = RobotMap.D_BRAKE;
 
 //		double error = rightDriveEncoder.get() - 0;
 //
-//		SmartDashboard.putNumber("Error", error);
-		SmartDashboard.putNumber("P", kP);
-		SmartDashboard.putNumber("I", kI);
-		SmartDashboard.putNumber("D", kD);
+
 
 		// TODO fix set forward code and use PID for it
 		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
+			botDrive.setSafetyEnabled(false);
 			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI, kD);
 		} else {
+			botDrive.setSafetyEnabled(true);
 			driveController.stopPIDBrake(pidMode, pidLeftDrive, pidRightDrive);
 			if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
 				botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier); // Split arcade
@@ -606,20 +606,8 @@ public class Robot extends IterativeRobot {
 		// finish PID Brake
 
 		intakeSystem.intakeStateMachine(spoonPiston, ballOpticalSensor);
-//		shooterSystem.shooterStateMachine(spoonPiston);
+		shooterSystem.shooterStateMachine(spoonPiston);
 		
-		// intake motor
-//		intakeButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON);
-//		intakeReverseButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON);
-//		if (intakeButtonPressed) {
-//			intakeSystem.spinForward();
-//		} else if (intakeReverseButtonPressed) {
-//			intakeSystem.spinBackwards();
-//		} else {
-//			intakeSystem.stop();
-//		}
-		// end intake motor
-
 //		SmartDashboard.putNumber("Bottom Shooter Encoder Rate", shooterBottomEncoder.getRate());
 //		SmartDashboard.putNumber("Top Shooter Encoder Rate", shooterTopEncoder.getRate());
 
@@ -673,13 +661,15 @@ public class Robot extends IterativeRobot {
 //		backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
 //		backRightMotor.set(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
 		// TODO using drive motors to test shooter PID; change this soon
+		printEverything();
+	}
 
+	public void printEverything() {
+		SmartDashboard.putNumber("P", kP);
+		SmartDashboard.putNumber("I", kI);
+		SmartDashboard.putNumber("D", kD);
 //		SmartDashboard.putNumber("Shooter Bottom Motor", shooterSpeed);
 //		SmartDashboard.putNumber("Shooter Top Motor", shooterSpeed);
-		// shooter motors
-		
-		// Smart Dashboard Prints
-		
 		SmartDashboard.putNumber("Back Left Motor Speed", backLeftMotor.get());
 		SmartDashboard.putNumber("Back Right Motor Speed", backRightMotor.get());
 		SmartDashboard.putNumber("Front Left Motor Speed", frontLeftMotor.get());
@@ -691,11 +681,11 @@ public class Robot extends IterativeRobot {
 		
 //		SmartDashboard.putBoolean("Ball Present", ballOpticalSensor.get());
 	}
-
 	/**
 	 * This function is called periodically during test mode
 	 */
 	public void testPeriodic() {
+
 	}
 
 	public void disabled() {

@@ -202,6 +202,7 @@ public class RobotMap {
 	 public static final int INTAKE_START_INTAKE_STATE = 2;
 	 public static final int INTAKE_WAIT_FOR_OPTICAL_STATE = 3;
 	 public static final int INTAKE_SPOON_UP_STATE = 4;
+	 public static final int INTAKE_REVERSE_STATE = 5;
 	 public static int intakeState = INTAKE_WAIT_STATE;
 	 
 	 // SHOOTER STATE MACHINE
@@ -219,5 +220,6 @@ public class RobotMap {
 	 // CONSTANTS
 	 
 	 public static final int BALL_OPTICAL_DELAY_TIME = 500; // In ms
+	 public static final int REVERSE_OPTICAL_DELAY_TIME = 1000; // In ms
 	 public static final int SHOOTER_DELAY_TIME = 1000; // In ms
 }
