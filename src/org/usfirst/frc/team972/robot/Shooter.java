@@ -20,17 +20,17 @@ public class Shooter {
 	// @return whether shooter is done or not
 	boolean shooterSlow() {
 		System.out.println("Slow Shooter");
-		return setShooter(RobotMap.SHOOTER_SLOW_SPEED);
+		return setShooter(RobotMap.LOW_SPEED_SHOOTER_MOTOR_SETPOINT);
 	}
 
 	boolean shooterMedium() {
 		System.out.println("Med Shooter");
-		return setShooter(RobotMap.SHOOTER_MEDIUM_SPEED);
+		return setShooter(RobotMap.MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT);
 	}
 
 	boolean shooterHigh() {
 		System.out.println("High Shooter");
-		return setShooter(RobotMap.SHOOTER_FAST_SPEED);
+		return setShooter(RobotMap.HIGH_SPEED_SHOOTER_MOTOR_SETPOINT);
 	}
 
 	void shooterStop() {

@@ -161,9 +161,8 @@ public class Robot extends IterativeRobot {
 		compressor.start();
 		// compressor.stop();
 
-		botDrive.setSafetyEnabled(false); // Prevents "output not updated
-											// enough" message -- Need to set to
-											// true in teleop
+		botDrive.setSafetyEnabled(false);
+		// Prevents "output not updated enough" message mostly
 
 		autonomousChooserSystem.createChooser();
 

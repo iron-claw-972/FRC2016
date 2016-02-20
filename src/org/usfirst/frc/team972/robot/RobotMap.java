@@ -212,7 +212,6 @@ public class RobotMap {
 	 public static final int SHOOTER_STOP_SHOOTER_STATE = 6;
 	 public static int shooterState = SHOOTER_WAIT_STATE;
 	 
-	 
 	 // CONSTANTS
 	 
 	 public static final int BALL_OPTICAL_DELAY_TIME = 500; // In ms
