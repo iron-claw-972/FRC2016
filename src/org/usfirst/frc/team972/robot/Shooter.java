@@ -20,17 +20,20 @@ public class Shooter {
 	// @return whether shooter is done or not
 	boolean shooterSlow() {
 		System.out.println("Slow Shooter");
-		return setShooter(RobotMap.LOW_SPEED_SHOOTER_MOTOR_SETPOINT);
+//		return setShooter(RobotMap.LOW_SPEED_SHOOTER_MOTOR_SETPOINT);
+		return setShooter(RobotMap.SHOOTER_SLOW_SPEED);
 	}
 
 	boolean shooterMedium() {
 		System.out.println("Med Shooter");
-		return setShooter(RobotMap.MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT);
+//		return setShooter(RobotMap.MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT);
+		return setShooter(RobotMap.SHOOTER_MEDIUM_SPEED);
 	}
 
 	boolean shooterHigh() {
 		System.out.println("High Shooter");
-		return setShooter(RobotMap.HIGH_SPEED_SHOOTER_MOTOR_SETPOINT);
+//		return setShooter(RobotMap.HIGH_SPEED_SHOOTER_MOTOR_SETPOINT);
+		return setShooter(RobotMap.SHOOTER_HIGH_SPEED);
 	}
 
 	void shooterStop() {
@@ -41,7 +44,7 @@ public class Shooter {
 		bottomMotor.disable();
 	}
 
-	boolean setShooter(double speed) {
+	boolean setShooter(double setpoint) {
 		double kP = (((Robot.joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
 		double kI = (((Robot.joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
 		double kD = (((Robot.joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
@@ -50,28 +53,33 @@ public class Shooter {
 		SmartDashboard.putNumber("Shooter I", kI);
 		SmartDashboard.putNumber("Shooter D", kD);
 		
-		double topSetpoint = speed;
-		double bottomSetpoint = -speed;
+		double topSetpoint = setpoint;
+		double bottomSetpoint = -setpoint;
 		double deadzone = 0.01;
 		
-		topMotor.setSetpoint(topSetpoint);
-		bottomMotor.setSetpoint(bottomSetpoint);
+		topMotor.set(topSetpoint);
+		bottomMotor.set(bottomSetpoint);
 		
-		topMotor.setPID(kP, kI, kD);
-		topMotor.enable();
-		bottomMotor.setPID(kP, kI, kD);
-		bottomMotor.enable();
+		return true;
 		
-		SmartDashboard.putNumber("Top Error", topMotor.get() - topSetpoint);
-		SmartDashboard.putNumber("Bottom Error", bottomMotor.get() - bottomSetpoint);
-
-		boolean topMotorCorrect = topMotor.get() <= topSetpoint + deadzone && topMotor.get() >= topSetpoint - deadzone;
-		boolean bottomMotorCorrect = bottomMotor.get() <= bottomSetpoint + deadzone && bottomMotor.get() >= bottomSetpoint - deadzone;
-		boolean doneSettingSpeed = topMotorCorrect && bottomMotorCorrect;
-		if (doneSettingSpeed) {
-			shooterStop();
-		}
-		return doneSettingSpeed;
+//		topMotor.setSetpoint(topSetpoint);
+//		bottomMotor.setSetpoint(bottomSetpoint);
+//		
+//		topMotor.setPID(kP, kI, kD);
+//		topMotor.enable();
+//		bottomMotor.setPID(kP, kI, kD);
+//		bottomMotor.enable();
+//		
+//		SmartDashboard.putNumber("Top Error", topMotor.get() - topSetpoint);
+//		SmartDashboard.putNumber("Bottom Error", bottomMotor.get() - bottomSetpoint);
+//
+//		boolean topMotorCorrect = topMotor.get() <= topSetpoint + deadzone && topMotor.get() >= topSetpoint - deadzone;
+//		boolean bottomMotorCorrect = bottomMotor.get() <= bottomSetpoint + deadzone && bottomMotor.get() >= bottomSetpoint - deadzone;
+//		boolean doneSettingSpeed = topMotorCorrect && bottomMotorCorrect;
+//		if (doneSettingSpeed) {
+//			shooterStop();
+//		}
+//		return doneSettingSpeed;
 	}
 
 	// @return whether shooter speed is changed
