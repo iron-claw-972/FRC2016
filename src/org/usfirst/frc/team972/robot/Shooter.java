@@ -33,7 +33,7 @@ public class Shooter {
 	boolean shooterHigh() {
 		System.out.println("High Shooter");
 //		return setShooter(RobotMap.HIGH_SPEED_SHOOTER_MOTOR_SETPOINT);
-		return setShooter(RobotMap.SHOOTER_HIGH_SPEED);
+		return setShooter(RobotMap.SHOOTER_FAST_SPEED);
 	}
 
 	void shooterStop() {
