@@ -40,8 +40,12 @@ public class Shooter {
 	}
 
 	boolean setShooter(double speed) {
+		 double kP = (((Robot.joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
+		 double kI = (((Robot.joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
+		 double kD = (((Robot.joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
+		 
 		topMotor.set(speed);
-		bottomMotor.set(speed);
+		bottomMotor.set(-speed);
 		return true;
 	}
 

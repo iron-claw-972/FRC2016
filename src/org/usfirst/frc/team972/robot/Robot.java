@@ -68,13 +68,6 @@ public class Robot extends IterativeRobot {
 	public static Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
 			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
 
-	// public static Encoder shooterBottomEncoder = new
-	// Encoder(RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_A_PORT,
-	// RobotMap.SHOOTER_BOTTOM_ENCODER_DIO_B_PORT);
-	// public static Encoder shooterTopEncoder = new
-	// Encoder(RobotMap.SHOOTER_TOP_ENCODER_DIO_A_PORT,
-	// RobotMap.SHOOTER_TOP_ENCODER_DIO_B_PORT);
-
 	public static PIDController pidRightDrive = new PIDController(0, 0, 0, rightDriveEncoder, frontRightMotor);
 	public static PIDController pidLeftDrive = new PIDController(0, 0, 0, leftDriveEncoder, frontLeftMotor);
 	// public static PIDController pidBottomShooter = new PIDController(0, 0, 0,
