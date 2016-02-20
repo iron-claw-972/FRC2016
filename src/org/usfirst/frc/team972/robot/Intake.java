@@ -72,18 +72,19 @@ public class Intake {
 					outtakePiston.set(DoubleSolenoid.Value.kReverse);
 					RobotMap.intakeState = RobotMap.INTAKE_WAIT_STATE;
 				}
-				if (ballSensor.get()) {
-					if (reverseStartTime == -1) {
-						reverseStartTime = System.currentTimeMillis();
-					} else {
-						if (System.currentTimeMillis() >= reverseStartTime + RobotMap.REVERSE_OPTICAL_DELAY_TIME) {
-							intakeMotor.set(0);
-							outtakePiston.set(DoubleSolenoid.Value.kReverse);
-							RobotMap.intakeState = RobotMap.INTAKE_WAIT_STATE;
-							reverseStartTime = -1;
-						}
-					}
-				}
+				// TODO Uncomment when we have optical sensors
+//				if (ballSensor.get()) {
+//					if (reverseStartTime == -1) {
+//						reverseStartTime = System.currentTimeMillis();
+//					} else {
+//						if (System.currentTimeMillis() >= reverseStartTime + RobotMap.REVERSE_OPTICAL_DELAY_TIME) {
+//							intakeMotor.set(0);
+//							outtakePiston.set(DoubleSolenoid.Value.kReverse);
+//							RobotMap.intakeState = RobotMap.INTAKE_WAIT_STATE;
+//							reverseStartTime = -1;
+//						}
+//					}
+//				}
 				break;
 			default:
 				System.out.println("Intake State Machine Error!");

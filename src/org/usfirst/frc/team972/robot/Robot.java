@@ -160,6 +160,9 @@ public class Robot extends IterativeRobot {
 		System.out.println("Robot Init");
 		compressor.start();
 		// compressor.stop();
+		
+		shooterBottomMotor.changeControlMode(TalonControlMode.PercentVbus);
+		shooterTopMotor.changeControlMode(TalonControlMode.PercentVbus);
 
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" message mostly
@@ -383,10 +386,10 @@ public class Robot extends IterativeRobot {
 		intakeSystem.intakeStateMachine(spoonPiston, outtakePiston, ballOpticalSensor);
 //		shooterSystem.shooterStateMachine(spoonPiston);
 		if (joystickOp.getRawButton(1)) {
-			System.out.println("SETTING SHOOTER!!!!");
-			shooterTopMotor.set(0.3);
-			shooterBottomMotor.set(-0.3);
+			shooterTopMotor.set(-0.5);
+			shooterBottomMotor.set(0.5);
 		} else {
+			System.out.println("STOPPING SHOOTER!!!!");
 			shooterTopMotor.set(0);
 			shooterBottomMotor.set(0);
 		}
@@ -441,8 +444,8 @@ public class Robot extends IterativeRobot {
 	public void stopEverything() {
 		pidLeftDrive.disable();
 		pidRightDrive.disable();
-		shooterBottomMotor.disable();
-		shooterTopMotor.disable();
+//		shooterBottomMotor.disable();
+//		shooterTopMotor.disable();
 		backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
 		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
 		frontRightMotor.set(0);
