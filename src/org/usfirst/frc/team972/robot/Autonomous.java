@@ -10,7 +10,19 @@ public class Autonomous {
 	}
 	
 	public static boolean autonomousDriveOverDefense(int distance) {
-		return true;
+		double leftDriveSpeed, rightDriveSpeed;
+		if (Robot.leftDriveEncoder.get() < distance) {
+			leftDriveSpeed = 0.5;
+		} else {
+			leftDriveSpeed = 0;
+		}
+		if (Robot.rightDriveEncoder.get() < distance) {
+			rightDriveSpeed = 0.5;
+		} else {
+			rightDriveSpeed = 0;
+		}
+		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
+		return Robot.leftDriveEncoder.get() >= distance && Robot.rightDriveEncoder.get() >= distance;
 	}
 	
 	public static boolean autonomousFlippyThing(boolean flipUp) {
@@ -29,6 +41,9 @@ public class Autonomous {
 //		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough" error message
 		System.out.println("finished autonomous delay");
 
+		Robot.leftDriveEncoder.reset();
+		Robot.rightDriveEncoder.reset();
+		
 		switch (RobotMap.autonomousDefenseMode) {
 			case RobotMap.LOW_BAR_MODE:
 				Autonomous.autonomousDriveOverDefense(RobotMap.LOW_BAR_DEFENSE_DRIVE_DISTANCE);

@@ -98,8 +98,8 @@ public class RobotMap {
 	 public static final int PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL = 1;
 	 public static final int PISTON_BALL_PUSHER_FORWARD_CHANNEL = 2;
 	 public static final int PISTON_BALL_PUSHER_REVERSE_CHANNEL = 3;
-	 public static final int PISTON_OUTTAKE_FORWARD_CHANNEL = 4;
-	 public static final int PISTON_OUTTAKE_REVERSE_CHANNEL = 5;
+	 public static final int PISTON_OUTTAKE_FORWARD_CHANNEL = 5;
+	 public static final int PISTON_OUTTAKE_REVERSE_CHANNEL = 4;
 	 
 	 // SHOOTER PISTON STATE MACHINE
 	 public static final int DO_NOTHING_STATE = 1;
@@ -221,5 +221,6 @@ public class RobotMap {
 	 
 	 // TESTING CONSTANTS
 	 
-	 public static final boolean USE_OLD_CAM = true;
+	 public static final boolean USE_OLD_CAM = false;
+	 public static boolean haveCam = true;
 }

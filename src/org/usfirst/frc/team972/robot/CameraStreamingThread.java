@@ -1,6 +1,7 @@
 package org.usfirst.frc.team972.robot;
 
 import com.ni.vision.NIVision;
+import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
 
 import edu.wpi.first.wpilibj.*;
@@ -17,21 +18,38 @@ public class CameraStreamingThread implements Runnable {
 	}
 
 	public void run() {
-		while (r.isOperatorControl() && r.isEnabled()) {
-			// camera streaming
-			if (Robot.rearCam) {
-				Robot.camBack.getImage(img);
-			} else {
-				Robot.camFront.getImage(img);
+		try {
+			Robot.camFront = new USBCamera("cam1");
+			Robot.camBack = new USBCamera("cam0");
+			Robot.camFront.openCamera();
+			Robot.camBack.openCamera();
+			Robot.camFront.startCapture();
+		} catch (VisionException e) {
+			System.out.println("VISION EXCEPTION ~ " + e);
+		}
+		while ((r.isAutonomous() || r.isOperatorControl()) && r.isEnabled()) {
+			try {
+				// camera streaming
+				if (Robot.rearCam) {
+					Robot.camBack.getImage(img);
+				} else {
+					Robot.camFront.getImage(img);
+				}
+				camServer.setImage(img); // puts image on the dashboard
+			} catch (Exception e) {
+//				System.out.println("Error " + e.toString());
+//				e.printStackTrace();
+				if(RobotMap.haveCam) {
+					RobotMap.haveCam = false;
+					System.out.println("You don't have camera!");
+				}
 			}
-			camServer.setImage(img); // puts image on the dashboard
 		}
 	}
-	
 
 	public void reverse() {
 		// switch front of robot
-		if (Robot.rearCam) {
+		if (!Robot.rearCam) {
 			Robot.camBack.stopCapture();
 			Robot.camFront.startCapture();
 		} else {
@@ -40,4 +58,5 @@ public class CameraStreamingThread implements Runnable {
 		}
 		// end switch front of robot
 	}
+
 }

@@ -97,12 +97,12 @@ public class Drive {
 			gearboxPistonLeft.set(DoubleSolenoid.Value.kForward);
 //			gearboxPistonRight.set(DoubleSolenoid.Value.kReverse);
 			gearboxPistonForward = true;
-			SmartDashboard.putNumber("Current Gear", 1);
+			SmartDashboard.putBoolean("High Gear", false);
 		} else {
 			gearboxPistonLeft.set(DoubleSolenoid.Value.kReverse);
 //			gearboxPistonRight.set(DoubleSolenoid.Value.kForward);
 			gearboxPistonForward = false;
-			SmartDashboard.putNumber("Current Gear", 2);
+			SmartDashboard.putBoolean("High Gear", true);
 		}
 	}
 }

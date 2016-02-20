@@ -23,6 +23,7 @@ public class Intake {
 		switch (RobotMap.intakeState) {
 			case RobotMap.INTAKE_WAIT_STATE:
 				intakeMotor.set(0);
+				outtakePiston.set(DoubleSolenoid.Value.kReverse);
 				boolean buttonPressed = Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON);
 				boolean backButtonPressed = Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON);
 				if (buttonPressed && !lastTimePressed) {
@@ -43,7 +44,8 @@ public class Intake {
 				break;
 			case RobotMap.INTAKE_START_INTAKE_STATE:
 				intakeMotor.set(RobotMap.INTAKE_MOTOR_SPEED);
-				if (!ballSensor.get()) {
+//				if (!ballSensor.get()) {
+				if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON)) {
 					if (startTime == -1) {
 						startTime = System.currentTimeMillis();
 					} else {
