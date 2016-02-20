@@ -98,7 +98,8 @@ public class Robot extends IterativeRobot {
 	// intake
 
 	static Intake intakeSystem = new Intake(intakeMotor);
-//	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor);
+	// static Shooter shooterSystem = new Shooter(shooterTopMotor,
+	// shooterBottomMotor);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
 	static AutonomousChooser autonomousChooserSystem = new AutonomousChooser();
 
@@ -147,8 +148,7 @@ public class Robot extends IterativeRobot {
 
 	double kP, kI, kD, leftJoystickY, rightJoystickY;
 
-	// TODO Uncomment with threading
-//	CameraStreamingThread cst;
+	CameraStreamingThread cst;
 	Image img = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 	CameraServer camServer = CameraServer.getInstance();
 
@@ -160,7 +160,7 @@ public class Robot extends IterativeRobot {
 		System.out.println("Robot Init");
 		compressor.start();
 		// compressor.stop();
-		
+
 		shooterBottomMotor.changeControlMode(TalonControlMode.PercentVbus);
 		shooterTopMotor.changeControlMode(TalonControlMode.PercentVbus);
 
@@ -186,18 +186,7 @@ public class Robot extends IterativeRobot {
 		pidRightDrive.setSetpoint(0);
 		rightDriveEncoder.reset();
 		leftDriveEncoder.reset();
-		
-		try {
-			camFront = new USBCamera("cam0");
-			camBack = new USBCamera("cam1");
-			camFront.openCamera();
-			camBack.openCamera();
-			camFront.startCapture();
-			// startCapture so that it doesn't try to take a picture before the
-			// camera is on
-		} catch (VisionException e) {
-			System.out.println("VISION EXCEPTION ~ " + e);
-		}
+
 	}
 
 	/**
@@ -234,11 +223,35 @@ public class Robot extends IterativeRobot {
 
 	public void teleopInit() {
 		stopEverything(); // stops all motors
+
+		System.out.println("Nothing");
+		outtakePiston.set(DoubleSolenoid.Value.kForward);
+		System.out.println("Piston Forward");
+		Timer.delay(5);
+		outtakePiston.set(DoubleSolenoid.Value.kReverse);
+		System.out.println("Piston Reverse");
+		Timer.delay(5);
+		
+//		if (RobotMap.USE_OLD_CAM) {
+			try {
+				camFront = new USBCamera("cam1");
+				camBack = new USBCamera("cam0");
+				camFront.openCamera();
+				camBack.openCamera();
+				camFront.startCapture();
+				// startCapture so that it doesn't try to take a picture before
+				// the
+				// camera is on
+			} catch (VisionException e) {
+				System.out.println("VISION EXCEPTION ~ " + e);
+			}
+//		} else {
+//			cst = new CameraStreamingThread(this);
+//			new Thread(cst).start();
+//		}
+
 		intakeSystem.spoonUp(spoonPiston); // Move spoon up at the beginning
 
-
-//		cst = new CameraStreamingThread(this);
-//		new Thread(cst).start();
 	}
 
 	public void teleopPeriodic() {
@@ -298,50 +311,50 @@ public class Robot extends IterativeRobot {
 		}
 		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
 
-		// TODO Uncomment with threading
-//		// switch front of robot
-//		boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-//		if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-//			driveController.reverse();
-//			cst.reverse();
-//		}
-//		cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-//		// end switch front of robot
-
-		// TODO remove when threading works
-		try {
-			// switch front of robot
-			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-				if (!rearCam) {
-					camBack.stopCapture();
-					camFront.startCapture();
-					rearCam = true;
-				} else {
-					camFront.stopCapture();
-					camBack.startCapture();
-					rearCam = false;
+//		if (RobotMap.USE_OLD_CAM) {
+			try {
+				// switch front of robot
+				boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+				if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+					if (rearCam) {
+						camBack.stopCapture();
+						camFront.startCapture();
+						rearCam = false;
+					} else {
+						camFront.stopCapture();
+						camBack.startCapture();
+						rearCam = true;
+					}
 				}
-			}
-			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// end switch front of robot
+				cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+				// end switch front of robot
 
-			// camera streaming
-			if (rearCam) {
-				camBack.getImage(img);
-			} else {
-				camFront.getImage(img);
-			}
-			camServer.setImage(img); // puts image on the dashboard
-		} catch (Exception e) {
-			// switch front of robot
-			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-				rearCam = !rearCam;
-			}
-			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// finish switching front of robot
-		} // end catch
+				// camera streaming
+				if (rearCam) {
+					camBack.getImage(img);
+				} else {
+					camFront.getImage(img);
+				}
+				camServer.setImage(img); // puts image on the dashboard
+			} catch (Exception e) {
+				// switch front of robot
+				boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+				if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+					rearCam = !rearCam;
+				}
+				cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+				// finish switching front of robot
+			} // end catch
+//		} else {
+//			// switch front of robot
+//			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+//			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+//				driveController.reverse();
+//				cst.reverse();
+//			}
+//			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+//			// end switch front of robot
+//		}
 
 		driveMultiplier = driveController.setDriveMultiplier(driveMultiplier);
 
@@ -384,10 +397,10 @@ public class Robot extends IterativeRobot {
 		// TODO Go set distance AND go straight
 
 		intakeSystem.intakeStateMachine(spoonPiston, outtakePiston, ballOpticalSensor);
-//		shooterSystem.shooterStateMachine(spoonPiston);
+		// shooterSystem.shooterStateMachine(spoonPiston);
 		if (joystickOp.getRawButton(1)) {
-			shooterTopMotor.set(-0.5);
-			shooterBottomMotor.set(0.5);
+			shooterTopMotor.set(-0.75);
+			shooterBottomMotor.set(0.75);
 		} else {
 			System.out.println("STOPPING SHOOTER!!!!");
 			shooterTopMotor.set(0);
@@ -398,29 +411,37 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void printEverything() {
+		// TODO Gearbox code
 		SmartDashboard.putNumber("P", kP);
 		SmartDashboard.putNumber("I", kI);
 		SmartDashboard.putNumber("D", kD);
 		// SmartDashboard.putNumber("Shooter Bottom Motor", shooterSpeed);
 		// SmartDashboard.putNumber("Shooter Top Motor", shooterSpeed);
-//		SmartDashboard.putNumber("Back Left Motor Speed", backLeftMotor.get());
-//		SmartDashboard.putNumber("Back Right Motor Speed", backRightMotor.get());
-//		SmartDashboard.putNumber("Front Left Motor Speed", frontLeftMotor.get());
-//		SmartDashboard.putNumber("Front Right Motor Speed", frontRightMotor.get());
+		// SmartDashboard.putNumber("Back Left Motor Speed",
+		// backLeftMotor.get());
+		// SmartDashboard.putNumber("Back Right Motor Speed",
+		// backRightMotor.get());
+		// SmartDashboard.putNumber("Front Left Motor Speed",
+		// frontLeftMotor.get());
+		// SmartDashboard.putNumber("Front Right Motor Speed",
+		// frontRightMotor.get());
 		SmartDashboard.putNumber("Left Encoder Value", leftDriveEncoder.get());
 		SmartDashboard.putNumber("Right Encoder Value", rightDriveEncoder.get());
 		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get());
 		SmartDashboard.putNumber("Flippy Speed", obstacleMotorSpeed);
 		SmartDashboard.putBoolean("Upper LS", obstacleMotorUpperLimitSwitch.get());
 		SmartDashboard.putBoolean("Lower LS", obstacleMotorLowerLimitSwitch.get());
-//		SmartDashboard.putNumber("Left Joystick Y", leftJoystickY);
-//		SmartDashboard.putNumber("Right Joystick Y", rightJoystickY);
+		// SmartDashboard.putNumber("Left Joystick Y", leftJoystickY);
+		// SmartDashboard.putNumber("Right Joystick Y", rightJoystickY);
 		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-//		SmartDashboard.putBoolean("Flippy Thing Manual Override", obstacleMotorManualOverride);
-//		SmartDashboard.putNumber("Shooter Bottom Encoder Value", shooterBottomMotor.getPosition());
-//		SmartDashboard.putNumber("Shooter Top Encoder Value", shooterTopMotor.getPosition());
+		// SmartDashboard.putBoolean("Flippy Thing Manual Override",
+		// obstacleMotorManualOverride);
+		// SmartDashboard.putNumber("Shooter Bottom Encoder Value",
+		// shooterBottomMotor.getPosition());
+		// SmartDashboard.putNumber("Shooter Top Encoder Value",
+		// shooterTopMotor.getPosition());
 		if (rearCam) {
 			SmartDashboard.putString("Front Side", "BATTERY");
 		} else {
@@ -444,8 +465,8 @@ public class Robot extends IterativeRobot {
 	public void stopEverything() {
 		pidLeftDrive.disable();
 		pidRightDrive.disable();
-//		shooterBottomMotor.disable();
-//		shooterTopMotor.disable();
+		// shooterBottomMotor.disable();
+		// shooterTopMotor.disable();
 		backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
 		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
 		frontRightMotor.set(0);

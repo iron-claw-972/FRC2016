@@ -64,6 +64,7 @@ public class Intake {
 			case RobotMap.INTAKE_REVERSE_STATE:
 				SmartDashboard.putString("Intake State", "Reverse");
 				System.out.println("Reverse Intake");
+				outtakePiston.set(DoubleSolenoid.Value.kReverse);
 				spoonPiston.set(DoubleSolenoid.Value.kForward);
 				outtakePiston.set(DoubleSolenoid.Value.kForward);
 				intakeMotor.set(RobotMap.INTAKE_REVERSE_MOTOR_SPEED);

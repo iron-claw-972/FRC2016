@@ -218,4 +218,8 @@ public class RobotMap {
 	 public static final int BALL_OPTICAL_DELAY_TIME = 500; // In ms
 	 public static final int REVERSE_OPTICAL_DELAY_TIME = 1000; // In ms
 	 public static final int SHOOTER_DELAY_TIME = 1000; // In ms
+	 
+	 // TESTING CONSTANTS
+	 
+	 public static final boolean USE_OLD_CAM = true;
 }
