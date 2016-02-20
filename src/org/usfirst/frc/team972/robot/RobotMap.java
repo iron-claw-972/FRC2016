@@ -33,13 +33,14 @@ public class RobotMap {
 	 public static final int OBSTACLE_MOTOR_CAN_ID = 8;
 	 public static final int PCM_CAN_ID = 10;
 	 
-	 // ENCODERS
+	 // DIO
 	 
 	 public static final int LEFT_DRIVE_ENCODER_DIO_A_PORT = 0;
 	 public static final int LEFT_DRIVE_ENCODER_DIO_B_PORT = 1;	 
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 2;
 	 public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 3;
-	 public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 4;
+	 // NOTHING IN 4
+	 public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 6;
 	 public static final int FLIPPY_THING_LOWER_LIMIT_SWITCH = 5;
 	 public static final int BALL_OPTICAL_SENSOR_PORT = 7;
 	 

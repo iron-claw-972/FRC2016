@@ -69,7 +69,7 @@ public class Intake {
 				intakeMotor.set(RobotMap.INTAKE_REVERSE_MOTOR_SPEED);
 				if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON)) {
 					spoonPiston.set(DoubleSolenoid.Value.kReverse);
-					outtakePiston.set(DoubleSolenoid.Value.kReverse);
+					outtakePiston.set(DoubleSolenoid.Value.kForward);
 					RobotMap.intakeState = RobotMap.INTAKE_WAIT_STATE;
 				}
 				if (ballSensor.get()) {
