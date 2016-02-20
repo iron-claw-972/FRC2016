@@ -37,16 +37,41 @@ public class Shooter {
 		System.out.println("Stop Shooter");
 		topMotor.set(0);
 		bottomMotor.set(0);
+		topMotor.disable();
+		bottomMotor.disable();
 	}
 
 	boolean setShooter(double speed) {
-		 double kP = (((Robot.joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
-		 double kI = (((Robot.joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
-		 double kD = (((Robot.joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
-		 
-		topMotor.set(speed);
-		bottomMotor.set(-speed);
-		return true;
+		double kP = (((Robot.joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
+		double kI = (((Robot.joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
+		double kD = (((Robot.joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
+
+		SmartDashboard.putNumber("Shooter P", kP);
+		SmartDashboard.putNumber("Shooter I", kI);
+		SmartDashboard.putNumber("Shooter D", kD);
+		
+		double topSetpoint = speed;
+		double bottomSetpoint = -speed;
+		double deadzone = 0.01;
+		
+		topMotor.setSetpoint(topSetpoint);
+		bottomMotor.setSetpoint(bottomSetpoint);
+		
+		topMotor.setPID(kP, kI, kD);
+		topMotor.enable();
+		bottomMotor.setPID(kP, kI, kD);
+		bottomMotor.enable();
+		
+		SmartDashboard.putNumber("Top Error", topMotor.get() - topSetpoint);
+		SmartDashboard.putNumber("Bottom Error", bottomMotor.get() - bottomSetpoint);
+
+		boolean topMotorCorrect = topMotor.get() <= topSetpoint + deadzone && topMotor.get() >= topSetpoint - deadzone;
+		boolean bottomMotorCorrect = bottomMotor.get() <= bottomSetpoint + deadzone && bottomMotor.get() >= bottomSetpoint - deadzone;
+		boolean doneSettingSpeed = topMotorCorrect && bottomMotorCorrect;
+		if (doneSettingSpeed) {
+			shooterStop();
+		}
+		return doneSettingSpeed;
 	}
 
 	// @return whether shooter speed is changed

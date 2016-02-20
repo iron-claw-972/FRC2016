@@ -437,6 +437,8 @@ public class Robot extends IterativeRobot {
 	public void stopEverything() {
 		pidLeftDrive.disable();
 		pidRightDrive.disable();
+		shooterBottomMotor.disable();
+		shooterTopMotor.disable();
 		backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
 		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
 		frontRightMotor.set(0);
