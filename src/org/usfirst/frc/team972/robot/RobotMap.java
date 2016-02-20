@@ -99,12 +99,12 @@ public class RobotMap {
 	 
 	 // PISTONS
 	 
-	 public static final int PISTON_GEARBOX_LEFT_SHIFTING_FORWARD_CHANNEL = 0;
-	 public static final int PISTON_GEARBOX_LEFT_SHIFTING_REVERSE_CHANNEL = 1;
-	 public static final int PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL = 2;
-	 public static final int PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL = 3;
-	 public static final int PISTON_BALL_PUSHER_FORWARD_CHANNEL = 0;
-	 public static final int PISTON_BALL_PUSHER_REVERSE_CHANNEL = 1;
+	 public static final int PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL = 0;
+	 public static final int PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL = 1;
+	 public static final int PISTON_BALL_PUSHER_FORWARD_CHANNEL = 2;
+	 public static final int PISTON_BALL_PUSHER_REVERSE_CHANNEL = 3;
+	 public static final int PISTON_OUTTAKE_FORWARD_CHANNEL = 4;
+	 public static final int PISTON_OUTTAKE_REVERSE_CHANNEL = 5;
 	 
 	 // SHOOTER PISTON STATE MACHINE
 	 public static final int DO_NOTHING_STATE = 1;

@@ -37,6 +37,10 @@ public class Drive {
 		}
 	}
 	
+	public void reverse() {
+		Robot.rearCam = !Robot.rearCam;
+	}
+	
 	public void pidBrake(boolean pidMode, PIDController pidLeftDrive, PIDController pidRightDrive, Encoder leftDriveEncoder, Encoder rightDriveEncoder, double kP, double kI, double kD) {
 		if (!(pidMode)) {
 			botDrive.setSafetyEnabled(false); // stops "Robot Drive not updated enough" error during PID

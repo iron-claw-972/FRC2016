@@ -94,6 +94,9 @@ public class Robot extends IterativeRobot {
 	// RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
 	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID,
 			RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
+	public static DoubleSolenoid outtakePiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID,
+			RobotMap.PISTON_OUTTAKE_FORWARD_CHANNEL, RobotMap.PISTON_OUTTAKE_REVERSE_CHANNEL);
+	
 
 	// sensors
 	DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
@@ -115,14 +118,11 @@ public class Robot extends IterativeRobot {
 	double rightDriveSpeed = 0.0;
 
 	// camera stuff
-	boolean cameraSwitchPressedLastTime = false;
-	Image img = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-	boolean rearCam = false; // stores whether the front camera is on
+	static boolean cameraSwitchPressedLastTime = false;
+	static boolean rearCam = false; // stores whether the front camera is on
 
-	public static USBCamera cameraFront;
-	public static USBCamera cameraBack;
-
-	public static CameraServer camServer = CameraServer.getInstance();
+	public static USBCamera camFront;
+	public static USBCamera camBack;
 
 	// gearbox switching variables
 	boolean gearboxSwitchingPressedLastTime = false;
@@ -156,6 +156,8 @@ public class Robot extends IterativeRobot {
 	boolean goingSetDistance = false;
 
 	double kP, kI, kD, leftJoystickY, rightJoystickY;
+	
+	CameraStreamingThread cst;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -189,19 +191,6 @@ public class Robot extends IterativeRobot {
 		pidRightDrive.setSetpoint(0);
 		rightDriveEncoder.reset();
 		leftDriveEncoder.reset();
-
-		try {
-			cameraFront = new USBCamera("cam0");
-			cameraBack = new USBCamera("cam1");
-			cameraFront.openCamera();
-			cameraBack.openCamera();
-			cameraFront.startCapture(); // startCapture so that it doesn't try
-										// to take a picture before the camera
-										// is on
-			camServer.setQuality(100);
-		} catch (VisionException e) {
-			System.out.println("VISION EXCEPTION ~ " + e);
-		}
 	}
 
 	/**
@@ -239,6 +228,21 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		stopEverything(); // stops all motors
 		intakeSystem.spoonUp(spoonPiston); // Move spoon up at the beginning
+
+		try {
+			camFront = new USBCamera("cam0");
+			camBack = new USBCamera("cam1");
+			camFront.openCamera();
+			camBack.openCamera();
+			camFront.startCapture();
+			// startCapture so that it doesn't try to take a picture before the
+			// camera is on
+		} catch (VisionException e) {
+			System.out.println("VISION EXCEPTION ~ " + e);
+		}
+
+		cst = new CameraStreamingThread(this);
+		new Thread(cst).start();
 	}
 
 	public void teleopPeriodic() {
@@ -250,10 +254,11 @@ public class Robot extends IterativeRobot {
 
 		// MAKE SURE YOU HAVE FLIPPY SPEED AT NOT ZERO (not down)
 		obstacleMotorManualOverride = joystickOp.getRawButton(RobotMap.JOYSTICK_OBSTACLE_MOTOR_MANUAL_OVERRIDE_BUTTON);
-		
+
 		if (obstacleMotorUpperLimitSwitch.get() && obstacleMotorLowerLimitSwitch.get()) {
 			obstacleMotorManualOverride = true;
-			// If both limit switches are triggered, automatically manual override (shouldn't happen)
+			// If both limit switches are triggered, automatically manual
+			// override (shouldn't happen)
 		}
 		if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
 				&& (!obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) {
@@ -264,27 +269,31 @@ public class Robot extends IterativeRobot {
 		} else {
 			obstacleMotor.set(0);
 		}
-		
+
 		// TODO remove if limit switch works
-//		if (obstacleMotorManualOverride) {
-//			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)) {
-//				obstacleMotor.set(-obstacleMotorSpeed); // Go up
-//			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)) {
-//				obstacleMotor.set(obstacleMotorSpeed); // Go down
-//			} else {
-//				obstacleMotor.set(0);
-//			}
-//		} else { // normal circumstances
-//			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
-//					&& !obstacleMotorUpperLimitSwitch.get()) {
-//				obstacleMotor.set(-obstacleMotorSpeed); // Go up
-//			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
-//					&& !obstacleMotorLowerLimitSwitch.get()) {
-//				obstacleMotor.set(obstacleMotorSpeed); // Go down
-//			} else {
-//				obstacleMotor.set(0);
-//			}
-//		}
+		// if (obstacleMotorManualOverride) {
+		// if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 ||
+		// joystickOp.getPOV(0) == 315)) {
+		// obstacleMotor.set(-obstacleMotorSpeed); // Go up
+		// } else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) ==
+		// 225 || joystickOp.getPOV(0) == 135)) {
+		// obstacleMotor.set(obstacleMotorSpeed); // Go down
+		// } else {
+		// obstacleMotor.set(0);
+		// }
+		// } else { // normal circumstances
+		// if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 ||
+		// joystickOp.getPOV(0) == 315)
+		// && !obstacleMotorUpperLimitSwitch.get()) {
+		// obstacleMotor.set(-obstacleMotorSpeed); // Go up
+		// } else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) ==
+		// 225 || joystickOp.getPOV(0) == 135)
+		// && !obstacleMotorLowerLimitSwitch.get()) {
+		// obstacleMotor.set(obstacleMotorSpeed); // Go down
+		// } else {
+		// obstacleMotor.set(0);
+		// }
+		// }
 
 		// gearbox switch
 		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
@@ -293,39 +302,51 @@ public class Robot extends IterativeRobot {
 		}
 		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
 
-		try {
-			// switch front of robot
-			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-				if (rearCam) {
-					cameraBack.stopCapture();
-					cameraFront.startCapture();
-					rearCam = false;
-				} else {
-					cameraFront.stopCapture();
-					cameraBack.startCapture();
-					rearCam = true;
-				}
-			}
-			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// end switch front of robot
-			
-			// camera streaming
-			if (rearCam) {
-				cameraBack.getImage(img);
-			} else {
-				cameraFront.getImage(img);
-			}
-			camServer.setImage(img); // puts image on the dashboard
-		} catch (Exception e) {
-			// switch front of robot
-			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-				rearCam = !rearCam;
-			}
-			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// finish switching front of robot
-		} // end catch
+		// switch front of robot
+		boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+		if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+			driveController.reverse();
+			cst.reverse();
+		}
+		cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+		// end switch front of robot
+
+		// TODO remove when threading works
+		// try {
+		// // switch front of robot
+		// boolean cameraToggleButtonPressed =
+		// joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+		// if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+		// if (rearCam) {
+		// camBack.stopCapture();
+		// camFront.startCapture();
+		// rearCam = false;
+		// } else {
+		// camFront.stopCapture();
+		// camBack.startCapture();
+		// rearCam = true;
+		// }
+		// }
+		// cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+		// // end switch front of robot
+		//
+		// // camera streaming
+		// if (rearCam) {
+		// camBack.getImage(img);
+		// } else {
+		// camFront.getImage(img);
+		// }
+		// camServer.setImage(img); // puts image on the dashboard
+		// } catch (Exception e) {
+		// // switch front of robot
+		// boolean cameraToggleButtonPressed =
+		// joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+		// if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+		// rearCam = !rearCam;
+		// }
+		// cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+		// // finish switching front of robot
+		// } // end catch
 
 		driveMultiplier = driveController.setDriveMultiplier(driveMultiplier);
 
@@ -367,7 +388,7 @@ public class Robot extends IterativeRobot {
 
 		// TODO Go set distance AND go straight
 
-		intakeSystem.intakeStateMachine(spoonPiston, ballOpticalSensor);
+		intakeSystem.intakeStateMachine(spoonPiston, outtakePiston, ballOpticalSensor);
 		shooterSystem.shooterStateMachine(spoonPiston);
 
 		printEverything();
