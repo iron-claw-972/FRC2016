@@ -97,8 +97,10 @@ public class Robot extends IterativeRobot {
 
 	// sensors
 	DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
-	public static DigitalInput flippyThingUpperLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
-	public static DigitalInput flippyThingLowerLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
+	public static DigitalInput obstacleMotorUpperLimitSwitch = new DigitalInput(
+			RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
+	public static DigitalInput obstacleMotorLowerLimitSwitch = new DigitalInput(
+			RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
 
 	// intake
 
@@ -139,8 +141,8 @@ public class Robot extends IterativeRobot {
 
 	static long autonomousDelayStartTime;
 
-	double flippySpeed;
-	boolean flippyManualOverride;
+	double obstacleMotorSpeed;
+	boolean obstacleMotorManualOverride;
 
 	// shooter variables
 	double shooterSpeed = 0;
@@ -153,7 +155,7 @@ public class Robot extends IterativeRobot {
 	boolean leftDistance = false;
 	boolean goingSetDistance = false;
 
-	double kP, kI, kD, leftJoystickSpeed, rightJoystickSpeed;
+	double kP, kI, kD, leftJoystickY, rightJoystickY;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -239,53 +241,60 @@ public class Robot extends IterativeRobot {
 		intakeSystem.spoonUp(spoonPiston); // Move spoon up at the beginning
 	}
 
-	/**
-	 * This function is called periodically during operator control
-	 */
-
 	public void teleopPeriodic() {
-		botDrive.setSafetyEnabled(true); // Prevents "output not updated enough"
-											// error message
+		botDrive.setSafetyEnabled(true); // Helps prevent "output not updated
+											// enough"
 
-		flippySpeed = (((-joystickOp.getThrottle()) + 1) / 2);
-		// obstacle motor "flippy thing"
-
-		flippyManualOverride = joystickOp.getRawButton(RobotMap.JOYSTICK_OBSTACLE_MOTOR_MANUAL_OVERRIDE_BUTTON);
-		if ((flippyThingUpperLimitSwitch.get() && flippyThingLowerLimitSwitch.get()) || flippyManualOverride) {
-			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)) {
-				obstacleMotor.set(-flippySpeed); // Go up
-			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)) {
-				obstacleMotor.set(flippySpeed); // Go down
-			} else {
-				obstacleMotor.set(0);
-			}
-		} else {
-			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
-					&& !flippyThingUpperLimitSwitch.get()) {
-				obstacleMotor.set(-flippySpeed); // Go up
-			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
-					&& !flippyThingLowerLimitSwitch.get()) {
-				obstacleMotor.set(flippySpeed); // Go down
-			} else {
-				obstacleMotor.set(0);
-			}
-		}
+		obstacleMotorSpeed = (((-joystickOp.getThrottle()) + 1) / 2);
+		// Operator joystick throttle (0.0 bottom to 1.0 top)
 
 		// MAKE SURE YOU HAVE FLIPPY SPEED AT NOT ZERO (not down)
+		obstacleMotorManualOverride = joystickOp.getRawButton(RobotMap.JOYSTICK_OBSTACLE_MOTOR_MANUAL_OVERRIDE_BUTTON);
+		
+		if (obstacleMotorUpperLimitSwitch.get() && obstacleMotorLowerLimitSwitch.get()) {
+			obstacleMotorManualOverride = true;
+			// If both limit switches are triggered, automatically manual override (shouldn't happen)
+		}
+		if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
+				&& (!obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) {
+			obstacleMotor.set(-obstacleMotorSpeed); // Go up
+		} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
+				&& (!obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
+			obstacleMotor.set(obstacleMotorSpeed); // Go down
+		} else {
+			obstacleMotor.set(0);
+		}
+		
+		// TODO remove if limit switch works
+//		if (obstacleMotorManualOverride) {
+//			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)) {
+//				obstacleMotor.set(-obstacleMotorSpeed); // Go up
+//			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)) {
+//				obstacleMotor.set(obstacleMotorSpeed); // Go down
+//			} else {
+//				obstacleMotor.set(0);
+//			}
+//		} else { // normal circumstances
+//			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
+//					&& !obstacleMotorUpperLimitSwitch.get()) {
+//				obstacleMotor.set(-obstacleMotorSpeed); // Go up
+//			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
+//					&& !obstacleMotorLowerLimitSwitch.get()) {
+//				obstacleMotor.set(obstacleMotorSpeed); // Go down
+//			} else {
+//				obstacleMotor.set(0);
+//			}
+//		}
 
 		// gearbox switch
-		// TODO uncomment
-		// boolean gearboxSwitchingButtonIsPressed =
-		// joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
-		// if (gearboxSwitchingButtonIsPressed &&
-		// !gearboxSwitchingPressedLastTime) {
-		// driveController.switchModes(gearboxPistonLeft/*,
-		// gearboxPistonRight*/);
-		// }
-		// gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
+		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
+		if (gearboxSwitchingButtonIsPressed && !gearboxSwitchingPressedLastTime) {
+			// driveController.switchModes(gearboxPistonLeft); TODO uncomment
+		}
+		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
 
 		try {
-			// reverse drive mode (with camera switching)
+			// switch front of robot
 			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
 			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
 				if (rearCam) {
@@ -298,106 +307,51 @@ public class Robot extends IterativeRobot {
 					rearCam = true;
 				}
 			}
-
 			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// finish switching
+			// end switch front of robot
+			
 			// camera streaming
-			if (rearCam == true) {
+			if (rearCam) {
 				cameraBack.getImage(img);
-				SmartDashboard.putString("Front Side", "BATTERY");
 			} else {
 				cameraFront.getImage(img);
-				SmartDashboard.putString("Front Side", "INTAKE");
 			}
 			camServer.setImage(img); // puts image on the dashboard
-			// finish camera streaming
-		} catch (NullPointerException e) {
-
-			// In this catch, we are switching drive modes, like in the try, but
-			// without cameras, since we have no cameras
+		} catch (Exception e) {
+			// switch front of robot
 			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
 			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-				if (rearCam) {
-					rearCam = false;
-				} else {
-					rearCam = true;
-				}
+				rearCam = !rearCam;
 			}
 			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// finish switching
-
-			// camera streaming
-			if (rearCam == true) {
-				SmartDashboard.putString("Front Side", "BATTERY");
-			} else {
-				SmartDashboard.putString("Front Side", "INTAKE");
-			}
-		} catch (VisionException e) {
-			System.out.println(e);
-
-			// In this catch, we are switching drive modes, like in the try, but
-			// without cameras, since we have no cameras
-			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-				if (rearCam) {
-					rearCam = false;
-				} else {
-					rearCam = true;
-				}
-			}
-			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// finish switching
-
-			// camera streaming
-			if (rearCam == true) {
-				SmartDashboard.putString("Front Side", "BATTERY");
-			} else {
-				SmartDashboard.putString("Front Side", "INTAKE");
-			}
+			// finish switching front of robot
 		} // end catch
 
-		// drive multiplier
-		if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_1_BUTTON)) {
-			driveMultiplier = RobotMap.DRIVE_MODE_1;
-		} else if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_2_BUTTON)) {
-			driveMultiplier = RobotMap.DRIVE_MODE_2;
-		} else if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_3_BUTTON)) {
-			driveMultiplier = RobotMap.DRIVE_MODE_3;
-		} else if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_4_BUTTON)) {
-			driveMultiplier = RobotMap.DRIVE_MODE_4;
-		} else if (joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_5_BUTTON)) {
-			driveMultiplier = RobotMap.DRIVE_MODE_5;
-		}
-		// finish drive multiplier
+		driveMultiplier = driveController.setDriveMultiplier(driveMultiplier);
 
-		leftJoystickSpeed = joystickLeft.getY();
-		rightJoystickSpeed = joystickRight.getY();
+		leftJoystickY = joystickLeft.getY();
+		rightJoystickY = joystickRight.getY();
 
-		// drive code
 		if (rearCam) {
-			leftDriveSpeed = leftJoystickSpeed * driveMultiplier * -1;
-			rightDriveSpeed = rightJoystickSpeed * driveMultiplier * -1;
+			leftDriveSpeed = leftJoystickY * driveMultiplier * -1;
+			rightDriveSpeed = rightJoystickY * driveMultiplier * -1;
 			// If using the rear cam, we always want the drive multiplier to be
-			// negative
+			// negative (go backwards)
 		} else {
 			leftDriveSpeed = joystickRight.getY() * driveMultiplier;
 			rightDriveSpeed = joystickLeft.getY() * driveMultiplier;
 		}
 
-		// finish drive code
-
-		// PID Brake
+		// This sets P, I, and D from throttle (bottom is zero)
 		// double kP = (((joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
 		// double kI = (((joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
 		// double kD = (((joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
 
+		// This sets P, I, and D to default values
 		kP = RobotMap.P_BRAKE;
 		kI = RobotMap.I_BRAKE;
 		kD = RobotMap.D_BRAKE;
 
-		// double error = rightDriveEncoder.get() - 0;
-
-		// TODO fix set forward code and use PID for it
 		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
 			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI,
 					kD);
@@ -410,108 +364,12 @@ public class Robot extends IterativeRobot {
 				driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
 			}
 		}
-		// boolean encoderValueButtonPressed =
-		// joystickRight.getRawButton(RobotMap.JOYSTICK_DRIVE_SET_DISTANCE_BUTTON);
-		// if (encoderValueButtonPressed && !goingSetDistance) {
-		// goingSetDistance = true;
-		// leftDriveEncoder.reset();
-		// rightDriveEncoder.reset();
-		// }
-		// if (goingSetDistance && joystickRight.getRawButton(7)) {
-		// count++;
-		// SmartDashboard.putNumber("Count", count);
-		// // if (Math.abs(leftDriveEncoder.get()) > 10) {
-		// // frontLeftMotor.set(0);
-		// // backLeftMotor.set(0);
-		// // } else {
-		// // frontLeftMotor.set(0.1);
-		// // backLeftMotor.set(0.1);
-		// // }
-		// if (Math.abs(rightDriveEncoder.get()) > 100) {
-		// frontRightMotor.set(0);
-		// backRightMotor.set(0);
-		// } else {
-		// frontRightMotor.set(0.15);
-		// backRightMotor.set(0.15);
-		// }
-		// if (/* Math.abs(leftDriveEncoder.get()) > 100 && */
-		// Math.abs(rightDriveEncoder.get()) > 100) {
-		// goingSetDistance = false;
-		// }
-		// } else {
-		// count = 0;
-		// botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed); // in else above
-		// }
-		// finish PID Brake
+
+		// TODO Go set distance AND go straight
 
 		intakeSystem.intakeStateMachine(spoonPiston, ballOpticalSensor);
 		shooterSystem.shooterStateMachine(spoonPiston);
 
-		// SmartDashboard.putNumber("Bottom Shooter Encoder Rate",
-		// shooterBottomEncoder.getRate());
-		// SmartDashboard.putNumber("Top Shooter Encoder Rate",
-		// shooterTopEncoder.getRate());
-
-		// shooter motors
-		// shooterHighSpeedMotorButtonPressed =
-		// joystickOp.getRawButton(RobotMap.JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON);
-		// shooterMediumSpeedMotorButtonPressed =
-		// joystickOp.getRawButton(RobotMap.JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON);
-		// shooterSlowSpeedMotorButtonPressed =
-		// joystickOp.getRawButton(RobotMap.JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON);
-		// shooterStopMotorButtonPressed =
-		// joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON);
-		// if (shooterHighSpeedMotorButtonPressed) { // 2800 Hz
-		//// shooterSpeed = RobotMap.SHOOTER_FAST_SPEED;
-		// pidBottomShooter.setSetpoint(RobotMap.HIGH_SPEED_SHOOTER_MOTOR_SETPOINT);
-		// pidTopShooter.setSetpoint(RobotMap.HIGH_SPEED_SHOOTER_MOTOR_SETPOINT);
-		// pidBottomShooter.setPID(RobotMap.P_HIGH_SPEED_SHOOTER,
-		// RobotMap.I_HIGH_SPEED_SHOOTER, RobotMap.D_HIGH_SPEED_SHOOTER);
-		// pidTopShooter.setPID(RobotMap.P_HIGH_SPEED_SHOOTER,
-		// RobotMap.I_HIGH_SPEED_SHOOTER, RobotMap.D_HIGH_SPEED_SHOOTER);
-		// pidBottomShooter.enable();
-		// pidTopShooter.enable();
-		//
-		// } else if (shooterMediumSpeedMotorButtonPressed) { // 1600 Hz
-		//// shooterSpeed = RobotMap.SHOOTER_MEDIUM_SPEED;
-		// pidBottomShooter.setSetpoint(RobotMap.MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT);
-		// pidTopShooter.setSetpoint(RobotMap.MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT);
-		// pidBottomShooter.setPID(RobotMap.P_MEDIUM_SPEED_SHOOTER,
-		// RobotMap.I_MEDIUM_SPEED_SHOOTER, RobotMap.D_MEDIUM_SPEED_SHOOTER);
-		// pidTopShooter.setPID(RobotMap.P_MEDIUM_SPEED_SHOOTER,
-		// RobotMap.I_MEDIUM_SPEED_SHOOTER, RobotMap.D_MEDIUM_SPEED_SHOOTER);
-		// pidBottomShooter.enable();
-		// pidTopShooter.enable();
-		// } else if (shooterSlowSpeedMotorButtonPressed) { // 700 Hz
-		//// shooterSpeed = RobotMap.SHOOTER_SLOW_SPEED;
-		// pidBottomShooter.setSetpoint(RobotMap.LOW_SPEED_SHOOTER_MOTOR_SETPOINT);
-		// pidTopShooter.setSetpoint(RobotMap.LOW_SPEED_SHOOTER_MOTOR_SETPOINT);
-		// pidBottomShooter.setPID(RobotMap.P_LOW_SPEED_SHOOTER,
-		// RobotMap.I_LOW_SPEED_SHOOTER, RobotMap.D_LOW_SPEED_SHOOTER);
-		// pidTopShooter.setPID(RobotMap.P_LOW_SPEED_SHOOTER,
-		// RobotMap.I_LOW_SPEED_SHOOTER, RobotMap.D_LOW_SPEED_SHOOTER);
-		// pidBottomShooter.enable();
-		// pidTopShooter.enable();
-		//
-		// } else if (shooterStopMotorButtonPressed) {
-		//// shooterSpeed = 0;
-		// pidTopShooter.disable();
-		// pidBottomShooter.disable();
-		//// backLeftMotor.set(0);
-		//// backRightMotor.set(0);
-		// frontLeftMotor.set(0);
-		// frontRightMotor.set(0);
-		// }
-		// shooterBottomMotor.set(shooterSpeed);
-		// shooterTopMotor.set(shooterSpeed);
-		// frontLeftMotor.set(shooterSpeed);
-		// frontRightMotor.set(shooterSpeed);
-		// backLeftMotor.set(shooterSpeed);
-		// backRightMotor.set(shooterSpeed);
-
-		// backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-		// backRightMotor.set(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
-		// TODO using drive motors to test shooter PID; change this soon
 		printEverything();
 	}
 
@@ -529,18 +387,24 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Right Encoder Value", rightDriveEncoder.get());
 		SmartDashboard.putBoolean("Going Set Distance", goingSetDistance);
 		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get());
-		SmartDashboard.putNumber("Flippy Speed", flippySpeed);
-		SmartDashboard.putBoolean("Upper LS", flippyThingUpperLimitSwitch.get());
-		SmartDashboard.putBoolean("Lower LS", flippyThingLowerLimitSwitch.get());
-		SmartDashboard.putNumber("Left Joystick Y", leftJoystickSpeed);
-		SmartDashboard.putNumber("Right Joystick Y", rightJoystickSpeed);
+		SmartDashboard.putNumber("Flippy Speed", obstacleMotorSpeed);
+		SmartDashboard.putBoolean("Upper LS", obstacleMotorUpperLimitSwitch.get());
+		SmartDashboard.putBoolean("Lower LS", obstacleMotorLowerLimitSwitch.get());
+		SmartDashboard.putNumber("Left Joystick Y", leftJoystickY);
+		SmartDashboard.putNumber("Right Joystick Y", rightJoystickY);
 		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-		SmartDashboard.putBoolean("Flippy Thing Manual Override", flippyManualOverride);
+		SmartDashboard.putBoolean("Flippy Thing Manual Override", obstacleMotorManualOverride);
 		SmartDashboard.putNumber("Shooter Bottom Encoder Value", shooterBottomMotor.getPosition());
 		SmartDashboard.putNumber("Shooter Top Encoder Value", shooterTopMotor.getPosition());
+		if (rearCam) {
+			SmartDashboard.putString("Front Side", "BATTERY");
+		} else {
+			SmartDashboard.putString("Front Side", "INTAKE");
+		}
 	}
+
 	/**
 	 * This function is called periodically during test mode
 	 */

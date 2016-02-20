@@ -140,4 +140,64 @@ public class Shooter {
 				break;
 		} // end shooter state machine
 	} // end method
+	
+	// OLD SHOOTER CODE FOR REFERENCE
+	// shooterHighSpeedMotorButtonPressed =
+	// joystickOp.getRawButton(RobotMap.JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON);
+	// shooterMediumSpeedMotorButtonPressed =
+	// joystickOp.getRawButton(RobotMap.JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON);
+	// shooterSlowSpeedMotorButtonPressed =
+	// joystickOp.getRawButton(RobotMap.JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON);
+	// shooterStopMotorButtonPressed =
+	// joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON);
+	// if (shooterHighSpeedMotorButtonPressed) { // 2800 Hz
+	//// shooterSpeed = RobotMap.SHOOTER_FAST_SPEED;
+	// pidBottomShooter.setSetpoint(RobotMap.HIGH_SPEED_SHOOTER_MOTOR_SETPOINT);
+	// pidTopShooter.setSetpoint(RobotMap.HIGH_SPEED_SHOOTER_MOTOR_SETPOINT);
+	// pidBottomShooter.setPID(RobotMap.P_HIGH_SPEED_SHOOTER,
+	// RobotMap.I_HIGH_SPEED_SHOOTER, RobotMap.D_HIGH_SPEED_SHOOTER);
+	// pidTopShooter.setPID(RobotMap.P_HIGH_SPEED_SHOOTER,
+	// RobotMap.I_HIGH_SPEED_SHOOTER, RobotMap.D_HIGH_SPEED_SHOOTER);
+	// pidBottomShooter.enable();
+	// pidTopShooter.enable();
+	//
+	// } else if (shooterMediumSpeedMotorButtonPressed) { // 1600 Hz
+	//// shooterSpeed = RobotMap.SHOOTER_MEDIUM_SPEED;
+	// pidBottomShooter.setSetpoint(RobotMap.MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT);
+	// pidTopShooter.setSetpoint(RobotMap.MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT);
+	// pidBottomShooter.setPID(RobotMap.P_MEDIUM_SPEED_SHOOTER,
+	// RobotMap.I_MEDIUM_SPEED_SHOOTER, RobotMap.D_MEDIUM_SPEED_SHOOTER);
+	// pidTopShooter.setPID(RobotMap.P_MEDIUM_SPEED_SHOOTER,
+	// RobotMap.I_MEDIUM_SPEED_SHOOTER, RobotMap.D_MEDIUM_SPEED_SHOOTER);
+	// pidBottomShooter.enable();
+	// pidTopShooter.enable();
+	// } else if (shooterSlowSpeedMotorButtonPressed) { // 700 Hz
+	//// shooterSpeed = RobotMap.SHOOTER_SLOW_SPEED;
+	// pidBottomShooter.setSetpoint(RobotMap.LOW_SPEED_SHOOTER_MOTOR_SETPOINT);
+	// pidTopShooter.setSetpoint(RobotMap.LOW_SPEED_SHOOTER_MOTOR_SETPOINT);
+	// pidBottomShooter.setPID(RobotMap.P_LOW_SPEED_SHOOTER,
+	// RobotMap.I_LOW_SPEED_SHOOTER, RobotMap.D_LOW_SPEED_SHOOTER);
+	// pidTopShooter.setPID(RobotMap.P_LOW_SPEED_SHOOTER,
+	// RobotMap.I_LOW_SPEED_SHOOTER, RobotMap.D_LOW_SPEED_SHOOTER);
+	// pidBottomShooter.enable();
+	// pidTopShooter.enable();
+	//
+	// } else if (shooterStopMotorButtonPressed) {
+	//// shooterSpeed = 0;
+	// pidTopShooter.disable();
+	// pidBottomShooter.disable();
+	//// backLeftMotor.set(0);
+	//// backRightMotor.set(0);
+	// frontLeftMotor.set(0);
+	// frontRightMotor.set(0);
+	// }
+	// shooterBottomMotor.set(shooterSpeed);
+	// shooterTopMotor.set(shooterSpeed);
+	// frontLeftMotor.set(shooterSpeed);
+	// frontRightMotor.set(shooterSpeed);
+	// backLeftMotor.set(shooterSpeed);
+	// backRightMotor.set(shooterSpeed);
+
+	// backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+	// backRightMotor.set(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
 }

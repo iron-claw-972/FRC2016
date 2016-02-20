@@ -21,6 +21,22 @@ public class Drive {
 		this.backRightMotor = backRightMotor;
 	}
 	
+	public double setDriveMultiplier(double originalDriveMultiplier) {
+		if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_1_BUTTON)) {
+			return RobotMap.DRIVE_MODE_1;
+		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_2_BUTTON)) {
+			return RobotMap.DRIVE_MODE_2;
+		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_3_BUTTON)) {
+			return RobotMap.DRIVE_MODE_3;
+		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_4_BUTTON)) {
+			return RobotMap.DRIVE_MODE_4;
+		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_5_BUTTON)) {
+			return RobotMap.DRIVE_MODE_5;
+		} else {
+			return originalDriveMultiplier;
+		}
+	}
+	
 	public void pidBrake(boolean pidMode, PIDController pidLeftDrive, PIDController pidRightDrive, Encoder leftDriveEncoder, Encoder rightDriveEncoder, double kP, double kI, double kD) {
 		if (!(pidMode)) {
 			botDrive.setSafetyEnabled(false); // stops "Robot Drive not updated enough" error during PID
