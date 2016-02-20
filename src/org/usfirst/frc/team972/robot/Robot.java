@@ -159,10 +159,7 @@ public class Robot extends IterativeRobot {
 		System.out.println("Robot Init");
 		// compressor.start();
 		compressor.stop();
-
-		shooterBottomMotor.changeControlMode(TalonControlMode.PercentVbus);
-		shooterTopMotor.changeControlMode(TalonControlMode.PercentVbus);
-
+		
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" message mostly
 
