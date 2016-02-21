@@ -70,6 +70,8 @@ public class Robot extends IterativeRobot {
 
 	public static PIDController pidRightDrive = new PIDController(0, 0, 0, rightDriveEncoder, frontRightMotor);
 	public static PIDController pidLeftDrive = new PIDController(0, 0, 0, leftDriveEncoder, frontLeftMotor);
+	public static PIDController driveStraightRightPID = new PIDController(0, 0, 0, rightDriveEncoder, frontRightMotor);
+	public static PIDController driveStraightLeftPID = new PIDController(0, 0, 0, leftDriveEncoder, frontLeftMotor);
 	// public static PIDController pidBottomShooter = new PIDController(0, 0, 0,
 	// shooterBottomEncoder, frontLeftMotor);
 	// public static PIDController pidTopShooter = new PIDController(0, 0, 0,
@@ -106,7 +108,6 @@ public class Robot extends IterativeRobot {
 	double driveMultiplier = RobotMap.DEFAULT_DRIVE_MODE;
 	double leftDriveSpeed = 0.0;
 	double rightDriveSpeed = 0.0;
-
 	// camera stuff
 	static boolean cameraSwitchPressedLastTime = false;
 	static boolean rearCam = false; // stores whether the front camera is on
@@ -159,7 +160,7 @@ public class Robot extends IterativeRobot {
 		System.out.println("Robot Init");
 		// compressor.start();
 		compressor.stop();
-		
+
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" message mostly
 
@@ -237,25 +238,25 @@ public class Robot extends IterativeRobot {
 
 	public void teleopInit() {
 		stopEverything(); // stops all motors
-			if (RobotMap.USE_OLD_CAM) {
-				try {
-					camFront = new USBCamera("cam1");
-					camBack = new USBCamera("cam0");
-					camFront.openCamera();
-					camBack.openCamera();
-					camFront.startCapture();
-					// startCapture so that it doesn't try to take a picture
-					// before
-					// the
-					// camera is on
+		if (RobotMap.USE_OLD_CAM) {
+			try {
+				camFront = new USBCamera("cam1");
+				camBack = new USBCamera("cam0");
+				camFront.openCamera();
+				camBack.openCamera();
+				camFront.startCapture();
+				// startCapture so that it doesn't try to take a picture
+				// before
+				// the
+				// camera is on
 
-				} catch (VisionException e) {
-					System.out.println("VISION EXCEPTION ~ " + e);
-				}
-			} else {
-				cst = new CameraStreamingThread(this);
-				new Thread(cst).start();
+			} catch (VisionException e) {
+				System.out.println("VISION EXCEPTION ~ " + e);
 			}
+		} else {
+			cst = new CameraStreamingThread(this);
+			new Thread(cst).start();
+		}
 
 		intakeSystem.spoonUp(spoonPiston); // Move spoon up at the beginning
 	}
@@ -405,15 +406,18 @@ public class Robot extends IterativeRobot {
 					kD);
 		} else {
 			driveController.stopPIDBrake(pidMode, pidLeftDrive, pidRightDrive);
-			if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
-				botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier); // Split
-																												// arcade
+			if (Math.abs(leftDriveSpeed - rightDriveSpeed) <= 0.1) {
+				// 0.1 bc 5% times range of 2
+				driveController.straightDrive(driveStraightLeftPID, driveStraightRightPID, leftDriveSpeed, rightDriveSpeed); 
 			} else {
-				driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
+				if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
+					botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier);
+					// Split arcade
+				} else {
+					driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
+				}
 			}
 		}
-
-		// TODO Go set distance AND go straight
 
 		intakeSystem.intakeStateMachine(spoonPiston, outtakePiston, ballOpticalSensor);
 		shooterSystem.shooterStateMachine(spoonPiston);

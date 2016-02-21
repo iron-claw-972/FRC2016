@@ -12,6 +12,7 @@ public class Drive {
 	RobotDrive botDrive;
 	CANTalon frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
 	boolean gearboxPistonForward = false;
+	double driveP, driveI, driveD;
 	
 	public Drive(RobotDrive botDrive, CANTalon frontLeftMotor, CANTalon frontRightMotor, CANTalon backLeftMotor, CANTalon backRightMotor) {
 		this.botDrive = botDrive;
@@ -19,6 +20,24 @@ public class Drive {
 		this.frontRightMotor = frontRightMotor;
 		this.backLeftMotor = backLeftMotor;
 		this.backRightMotor = backRightMotor;
+	}
+	
+	public void straightDrive(PIDController leftPID, PIDController rightPID, double leftSpeed, double rightSpeed) {
+		frontLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
+		frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+		backLeftMotor.changeControlMode(TalonControlMode.Follower);
+		backRightMotor.changeControlMode(TalonControlMode.Follower);
+		backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+		backRightMotor.set(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
+		leftPID.setSetpoint((rightSpeed + leftSpeed)/2);
+		rightPID.setSetpoint((rightSpeed + leftSpeed)/2);
+		driveP = (((Robot.joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
+		driveI = (((Robot.joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
+		driveD = (((Robot.joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
+		rightPID.setPID(driveP, driveI, driveD);
+		leftPID.setPID(driveP, driveI, driveD);
+		rightPID.enable();
+		leftPID.enable();
 	}
 	
 	public double setDriveMultiplier(double originalDriveMultiplier) {
