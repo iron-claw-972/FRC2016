@@ -77,12 +77,15 @@ public class RobotMap {
 
 	// SPEEDS
 
-	public static final double SHOOTER_HIGH_SPEED = 1;
-	public static final double SHOOTER_MEDIUM_SPEED = 0.6;
-	public static final double SHOOTER_LOW_SPEED = 0.3;
+	public static final double SHOOTER_TOP_HIGH_SPEED = 0.55;
+	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 0.55;
+	public static final double SHOOTER_TOP_MEDIUM_SPEED = 0.5;
+	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 0.45;
+	public static final double SHOOTER_TOP_LOW_SPEED = 0.35;
+	public static final double SHOOTER_BOTTOM_LOW_SPEED = 0.3;
 	// shooter speeds will not happen in actual bot because of PID
-	public static final double INTAKE_MOTOR_SPEED = 0.3;
-	public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.3;
+	public static final double INTAKE_MOTOR_SPEED = 0.55;
+	public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.75;
 	public static final double OBSTACLE_MOTOR_SPEED = 0.2;
 
 	// DRIVE MULTIPLIERS
@@ -222,7 +225,8 @@ public class RobotMap {
 	public static final int INTAKE_START_INTAKE_STATE = 2;
 	public static final int INTAKE_WAIT_FOR_OPTICAL_STATE = 3;
 	public static final int INTAKE_SPOON_UP_STATE = 4;
-	public static final int INTAKE_REVERSE_STATE = 5;
+	public static final int INTAKE_REVERSE_SPOON_DOWN_STATE = 5;
+	public static final int INTAKE_REVERSE_OUTTAKE_STATE = 6; 
 	public static int intakeState = INTAKE_WAIT_STATE;
 
 	// SHOOTER STATE MACHINE
@@ -239,7 +243,7 @@ public class RobotMap {
 	// CONSTANTS
 
 	public static final int BALL_OPTICAL_DELAY_TIME = 500; // In ms
-	public static final int REVERSE_OPTICAL_DELAY_TIME = 1000; // In ms
+	public static final int REVERSE_OUTTAKE_DELAY_TIME = 100; // In ms
 	public static final int SHOOTER_DELAY_TIME = 1000; // In ms
 	public static final double SHOOTER_DEADZONE = 0.01;
 

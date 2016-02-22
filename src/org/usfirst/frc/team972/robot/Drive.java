@@ -78,10 +78,9 @@ public class Drive {
 			SmartDashboard.putNumber("Right Error", pidRightDrive.getError());
 
 			// this sets all the motors except front left to be followers
-			// this way they will do the same thing that the front left
-			// motor does
-			// the front left motor is controlled by the PID Controller
-			// object
+			// this way they will do the same thing that the front left motor does
+			// the front left motor is controlled by the PID Controller object
+			
 			backRightMotor.changeControlMode(TalonControlMode.Follower);
 			backLeftMotor.changeControlMode(TalonControlMode.Follower);
 		}

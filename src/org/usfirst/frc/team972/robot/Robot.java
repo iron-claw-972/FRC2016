@@ -136,7 +136,7 @@ public class Robot extends IterativeRobot {
 	boolean obstacleMotorManualOverride;
 
 	// shooter variables
-	double shooterSpeed = 0;
+	double shooterTopSpeed = 0;
 	boolean shooterHighSpeedMotorButtonPressed = false;
 	boolean shooterMediumSpeedMotorButtonPressed = false;
 	boolean shooterSlowSpeedMotorButtonPressed = false;
@@ -151,6 +151,8 @@ public class Robot extends IterativeRobot {
 	CameraStreamingThread cst;
 	Image img = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 	CameraServer camServer = CameraServer.getInstance();
+	public boolean shooterReverseButtonPressed;
+	public double shooterBottomSpeed = 0;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -158,8 +160,8 @@ public class Robot extends IterativeRobot {
 	 */
 	public void robotInit() {
 		System.out.println("Robot Init");
-		// compressor.start();
-		compressor.stop();
+		compressor.start();
+		// compressor.stop();
 
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" message mostly
@@ -206,8 +208,7 @@ public class Robot extends IterativeRobot {
 				camBack.openCamera();
 				camFront.startCapture();
 				// startCapture so that it doesn't try to take a picture before
-				// the
-				// camera is on
+				// the camera is on
 			} catch (VisionException e) {
 				System.out.println("VISION EXCEPTION ~ " + e);
 			}
@@ -384,11 +385,12 @@ public class Robot extends IterativeRobot {
 		if (rearCam) {
 			leftDriveSpeed = leftJoystickY * driveMultiplier * -1;
 			rightDriveSpeed = rightJoystickY * driveMultiplier * -1;
+			// The drive speeds ARE supposed to equal the opposite motor
 			// If using the rear cam, we always want the drive multiplier to be
 			// negative (go backwards)
 		} else {
-			leftDriveSpeed = leftJoystickY * driveMultiplier;
-			rightDriveSpeed = rightJoystickY * driveMultiplier;
+			leftDriveSpeed = rightJoystickY * driveMultiplier;
+			rightDriveSpeed = leftJoystickY * driveMultiplier;
 		}
 
 		// This sets P, I, and D from throttle (bottom is zero)
@@ -406,28 +408,46 @@ public class Robot extends IterativeRobot {
 					kD);
 		} else {
 			driveController.stopPIDBrake(pidMode, pidLeftDrive, pidRightDrive);
-			if (Math.abs(leftDriveSpeed - rightDriveSpeed) <= 0.1) {
-				// 0.1 bc 5% times range of 2
-				driveController.straightDrive(driveStraightLeftPID, driveStraightRightPID, leftDriveSpeed, rightDriveSpeed); 
+			// if (Math.abs(leftDriveSpeed - rightDriveSpeed) <= 0.1 &&
+			// Math.abs(leftDriveSpeed) >= 0.5) {
+			// // 0.1 bc 5% times range of 2
+			// driveController.straightDrive(driveStraightLeftPID,
+			// driveStraightRightPID, leftDriveSpeed, rightDriveSpeed);
+			// } else {
+			if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
+				botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier);
+				// Split arcade
 			} else {
-				if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
-					botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier);
-					// Split arcade
-				} else {
-					driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
-				}
+				driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
 			}
+			// }
 		}
 
 		intakeSystem.intakeStateMachine(spoonPiston, outtakePiston, ballOpticalSensor);
-		shooterSystem.shooterStateMachine(spoonPiston);
-		// if (joystickOp.getRawButton(1)) {
-		// shooterTopMotor.set(-0.75);
-		// shooterBottomMotor.set(0.75);
-		// } else {
-		// shooterTopMotor.set(0);
-		// shooterBottomMotor.set(0);
-		// }
+		shooterHighSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON);
+		shooterMediumSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON);
+		shooterSlowSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON);
+		shooterStopMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON);
+		shooterReverseButtonPressed = joystickOp.getRawButton(9); // TODO get rid of magic number
+		if (shooterHighSpeedMotorButtonPressed) {
+			shooterTopSpeed = RobotMap.SHOOTER_TOP_HIGH_SPEED;
+			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_HIGH_SPEED;
+		} else if (shooterMediumSpeedMotorButtonPressed) {
+			shooterTopSpeed = RobotMap.SHOOTER_TOP_MEDIUM_SPEED;
+			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_MEDIUM_SPEED;
+		} else if (shooterSlowSpeedMotorButtonPressed) {
+			shooterTopSpeed = RobotMap.SHOOTER_TOP_LOW_SPEED;
+			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_LOW_SPEED;
+		} else if (shooterStopMotorButtonPressed) {
+			shooterTopSpeed = 0;
+			shooterBottomSpeed = 0;
+		} else if (shooterReverseButtonPressed)	{
+			shooterTopSpeed = -0.3;
+			shooterBottomSpeed = -0.3;
+		}
+		shooterBottomMotor.set(shooterBottomSpeed);
+		shooterTopMotor.set(-1*shooterTopSpeed);
+		// shooter motors
 
 		printEverything();
 	}
@@ -460,10 +480,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
 		// SmartDashboard.putBoolean("Flippy Thing Manual Override",
 		// obstacleMotorManualOverride);
-		// SmartDashboard.putNumber("Shooter Bottom Encoder Value",
-		// shooterBottomMotor.getPosition());
-		// SmartDashboard.putNumber("Shooter Top Encoder Value",
-		// shooterTopMotor.getPosition());
+		SmartDashboard.putNumber("Shooter Bottom Encoder Speed", shooterBottomMotor.getSpeed());
+		SmartDashboard.putNumber("Shooter Top Encoder Speed", shooterTopMotor.getSpeed());
 		if (rearCam) {
 			SmartDashboard.putString("Front Side", "BATTERY");
 		} else {
@@ -502,7 +520,7 @@ public class Robot extends IterativeRobot {
 		shooterTopMotor.set(0);
 		obstacleMotor.set(0);
 
-		shooterSpeed = 0;
+		shooterTopSpeed = 0;
 
 		pidMode = false;
 		// pidTopShooter.disable();

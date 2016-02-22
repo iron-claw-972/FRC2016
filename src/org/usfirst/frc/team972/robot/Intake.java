@@ -7,7 +7,7 @@ public class Intake {
 	CANTalon intakeMotor;
 	long startTime = -1, reverseStartTime = -1;
 	boolean lastTimePressed = false;
-	
+
 	public Intake(CANTalon intakeMotor) {
 		this.intakeMotor = intakeMotor;
 	}
@@ -15,36 +15,39 @@ public class Intake {
 	public void spoonUp(DoubleSolenoid spoonPiston) {
 		spoonPiston.set(DoubleSolenoid.Value.kReverse);
 	}
-	
+
 	public void intakeStateMachine(DoubleSolenoid spoonPiston, DoubleSolenoid outtakePiston, DigitalInput ballSensor) {
-		if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON) && RobotMap.intakeState != RobotMap.INTAKE_REVERSE_STATE) {
+		if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON)
+				&& RobotMap.intakeState != RobotMap.INTAKE_REVERSE_SPOON_DOWN_STATE) {
 			RobotMap.intakeState = RobotMap.INTAKE_WAIT_STATE;
 		}
 		switch (RobotMap.intakeState) {
 			case RobotMap.INTAKE_WAIT_STATE:
 				intakeMotor.set(0);
 				outtakePiston.set(DoubleSolenoid.Value.kReverse);
+				// Reverse means the outtake piston is in
 				boolean buttonPressed = Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON);
 				boolean backButtonPressed = Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON);
 				if (buttonPressed && !lastTimePressed) {
 					RobotMap.intakeState = RobotMap.INTAKE_SPOON_DOWN_STATE;
 				}
 				if (backButtonPressed) {
-					RobotMap.intakeState = RobotMap.INTAKE_REVERSE_STATE;
+					RobotMap.intakeState = RobotMap.INTAKE_REVERSE_SPOON_DOWN_STATE;
 				} else {
 					spoonPiston.set(DoubleSolenoid.Value.kReverse);
 				}
 				lastTimePressed = buttonPressed;
 				SmartDashboard.putString("Intake State", "Wait");
 				break;
-			case RobotMap.INTAKE_SPOON_DOWN_STATE :
+			case RobotMap.INTAKE_SPOON_DOWN_STATE:
 				spoonPiston.set(DoubleSolenoid.Value.kForward);
+				// Spoon is down
 				RobotMap.intakeState = RobotMap.INTAKE_START_INTAKE_STATE;
 				SmartDashboard.putString("Intake State", "Spoon Down");
 				break;
 			case RobotMap.INTAKE_START_INTAKE_STATE:
 				intakeMotor.set(RobotMap.INTAKE_MOTOR_SPEED);
-//				if (!ballSensor.get()) {
+				// if (!ballSensor.get()) {
 				if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_START_INTAKE_BUTTON)) {
 					if (startTime == -1) {
 						startTime = System.currentTimeMillis();
@@ -60,34 +63,37 @@ public class Intake {
 			case RobotMap.INTAKE_SPOON_UP_STATE:
 				intakeMotor.set(0);
 				spoonPiston.set(DoubleSolenoid.Value.kReverse);
+				// Spoon is up
 				RobotMap.intakeState = RobotMap.INTAKE_WAIT_STATE;
 				SmartDashboard.putString("Intake State", "Spoon Up");
 				break;
-			case RobotMap.INTAKE_REVERSE_STATE:
-				SmartDashboard.putString("Intake State", "Reverse");
+			case RobotMap.INTAKE_REVERSE_SPOON_DOWN_STATE:
+				SmartDashboard.putString("Intake State", "Reverse Spoon");
 				System.out.println("Reverse Intake");
-				outtakePiston.set(DoubleSolenoid.Value.kReverse);
 				spoonPiston.set(DoubleSolenoid.Value.kForward);
+				// Spoon is down to allow the ball to reach the intake motor
+				if (reverseStartTime < 0) {
+					reverseStartTime = System.currentTimeMillis();
+				} else {
+					if (System.currentTimeMillis() >= reverseStartTime + RobotMap.REVERSE_OUTTAKE_DELAY_TIME) {
+						RobotMap.intakeState = RobotMap.INTAKE_REVERSE_OUTTAKE_STATE;
+						reverseStartTime = -1;
+					}
+				}
+				// This case adds a delay in order to allow the outtake to work after the spoon is down
+				break;
+			case RobotMap.INTAKE_REVERSE_OUTTAKE_STATE:
+				SmartDashboard.putString("Intake State", "Reverse Outtake");
 				outtakePiston.set(DoubleSolenoid.Value.kForward);
 				intakeMotor.set(RobotMap.INTAKE_REVERSE_MOTOR_SPEED);
 				if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON)) {
 					spoonPiston.set(DoubleSolenoid.Value.kReverse);
+					// Puts the spoon back to its original state
 					outtakePiston.set(DoubleSolenoid.Value.kReverse);
+					// Brings the outtake piston back in
 					RobotMap.intakeState = RobotMap.INTAKE_WAIT_STATE;
+					intakeMotor.set(0);
 				}
-				// TODO Uncomment when we have optical sensors
-//				if (ballSensor.get()) {
-//					if (reverseStartTime == -1) {
-//						reverseStartTime = System.currentTimeMillis();
-//					} else {
-//						if (System.currentTimeMillis() >= reverseStartTime + RobotMap.REVERSE_OPTICAL_DELAY_TIME) {
-//							intakeMotor.set(0);
-//							outtakePiston.set(DoubleSolenoid.Value.kReverse);
-//							RobotMap.intakeState = RobotMap.INTAKE_WAIT_STATE;
-//							reverseStartTime = -1;
-//						}
-//					}
-//				}
 				break;
 			default:
 				System.out.println("Intake State Machine Error!");
@@ -96,5 +102,5 @@ public class Intake {
 		}
 
 	} // intake state machine
-	
+
 }
