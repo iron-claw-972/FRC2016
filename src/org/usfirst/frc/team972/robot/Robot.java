@@ -100,7 +100,7 @@ public class Robot extends IterativeRobot {
 	// intake
 
 	static Intake intakeSystem = new Intake(intakeMotor);
-	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor);
+	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor, spoonPiston);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
 	static AutonomousChooser autonomousChooserSystem = new AutonomousChooser();
 
@@ -424,29 +424,30 @@ public class Robot extends IterativeRobot {
 		}
 
 		intakeSystem.intakeStateMachine(spoonPiston, outtakePiston, ballOpticalSensor);
-		shooterHighSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON);
-		shooterMediumSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON);
-		shooterSlowSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON);
-		shooterStopMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON);
-		shooterReverseButtonPressed = joystickOp.getRawButton(9); // TODO get rid of magic number
-		if (shooterHighSpeedMotorButtonPressed) {
-			shooterTopSpeed = RobotMap.SHOOTER_TOP_HIGH_SPEED;
-			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_HIGH_SPEED;
-		} else if (shooterMediumSpeedMotorButtonPressed) {
-			shooterTopSpeed = RobotMap.SHOOTER_TOP_MEDIUM_SPEED;
-			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_MEDIUM_SPEED;
-		} else if (shooterSlowSpeedMotorButtonPressed) {
-			shooterTopSpeed = RobotMap.SHOOTER_TOP_LOW_SPEED;
-			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_LOW_SPEED;
-		} else if (shooterStopMotorButtonPressed) {
-			shooterTopSpeed = 0;
-			shooterBottomSpeed = 0;
-		} else if (shooterReverseButtonPressed)	{
-			shooterTopSpeed = -0.3;
-			shooterBottomSpeed = -0.3;
-		}
-		shooterBottomMotor.set(shooterBottomSpeed);
-		shooterTopMotor.set(-1*shooterTopSpeed);
+//		shooterHighSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON);
+//		shooterMediumSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON);
+//		shooterSlowSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON);
+//		shooterStopMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON);
+//		shooterReverseButtonPressed = joystickOp.getRawButton(9); // TODO get rid of magic number
+//		if (shooterHighSpeedMotorButtonPressed) {
+//			shooterTopSpeed = RobotMap.SHOOTER_TOP_HIGH_SPEED;
+//			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_HIGH_SPEED;
+//		} else if (shooterMediumSpeedMotorButtonPressed) {
+//			shooterTopSpeed = RobotMap.SHOOTER_TOP_MEDIUM_SPEED;
+//			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_MEDIUM_SPEED;
+//		} else if (shooterSlowSpeedMotorButtonPressed) {
+//			shooterTopSpeed = RobotMap.SHOOTER_TOP_LOW_SPEED;
+//			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_LOW_SPEED;
+//		} else if (shooterStopMotorButtonPressed) {
+//			shooterTopSpeed = 0;
+//			shooterBottomSpeed = 0;
+//		} else if (shooterReverseButtonPressed)	{
+//			shooterTopSpeed = -0.3;
+//			shooterBottomSpeed = -0.3;
+//		}
+//		shooterBottomMotor.set(shooterBottomSpeed);
+//		shooterTopMotor.set(-1*shooterTopSpeed);
+		shooterSystem.shooterStateMachine();
 		// shooter motors
 
 		printEverything();

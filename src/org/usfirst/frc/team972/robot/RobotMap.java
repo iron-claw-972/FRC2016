@@ -233,11 +233,9 @@ public class RobotMap {
 
 	public static final int SHOOTER_WAIT_STATE = 0;
 	public static final int SHOOTER_SPOON_DOWN_STATE = 1;
-	public static final int SHOOTER_LOW_SPEED_STATE = 2;
-	public static final int SHOOTER_MEDIUM_SPEED_STATE = 3;
-	public static final int SHOOTER_HIGH_SPEED_STATE = 4;
-	public static final int SHOOTER_SPOON_UP_STATE = 5;
-	public static final int SHOOTER_STOP_SHOOTER_STATE = 6;
+	public static final int SHOOTER_SPIN_MOTORS_STATE = 2;
+	public static final int SHOOTER_DELAY_AFTER_SHOOTING_STATE = 3;
+	public static final int SHOOTER_STOP_SHOOTER_STATE = 4;
 	public static int shooterState = SHOOTER_WAIT_STATE;
 
 	// CONSTANTS
