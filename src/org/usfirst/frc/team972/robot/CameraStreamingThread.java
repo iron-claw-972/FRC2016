@@ -32,7 +32,6 @@ public class CameraStreamingThread implements Runnable {
 				// camera streaming
 				if (Robot.rearCam) {
 					Robot.camBack.getImage(img);
-					NIVision.imaqFlip(img, img, NIVision.FlipAxis.HORIZONTAL_AXIS);
 				} else {
 					Robot.camFront.getImage(img);
 				}

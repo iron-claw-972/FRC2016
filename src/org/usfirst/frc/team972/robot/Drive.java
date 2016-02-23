@@ -38,6 +38,10 @@ public class Drive {
 		leftPID.setPID(driveP, driveI, driveD);
 		rightPID.enable();
 		leftPID.enable();
+		SmartDashboard.putNumber("Drive P", driveP);
+		SmartDashboard.putNumber("Drive I", driveI);
+		SmartDashboard.putNumber("Drive D", driveD);
+	
 	}
 	
 	public double setDriveMultiplier(double originalDriveMultiplier) {

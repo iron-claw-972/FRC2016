@@ -5,163 +5,146 @@ import edu.wpi.first.wpilibj.*;
 
 public class AutonomousChooser {
 
-	SendableChooser autonomousDefenseChooser = new SendableChooser();
-	SendableChooser autonomousDelayChooser = new SendableChooser();
-	SendableChooser autonomousPositionChooser = new SendableChooser();
-	SendableChooser autonomousShooterChooser = new SendableChooser();
+	SendableChooser autonomousFirstDefenseChooser = new SendableChooser();
+	SendableChooser autonomousFirstPositionChooser = new SendableChooser();
+	SendableChooser autonomousSecondDefenseChooser = new SendableChooser();
+	SendableChooser autonomousSecondPositionChooser = new SendableChooser();
 	int autonomousDelay; // How long we delay
 	long chevalDeFriseStartTime = -1; // This means the timer has not been set
 	
 	public void createChooser() {
-		autonomousDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
-		autonomousDefenseChooser.addObject("Portcullis", new Integer(RobotMap.PORTCULLIS_MODE));
-		autonomousDefenseChooser.addObject("Cheval de Frise", new Integer(RobotMap.CHEVAL_DE_FRISE_MODE));
-		autonomousDefenseChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
-		autonomousDefenseChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
-		autonomousDefenseChooser.addObject("Drawbridge", new Integer(RobotMap.DRAWBRIDGE_MODE));
-		autonomousDefenseChooser.addObject("Sally Port", new Integer(RobotMap.SALLY_PORT_MODE));
-		autonomousDefenseChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
-		autonomousDefenseChooser.addObject("Rough Terrain", new Integer(RobotMap.ROUGH_TERRAIN_MODE));
-		autonomousDefenseChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
-		SmartDashboard.putData("Autonomous Defense Chooser", autonomousDefenseChooser);
+		autonomousFirstDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
+		autonomousFirstDefenseChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
+		autonomousFirstDefenseChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
+		autonomousFirstDefenseChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
+		autonomousFirstDefenseChooser.addObject("Rough Terrain", new Integer(RobotMap.ROUGH_TERRAIN_MODE));
+		autonomousSecondDefenseChooser.addDefault("None", new Integer(RobotMap.DO_NOTHING_MODE));
+		SmartDashboard.putData("Autonomous First Defense Chooser", autonomousFirstDefenseChooser);
 
-		autonomousPositionChooser.addObject("Spy Position", new Integer(RobotMap.POSITION_SPY));
-		autonomousPositionChooser.addDefault("Position 1", new Integer(RobotMap.POSITION_1));
-		autonomousPositionChooser.addObject("Position 2", new Integer(RobotMap.POSITION_2));
-		autonomousPositionChooser.addObject("Position 3", new Integer(RobotMap.POSITION_3));
-		autonomousPositionChooser.addObject("Position 4", new Integer(RobotMap.POSITION_4));
-		autonomousPositionChooser.addObject("Position 5", new Integer(RobotMap.POSITION_5));
-		SmartDashboard.putData("Autonomous Position Chooser", autonomousPositionChooser);
+		autonomousFirstPositionChooser.addDefault("Position 1", new Integer(RobotMap.POSITION_1));
+		autonomousFirstPositionChooser.addObject("Position 2", new Integer(RobotMap.POSITION_2));
+		autonomousFirstPositionChooser.addObject("Position 3", new Integer(RobotMap.POSITION_3));
+		autonomousFirstPositionChooser.addObject("Position 4", new Integer(RobotMap.POSITION_4));
+		autonomousFirstPositionChooser.addObject("Position 5", new Integer(RobotMap.POSITION_5));
+		SmartDashboard.putData("Autonomous First Position Chooser", autonomousFirstPositionChooser);
 
-		autonomousDelayChooser.addDefault("No Delay", new Integer(RobotMap.NO_DELAY));
-		autonomousDelayChooser.addObject("2 Sec Delay", new Integer(RobotMap.TWO_SECOND_DELAY));
-		autonomousDelayChooser.addObject("4 Sec Delay", new Integer(RobotMap.FOUR_SECOND_DELAY));
-		autonomousDelayChooser.addObject("6 Sec Delay", new Integer(RobotMap.SIX_SECOND_DELAY));
-		SmartDashboard.putData("Autonomous Delay Chooser", autonomousDelayChooser);
+		autonomousSecondDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
+		autonomousSecondDefenseChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
+		autonomousSecondDefenseChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
+		autonomousSecondDefenseChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
+		autonomousSecondDefenseChooser.addObject("Rough Terrain", new Integer(RobotMap.ROUGH_TERRAIN_MODE));
+		autonomousSecondDefenseChooser.addDefault("None", new Integer(RobotMap.DO_NOTHING_MODE));
+		SmartDashboard.putData("Autonomous Second Defense Chooser", autonomousSecondDefenseChooser);
 
-		autonomousShooterChooser.addDefault("Do Not Shoot", new Integer(RobotMap.DO_NOT_SHOOT));
-		autonomousShooterChooser.addObject("Left High Goal", new Integer(RobotMap.SHOOTER_LEFT_HIGH_GOAL));
-		autonomousShooterChooser.addObject("Center High Goal", new Integer(RobotMap.SHOOTER_CENTER_HIGH_GOAL));
-		autonomousShooterChooser.addObject("Right High Goal", new Integer(RobotMap.SHOOTER_RIGHT_HIGH_GOAL));
-		autonomousShooterChooser.addObject("Assist", new Integer(RobotMap.ASSIST_SHOOT));
-		SmartDashboard.putData("Autonomous Shooting Chooser", autonomousShooterChooser);
+		autonomousSecondPositionChooser.addDefault("Position 1", new Integer(RobotMap.POSITION_1));
+		autonomousSecondPositionChooser.addObject("Position 2", new Integer(RobotMap.POSITION_2));
+		autonomousSecondPositionChooser.addObject("Position 3", new Integer(RobotMap.POSITION_3));
+		autonomousSecondPositionChooser.addObject("Position 4", new Integer(RobotMap.POSITION_4));
+		autonomousSecondPositionChooser.addObject("Position 5", new Integer(RobotMap.POSITION_5));
+		SmartDashboard.putData("Autonomous Second Position Chooser", autonomousSecondPositionChooser);
 	}
 	
 	public void checkChoices() {
-		RobotMap.autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
-		RobotMap.autonomousDelayMode = ((Integer) (autonomousDelayChooser.getSelected())).intValue();
-		RobotMap.autonomousPositionMode = ((Integer) (autonomousPositionChooser.getSelected())).intValue();
-		RobotMap.autonomousShooterMode = ((Integer) (autonomousShooterChooser.getSelected())).intValue();
+		RobotMap.autonomousFirstDefenseMode = ((Integer) (autonomousFirstDefenseChooser.getSelected())).intValue();
+		RobotMap.autonomousFirstPositionMode = ((Integer) (autonomousFirstPositionChooser.getSelected())).intValue();
+		RobotMap.autonomousSecondDefenseMode = ((Integer) (autonomousSecondDefenseChooser.getSelected())).intValue();
+		RobotMap.autonomousSecondPositionMode = ((Integer) (autonomousSecondPositionChooser.getSelected())).intValue();
 		// These lines store the value of the Autonomous Chooser as an int
 
-		switch (RobotMap.autonomousDelayMode) {
-			case RobotMap.NO_DELAY:
-				SmartDashboard.putString("Autonomous Delay Mode", "No Delay");
-				autonomousDelay = 0;
-				break;
-			case RobotMap.TWO_SECOND_DELAY:
-				SmartDashboard.putString("Autonomous Delay Mode", "Two Second Delay");
-				autonomousDelay = 2;
-				break;
-			case RobotMap.FOUR_SECOND_DELAY:
-				SmartDashboard.putString("Autonomous Delay Mode", "Four Second Delay");
-				autonomousDelay = 4;
-				break;
-			case RobotMap.SIX_SECOND_DELAY:
-				SmartDashboard.putString("Autonomous Delay Mode", "Six Second Delay");
-				autonomousDelay = 6;
-				break;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Autonomous Delay Mode", "Default error!!!");
-				System.out.println("Default Autonomous Delay Mode Error!!!");
-				break;
-		}
-
-		switch (RobotMap.autonomousPositionMode) {
-			case RobotMap.POSITION_SPY:
-				SmartDashboard.putString("Autonomous Position Mode", "Spy Position");
-				break;
-			case RobotMap.POSITION_1:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 1");
-				break;
-			case RobotMap.POSITION_2:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 2");
-				break;
-			case RobotMap.POSITION_3:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 3");
-				break;
-			case RobotMap.POSITION_4:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 4");
-				break;
-			case RobotMap.POSITION_5:
-				SmartDashboard.putString("Autonomous Position Mode", "Position 5");
-				break;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Autonomous Position Mode", "Default error!!!");
-				System.out.println("Default Autonomous Position Mode Error!!!");
-				break;
-		}
-
-		switch (RobotMap.autonomousShooterMode) {
-			case RobotMap.DO_NOT_SHOOT:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Do Not Shoot");
-				break;
-			case RobotMap.SHOOTER_LEFT_HIGH_GOAL:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Left High Goal");
-				break;
-			case RobotMap.SHOOTER_CENTER_HIGH_GOAL:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Center High Goal");
-				break;
-			case RobotMap.SHOOTER_RIGHT_HIGH_GOAL:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Right High Goal");
-				break;
-			case RobotMap.ASSIST_SHOOT:
-				SmartDashboard.putString("Autonomous Shooter Mode", "Assist For Shooting");
-				break;
-			default:
-				// This should never happen
-				SmartDashboard.putString("Autonomous Shooter Mode", "Default error!!!");
-				System.out.println("Default Autonomous Shooter Mode Error!!!");
-				break;
-		}
-
-		switch (RobotMap.autonomousDefenseMode) {
+		switch (RobotMap.autonomousFirstDefenseMode) {
 			case RobotMap.LOW_BAR_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Low Bar");
-				break;
-			case RobotMap.PORTCULLIS_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Portcullis");
-				break;
-			case RobotMap.CHEVAL_DE_FRISE_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Cheval de Frise");
+				SmartDashboard.putString("Autonomous First Defense Mode", "Low Bar");
 				break;
 			case RobotMap.MOAT_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Moat");
+				SmartDashboard.putString("Autonomous First Defense Mode", "Moat");
 				break;
 			case RobotMap.RAMPARTS_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Ramparts");
-				break;
-			case RobotMap.DRAWBRIDGE_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Drawbridge");
-				break;
-			case RobotMap.SALLY_PORT_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Sally Port");
+				SmartDashboard.putString("Autonomous First Defense Mode", "Ramparts");
 				break;
 			case RobotMap.ROCK_WALL_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Rock Wall");
+				SmartDashboard.putString("Autonomous First Defense Mode", "Rock Wall");
 				break;
 			case RobotMap.ROUGH_TERRAIN_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Rough Terrain");
+				SmartDashboard.putString("Autonomous First Defense Mode", "Rough Terrain");
 				break;
 			case RobotMap.DO_NOTHING_MODE:
-				SmartDashboard.putString("Autonomous Defense Mode", "Do Nothing");
+				SmartDashboard.putString("Autonomous First Defense Mode", "Do Nothing Mode");
+			default:
+				// This should never happen
+				SmartDashboard.putString("Autonomous First Defense Mode", "Default error!!!");
+				System.out.println("Default Autonomous First Defense Mode Error!!!");
+				break;
+		}
+
+		switch (RobotMap.autonomousFirstPositionMode) {
+			case RobotMap.POSITION_1:
+				SmartDashboard.putString("Autonomous First Position Mode", "Position 1");
+				break;
+			case RobotMap.POSITION_2:
+				SmartDashboard.putString("Autonomous First Position Mode", "Position 2");
+				break;
+			case RobotMap.POSITION_3:
+				SmartDashboard.putString("Autonomous First Position Mode", "Position 3");
+				break;
+			case RobotMap.POSITION_4:
+				SmartDashboard.putString("Autonomous First Position Mode", "Position 4");
+				break;
+			case RobotMap.POSITION_5:
+				SmartDashboard.putString("Autonomous First Position Mode", "Position 5");
+				break;
+			default:
+				// This should never happen
+				SmartDashboard.putString("Autonomous First Position Mode", "Default error!!!");
+				System.out.println("Default Autonomous First Position Mode Error!!!");
+				break;
+		}
+
+		switch (RobotMap.autonomousSecondDefenseMode) {
+			case RobotMap.LOW_BAR_MODE:
+				SmartDashboard.putString("Autonomous Second Defense Mode", "Low Bar");
+				break;
+			case RobotMap.MOAT_MODE:
+				SmartDashboard.putString("Autonomous Second Defense Mode", "Moat");
+				break;
+			case RobotMap.RAMPARTS_MODE:
+				SmartDashboard.putString("Autonomous Second Defense Mode", "Ramparts");
+				break;
+			case RobotMap.ROCK_WALL_MODE:
+				SmartDashboard.putString("Autonomous Second Defense Mode", "Rock Wall");
+				break;
+			case RobotMap.ROUGH_TERRAIN_MODE:
+				SmartDashboard.putString("Autonomous Second Defense Mode", "Rough Terrain");
+				break;
+			case RobotMap.DO_NOTHING_MODE:
+				SmartDashboard.putString("Autonomous Second Defense Mode", "No Defense");
 				return;
 			default:
 				// This should never happen
-				SmartDashboard.putString("Autonomous Defense Mode", "Default error!!!");
-				System.out.println("Default Autonomous Defense Mode Error!!!");
+				SmartDashboard.putString("Autonomous Second Defense Mode", "Default error!!!");
+				System.out.println("Default Autonomous Second Defense Mode Error!!!");
+				break;
+		} // switch brace
+		
+		switch (RobotMap.autonomousSecondPositionMode) {
+			case RobotMap.POSITION_1:
+				SmartDashboard.putString("Autonomous Second Position Mode", "Position 1");
+				break;
+			case RobotMap.POSITION_2:
+				SmartDashboard.putString("Autonomous Second Position Mode", "Position 2");
+				break;
+			case RobotMap.POSITION_3:
+				SmartDashboard.putString("Autonomous Second Position Mode", "Position 3");
+				break;
+			case RobotMap.POSITION_4:
+				SmartDashboard.putString("Autonomous Second Position Mode", "Position 4");
+				break;
+			case RobotMap.POSITION_5:
+				SmartDashboard.putString("Autonomous Second Position Mode", "Position 5");
+				break;
+			default:
+				// This should never happen
+				SmartDashboard.putString("Autonomous Second Position Mode", "Default error!!!");
+				System.out.println("Default Autonomous Second Position Mode Error!!!");
 				break;
 		} // switch brace
 	}

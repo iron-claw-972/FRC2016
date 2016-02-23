@@ -4,12 +4,13 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
 	CANTalon topMotor, bottomMotor;
 	DoubleSolenoid spoonPiston;
-	double shooterBottomSpeed, shooterTopSpeed;
+	double shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_HIGH_SPEED, shooterTopSpeed = RobotMap.SHOOTER_TOP_HIGH_SPEED;
 	long startTime = -1;
 
 	public Shooter(CANTalon topMotor, CANTalon bottomMotor, DoubleSolenoid spoonPiston) {
@@ -18,16 +19,13 @@ public class Shooter {
 		this.spoonPiston = spoonPiston;
 	}
 
-	// @return whether shooter is done or not
 	void shooterStop() {
-		System.out.println("Stop Shooter");
+		topMotor.reset();
+		bottomMotor.reset();
+		topMotor.enable();
+		bottomMotor.enable();
 		topMotor.set(0);
 		bottomMotor.set(0);
-		topMotor.disable();
-		bottomMotor.disable();
-
-		shooterTopSpeed = 0;
-		shooterBottomSpeed = 0;
 	}
 
 	// boolean setShooterPID(double setpoint) {
@@ -96,11 +94,27 @@ public class Shooter {
 			shooterTopSpeed = RobotMap.SHOOTER_TOP_HIGH_SPEED;
 			SmartDashboard.putString("Shooter Speed", "High");
 		}
+		if (Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON)) {
+			shooterTopSpeed = 0;
+			shooterBottomSpeed = 0;
+			SmartDashboard.putString("Shooter Speed", "Stopped");
+		}
 	}
 	
 	public void runShooter() {
-		topMotor.set(shooterTopSpeed);
-		bottomMotor.set(shooterBottomSpeed);
+//		topMotor.set(-1*shooterTopSpeed);
+//		bottomMotor.set(shooterBottomSpeed);
+		topMotor.setPID(0.001, 0.024, 0.0);
+		bottomMotor.setPID(0.001, 0.024, 0.0);
+//		topMotor.set(shooterTopSpeed);
+//		bottomMotor.set(shooterBottomSpeed);
+		topMotor.set(-22000);
+		bottomMotor.set(20000);
+	}
+	
+	public void reverseShooter() {
+		topMotor.set(RobotMap.SHOOTER_TOP_REVERSE_SPEED);
+		bottomMotor.set(RobotMap.SHOOTER_BOTTOM_REVERSE_SPEED);
 	}
 
 	public void shooterStateMachine() {
@@ -110,16 +124,17 @@ public class Shooter {
 				SmartDashboard.putString("Shooter State", "Wait");
 				shooterStop();
 				if (Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_USE_SHOOTER_BUTTON)) {
-					RobotMap.shooterState = RobotMap.SHOOTER_SPOON_DOWN_STATE;
+					RobotMap.shooterState = RobotMap.SHOOTER_SPIN_MOTORS_STATE;
+					spoonPiston.set(DoubleSolenoid.Value.kForward);
+					shooterStop();
+				} else if (Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_SHOOTER_BUTTON)) {
+					RobotMap.shooterState = RobotMap.SHOOTER_REVERSE_SHOOTER_STATE;
+					spoonPiston.set(DoubleSolenoid.Value.kForward);
+					shooterStop();
 				}
 				break;
-			case RobotMap.SHOOTER_SPOON_DOWN_STATE:
-				SmartDashboard.putString("Shooter State", "Spoon Down");
-				shooterStop();
-				spoonPiston.set(DoubleSolenoid.Value.kForward);
-				break;
 			case RobotMap.SHOOTER_SPIN_MOTORS_STATE:
-				SmartDashboard.putString("Shooter State", "Spin");
+				SmartDashboard.putString("Shooter State", "Shoot");
 				runShooter();
 				if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_USE_SHOOTER_BUTTON)) {
 					RobotMap.shooterState = RobotMap.SHOOTER_DELAY_AFTER_SHOOTING_STATE;
@@ -138,12 +153,18 @@ public class Shooter {
 					}
 				}
 				break;
+			case RobotMap.SHOOTER_REVERSE_SHOOTER_STATE:
+				SmartDashboard.putString("Shooter State", "Reverse Shooter");
+				reverseShooter();
+				if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_SHOOTER_BUTTON)) {
+					RobotMap.shooterState = RobotMap.SHOOTER_STOP_SHOOTER_STATE;
+					spoonPiston.set(DoubleSolenoid.Value.kReverse); //spoon up
+				}
+				break;
 			case RobotMap.SHOOTER_STOP_SHOOTER_STATE:
 				SmartDashboard.putString("Shooter State", "Stop Shooter");
 				shooterStop();
 				RobotMap.shooterState = RobotMap.SHOOTER_WAIT_STATE;
-				shooterBottomSpeed = 0;
-				shooterTopSpeed = 0;
 				break;
 		} // end shooter state machine
 	} // end method

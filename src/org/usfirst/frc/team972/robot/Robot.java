@@ -1,11 +1,14 @@
 
 package org.usfirst.frc.team972.robot;
 
+import javax.swing.plaf.basic.BasicLabelUI;
+
 import com.ni.vision.NIVision;
 import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
@@ -63,10 +66,8 @@ public class Robot extends IterativeRobot {
 	public static RobotDrive botDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
 	// encoders and PID
-	public static Encoder rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
-			RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
-	public static Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
-			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
+	public static Encoder rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT, RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
+	public static Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT, RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
 
 	public static PIDController pidRightDrive = new PIDController(0, 0, 0, rightDriveEncoder, frontRightMotor);
 	public static PIDController pidLeftDrive = new PIDController(0, 0, 0, leftDriveEncoder, frontLeftMotor);
@@ -79,27 +80,25 @@ public class Robot extends IterativeRobot {
 
 	// pneumatics
 	public static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
-	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID,
-			RobotMap.PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL);
+	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL,
+			RobotMap.PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL);
 	// public static DoubleSolenoid gearboxPistonRight = new
 	// DoubleSolenoid(RobotMap.PCM_CAN_ID,
 	// RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL,
 	// RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
-	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID,
-			RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
-	public static DoubleSolenoid outtakePiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID,
-			RobotMap.PISTON_OUTTAKE_FORWARD_CHANNEL, RobotMap.PISTON_OUTTAKE_REVERSE_CHANNEL);
+	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL,
+			RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
+	public static DoubleSolenoid outtakePiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_OUTTAKE_FORWARD_CHANNEL,
+			RobotMap.PISTON_OUTTAKE_REVERSE_CHANNEL);
 
 	// sensors
-	DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
-	public static DigitalInput obstacleMotorUpperLimitSwitch = new DigitalInput(
-			RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
-	public static DigitalInput obstacleMotorLowerLimitSwitch = new DigitalInput(
-			RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
+	public static DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
+	public static DigitalInput obstacleMotorUpperLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
+	public static DigitalInput obstacleMotorLowerLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
 
 	// intake
 
-	static Intake intakeSystem = new Intake(intakeMotor);
+	static Intake intakeSystem = new Intake(intakeMotor, spoonPiston, outtakePiston, ballOpticalSensor);
 	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor, spoonPiston);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
 	static AutonomousChooser autonomousChooserSystem = new AutonomousChooser();
@@ -159,6 +158,14 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
+		shooterTopMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		shooterBottomMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		shooterTopMotor.configNominalOutputVoltage(+0.0f, -0.0f);
+		shooterBottomMotor.configNominalOutputVoltage(+0.0f, -0.0f);
+		shooterTopMotor.configPeakOutputVoltage(+12.0f, -12.0f);
+		shooterBottomMotor.configPeakOutputVoltage(+12.0f, -12.0f);
+		shooterTopMotor.changeControlMode(TalonControlMode.Speed);
+		shooterBottomMotor.changeControlMode(TalonControlMode.Speed);
 		System.out.println("Robot Init");
 		compressor.start();
 		// compressor.stop();
@@ -202,8 +209,8 @@ public class Robot extends IterativeRobot {
 		// Starts cam during autonomous if possible to prevent lag in teleop
 		if (RobotMap.USE_OLD_CAM) {
 			try {
-				camFront = new USBCamera("cam1");
-				camBack = new USBCamera("cam0");
+				camFront = new USBCamera("cam0");
+				camBack = new USBCamera("cam1");
 				camFront.openCamera();
 				camBack.openCamera();
 				camFront.startCapture();
@@ -217,7 +224,7 @@ public class Robot extends IterativeRobot {
 			new Thread(cst).start();
 		}
 
-		intakeSystem.spoonUp(spoonPiston);
+		intakeSystem.spoonUp();
 		// System.out.println("autonomous init");
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
@@ -259,7 +266,8 @@ public class Robot extends IterativeRobot {
 			new Thread(cst).start();
 		}
 
-		intakeSystem.spoonUp(spoonPiston); // Move spoon up at the beginning
+		intakeSystem.spoonUp(); // Move spoon up at the beginning
+		outtakePiston.set(DoubleSolenoid.Value.kReverse);
 	}
 
 	public void teleopPeriodic() {
@@ -278,17 +286,13 @@ public class Robot extends IterativeRobot {
 			// override (shouldn't happen)
 		}
 		if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
-				&& (!obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) {
+				&& (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) { // Limit Switch true when not pressed
 			obstacleMotor.set(-obstacleMotorSpeed); // Go up
 		} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
-				&& (!obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
+				&& (obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
 			obstacleMotor.set(obstacleMotorSpeed); // Go down
 		} else {
 			obstacleMotor.set(0);
-		}
-
-		if (joystickOp.getRawButton(12)) {
-
 		}
 
 		// TODO remove if limit switch works
@@ -404,49 +408,50 @@ public class Robot extends IterativeRobot {
 		kD = RobotMap.D_BRAKE;
 
 		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
-			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI,
-					kD);
+			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI, kD);
 		} else {
 			driveController.stopPIDBrake(pidMode, pidLeftDrive, pidRightDrive);
-			// if (Math.abs(leftDriveSpeed - rightDriveSpeed) <= 0.1 &&
-			// Math.abs(leftDriveSpeed) >= 0.5) {
-			// // 0.1 bc 5% times range of 2
-			// driveController.straightDrive(driveStraightLeftPID,
-			// driveStraightRightPID, leftDriveSpeed, rightDriveSpeed);
-			// } else {
-			if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
-				botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier);
-				// Split arcade
+			if ((leftJoystickY > 0.8 && rightJoystickY > 0.8) || (leftJoystickY < -0.8 && rightJoystickY < -0.8)) {
+				driveController.straightDrive(driveStraightLeftPID, driveStraightRightPID, leftDriveSpeed, rightDriveSpeed);
 			} else {
-				driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
+				if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
+					botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier);
+					// Split arcade
+				} else {
+					driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
+				}
 			}
-			// }
 		}
 
-		intakeSystem.intakeStateMachine(spoonPiston, outtakePiston, ballOpticalSensor);
-//		shooterHighSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON);
-//		shooterMediumSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON);
-//		shooterSlowSpeedMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON);
-//		shooterStopMotorButtonPressed = joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON);
-//		shooterReverseButtonPressed = joystickOp.getRawButton(9); // TODO get rid of magic number
-//		if (shooterHighSpeedMotorButtonPressed) {
-//			shooterTopSpeed = RobotMap.SHOOTER_TOP_HIGH_SPEED;
-//			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_HIGH_SPEED;
-//		} else if (shooterMediumSpeedMotorButtonPressed) {
-//			shooterTopSpeed = RobotMap.SHOOTER_TOP_MEDIUM_SPEED;
-//			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_MEDIUM_SPEED;
-//		} else if (shooterSlowSpeedMotorButtonPressed) {
-//			shooterTopSpeed = RobotMap.SHOOTER_TOP_LOW_SPEED;
-//			shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_LOW_SPEED;
-//		} else if (shooterStopMotorButtonPressed) {
-//			shooterTopSpeed = 0;
-//			shooterBottomSpeed = 0;
-//		} else if (shooterReverseButtonPressed)	{
-//			shooterTopSpeed = -0.3;
-//			shooterBottomSpeed = -0.3;
-//		}
-//		shooterBottomMotor.set(shooterBottomSpeed);
-//		shooterTopMotor.set(-1*shooterTopSpeed);
+		intakeSystem.intakeStateMachine();
+		// shooterHighSpeedMotorButtonPressed =
+		// joystickOp.getRawButton(RobotMap.JOYSTICK_START_HIGH_SPEED_SHOOTER_BUTTON);
+		// shooterMediumSpeedMotorButtonPressed =
+		// joystickOp.getRawButton(RobotMap.JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON);
+		// shooterSlowSpeedMotorButtonPressed =
+		// joystickOp.getRawButton(RobotMap.JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON);
+		// shooterStopMotorButtonPressed =
+		// joystickOp.getRawButton(RobotMap.JOYSTICK_STOP_SHOOTER_BUTTON);
+		// shooterReverseButtonPressed = joystickOp.getRawButton(9); // TODO get
+		// rid of magic number
+		// if (shooterHighSpeedMotorButtonPressed) {
+		// shooterTopSpeed = RobotMap.SHOOTER_TOP_HIGH_SPEED;
+		// shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_HIGH_SPEED;
+		// } else if (shooterMediumSpeedMotorButtonPressed) {
+		// shooterTopSpeed = RobotMap.SHOOTER_TOP_MEDIUM_SPEED;
+		// shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_MEDIUM_SPEED;
+		// } else if (shooterSlowSpeedMotorButtonPressed) {
+		// shooterTopSpeed = RobotMap.SHOOTER_TOP_LOW_SPEED;
+		// shooterBottomSpeed = RobotMap.SHOOTER_BOTTOM_LOW_SPEED;
+		// } else if (shooterStopMotorButtonPressed) {
+		// shooterTopSpeed = 0;
+		// shooterBottomSpeed = 0;
+		// } else if (shooterReverseButtonPressed) {
+		// shooterTopSpeed = -0.3;
+		// shooterBottomSpeed = -0.3;
+		// }
+		// shooterBottomMotor.set(shooterBottomSpeed);
+		// shooterTopMotor.set(-1*shooterTopSpeed);
 		shooterSystem.shooterStateMachine();
 		// shooter motors
 
@@ -472,8 +477,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Right Encoder Value", rightDriveEncoder.get());
 		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get());
 		SmartDashboard.putNumber("Flippy Speed", obstacleMotorSpeed);
-		SmartDashboard.putBoolean("Upper LS", obstacleMotorUpperLimitSwitch.get());
-		SmartDashboard.putBoolean("Lower LS", obstacleMotorLowerLimitSwitch.get());
+		SmartDashboard.putBoolean("Upper LS", !obstacleMotorUpperLimitSwitch.get());
+		SmartDashboard.putBoolean("Lower LS", !obstacleMotorLowerLimitSwitch.get());
 		// SmartDashboard.putNumber("Left Joystick Y", leftJoystickY);
 		// SmartDashboard.putNumber("Right Joystick Y", rightJoystickY);
 		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
@@ -507,8 +512,6 @@ public class Robot extends IterativeRobot {
 	public void stopEverything() {
 		pidLeftDrive.disable();
 		pidRightDrive.disable();
-		// shooterBottomMotor.disable();
-		// shooterTopMotor.disable();
 		backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
 		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
 		frontRightMotor.set(0);
@@ -524,8 +527,6 @@ public class Robot extends IterativeRobot {
 		shooterTopSpeed = 0;
 
 		pidMode = false;
-		// pidTopShooter.disable();
-		// pidBottomShooter.disable();
 	}
 }
 

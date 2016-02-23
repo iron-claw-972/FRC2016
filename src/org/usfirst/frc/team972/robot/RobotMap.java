@@ -41,8 +41,8 @@ public class RobotMap {
 	public static final int RIGHT_DRIVE_ENCODER_DIO_A_PORT = 2;
 	public static final int RIGHT_DRIVE_ENCODER_DIO_B_PORT = 3;
 	// NOTHING IN 4
-	public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 6;
-	public static final int FLIPPY_THING_LOWER_LIMIT_SWITCH = 5;
+	public static final int FLIPPY_THING_UPPER_LIMIT_SWITCH = 5;
+	public static final int FLIPPY_THING_LOWER_LIMIT_SWITCH = 6;
 	public static final int BALL_OPTICAL_SENSOR_PORT = 7;
 
 	// BUTTONS
@@ -72,17 +72,19 @@ public class RobotMap {
 	public static final int JOYSTICK_START_MEDIUM_SPEED_SHOOTER_BUTTON = 3;
 	public static final int JOYSTICK_START_LOW_SPEED_SHOOTER_BUTTON = 5;
 	public static final int JOYSTICK_STOP_SHOOTER_BUTTON = 6;
-	public static final int JOYSTICK_OBSTACLE_MOTOR_MANUAL_OVERRIDE_BUTTON = 11; // TODO
-																					// change
+	public static final int JOYSTICK_REVERSE_SHOOTER_BUTTON = 9;
+	public static final int JOYSTICK_OBSTACLE_MOTOR_MANUAL_OVERRIDE_BUTTON = 11;
 
 	// SPEEDS
 
-	public static final double SHOOTER_TOP_HIGH_SPEED = 0.55;
-	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 0.55;
-	public static final double SHOOTER_TOP_MEDIUM_SPEED = 0.5;
-	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 0.45;
-	public static final double SHOOTER_TOP_LOW_SPEED = 0.35;
-	public static final double SHOOTER_BOTTOM_LOW_SPEED = 0.3;
+	public static final double SHOOTER_TOP_HIGH_SPEED = -22000;
+	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 20000;
+	public static final double SHOOTER_TOP_MEDIUM_SPEED = -17000;
+	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 16000;
+	public static final double SHOOTER_TOP_LOW_SPEED = -14000;
+	public static final double SHOOTER_BOTTOM_LOW_SPEED = 13000;
+	public static final double SHOOTER_TOP_REVERSE_SPEED = -700;
+	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = 700;
 	// shooter speeds will not happen in actual bot because of PID
 	public static final double INTAKE_MOTOR_SPEED = 0.55;
 	public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.75;
@@ -115,55 +117,37 @@ public class RobotMap {
 	// AUTONOMOUS DEFENSES
 
 	public static final int LOW_BAR_MODE = 0;
-	public static final int PORTCULLIS_MODE = 1;
-	public static final int CHEVAL_DE_FRISE_MODE = 2;
-	public static final int MOAT_MODE = 3;
-	public static final int RAMPARTS_MODE = 4;
-	public static final int DRAWBRIDGE_MODE = 5;
-	public static final int SALLY_PORT_MODE = 6;
-	public static final int ROCK_WALL_MODE = 7;
-	public static final int ROUGH_TERRAIN_MODE = 8;
-	public static final int DO_NOTHING_MODE = 9;
-
-	// AUTONOMOUS DELAYS
-
-	public static final int NO_DELAY = 0;
-	public static final int TWO_SECOND_DELAY = 1;
-	public static final int FOUR_SECOND_DELAY = 2;
-	public static final int SIX_SECOND_DELAY = 3;
+	public static final int MOAT_MODE = 1;
+	public static final int RAMPARTS_MODE = 2;
+	public static final int ROCK_WALL_MODE = 3;
+	public static final int ROUGH_TERRAIN_MODE = 4;
+	public static final int DO_NOTHING_MODE = 5;
 
 	// AUTONOMOUS START POSITIONS
-
-	public static final int POSITION_SPY = 0;
-	public static final int POSITION_1 = 1;
-	public static final int POSITION_2 = 2;
-	public static final int POSITION_3 = 3;
-	public static final int POSITION_4 = 4;
-	public static final int POSITION_5 = 5;
-
-	// AUTONOMOUS SHOOTER MODES
-
-	public static final int DO_NOT_SHOOT = 0;
-	public static final int SHOOTER_LEFT_HIGH_GOAL = 1;
-	public static final int SHOOTER_CENTER_HIGH_GOAL = 2;
-	public static final int SHOOTER_RIGHT_HIGH_GOAL = 3;
-	public static final int ASSIST_SHOOT = 4;
+	
+	public static final int POSITION_1 = 0;
+	public static final int POSITION_2 = 1;
+	public static final int POSITION_3 = 2;
+	public static final int POSITION_4 = 3;
+	public static final int POSITION_5 = 4;
 
 	// AUTONOMOUS MODES
 
-	public static int autonomousDefenseMode = LOW_BAR_MODE;
-	public static int autonomousDelayMode = NO_DELAY;
-	public static int autonomousShooterMode = DO_NOT_SHOOT;
-	public static int autonomousPositionMode = POSITION_1;
+	public static int autonomousFirstDefenseMode = DO_NOTHING_MODE;
+	public static int autonomousFirstPositionMode = POSITION_1;
+	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
+	public static int autonomousSecondPositionMode = POSITION_1;
 
 	// AUTONOMOUS DRIVE SPEEDS
 
-	public static final double LOW_BAR_LEFT_DRIVE_SPEED = 0.5;
-	public static final double LOW_BAR_RIGHT_DRIVE_SPEED = 0.5;
-	public static final int LOW_BAR_LEFT_DRIVE_DISTANCE = 500;
-	public static final int LOW_BAR_RIGHT_DRIVE_DISTANCE = 500;
+	public static final double LOW_BAR_DEFENSE_DRIVE_SPEED = 0.2;
+	public static final double LOW_BAR_TURN_SPEED = 0.2;
 
 	// AUTONOMOUS DEFENSE DRIVE DISTANCE
+
+	public static final int LOW_BAR_LEFT_DRIVE_DISTANCE = 500;
+	public static final int LOW_BAR_RIGHT_DRIVE_DISTANCE = 500;
+	public static final int LOW_BAR_TURN_DISTANCE = 500; // TODO get correct numbers
 
 	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 12; // TODO add
 																	// actual
@@ -226,7 +210,7 @@ public class RobotMap {
 	public static final int INTAKE_WAIT_FOR_OPTICAL_STATE = 3;
 	public static final int INTAKE_SPOON_UP_STATE = 4;
 	public static final int INTAKE_REVERSE_SPOON_DOWN_STATE = 5;
-	public static final int INTAKE_REVERSE_OUTTAKE_STATE = 6; 
+	public static final int INTAKE_REVERSE_OUTTAKE_STATE = 6;
 	public static int intakeState = INTAKE_WAIT_STATE;
 
 	// SHOOTER STATE MACHINE
@@ -236,13 +220,25 @@ public class RobotMap {
 	public static final int SHOOTER_SPIN_MOTORS_STATE = 2;
 	public static final int SHOOTER_DELAY_AFTER_SHOOTING_STATE = 3;
 	public static final int SHOOTER_STOP_SHOOTER_STATE = 4;
+	public static final int SHOOTER_REVERSE_SHOOTER_STATE = 5;
 	public static int shooterState = SHOOTER_WAIT_STATE;
+	
+	// AUTONOMOUS TWO DEFENSE STATE MACHINE
+	
+	public static final int WAIT_MODE = 0;
+	public static final int FIRST_DRIVE_FORWARD_MODE = 1;
+	public static final int FIRST_DRIVE_BACKWARD_MODE = 2;
+	public static final int TURN_MODE = 3;
+	public static final int DRIVE_LEFT_RIGHT_MODE = 4;
+	public static final int TURN_TOWARD_DEFENSE_MODE = 5;
+	public static final int SECOND_DRIVE_FORWARD_MODE = 6;
+	public static int autonomousTwoDefenseMode = WAIT_MODE;
 
 	// CONSTANTS
 
 	public static final int BALL_OPTICAL_DELAY_TIME = 500; // In ms
 	public static final int REVERSE_OUTTAKE_DELAY_TIME = 100; // In ms
-	public static final int SHOOTER_DELAY_TIME = 1000; // In ms
+	public static final int SHOOTER_DELAY_TIME = 1500; // In ms
 	public static final double SHOOTER_DEADZONE = 0.01;
 
 	// TESTING CONSTANTS
