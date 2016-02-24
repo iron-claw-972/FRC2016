@@ -152,4 +152,48 @@ public class AutonomousChooser {
 	public int getAutonomousDelay() {
 		return autonomousDelay;
 	}
+	
+	public static int getDefenseDistance(int defenseMode) {
+		switch (defenseMode) {
+			case RobotMap.LOW_BAR_MODE:
+				return RobotMap.LOW_BAR_DEFENSE_DRIVE_DISTANCE;
+			case RobotMap.MOAT_MODE:
+				return RobotMap.MOAT_DEFENSE_DRIVE_DISTANCE;
+			case RobotMap.RAMPARTS_MODE:
+				return RobotMap.RAMPARTS_DEFENSE_DRIVE_DISTANCE;
+			case RobotMap.ROCK_WALL_MODE:
+				return RobotMap.ROCK_WALL_DEFENSE_DRIVE_DISTANCE;
+			case RobotMap.ROUGH_TERRAIN_MODE:
+				return RobotMap.ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE;
+			case RobotMap.DO_NOTHING_MODE:
+				return 0;
+		}
+		// This should never happen
+		return 0;
+	}
+	
+	public static double getDefenseSpeed(int defenseMode) {
+		switch (defenseMode) {
+			case RobotMap.LOW_BAR_MODE:
+				return RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED;
+			case RobotMap.MOAT_MODE:
+				return RobotMap.MOAT_DEFENSE_DRIVE_SPEED;
+			case RobotMap.RAMPARTS_MODE:
+				return RobotMap.RAMPARTS_DEFENSE_DRIVE_SPEED;
+			case RobotMap.ROCK_WALL_MODE:
+				return RobotMap.ROCK_WALL_DEFENSE_DRIVE_SPEED;
+			case RobotMap.ROUGH_TERRAIN_MODE:
+				return RobotMap.ROUGH_TERRAIN_DEFENSE_DRIVE_SPEED;
+			case RobotMap.DO_NOTHING_MODE:
+				return 0.0;
+		}
+		// This should never happen
+		return 0.0;
+	}	
+
+	public static int getDifferenceInPosition() {
+		return RobotMap.autonomousSecondPositionMode - RobotMap.autonomousFirstPositionMode;
+		// Go clockwise is positive, counterclockwise is negative
+	}
+	
 }

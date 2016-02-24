@@ -29,18 +29,22 @@ public class Drive {
 		backRightMotor.changeControlMode(TalonControlMode.Follower);
 		backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
 		backRightMotor.set(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
-		leftPID.setSetpoint((rightSpeed + leftSpeed)/2);
-		rightPID.setSetpoint((rightSpeed + leftSpeed)/2);
-		driveP = (((Robot.joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
-		driveI = (((Robot.joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
-		driveD = (((Robot.joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
-		rightPID.setPID(driveP, driveI, driveD);
-		leftPID.setPID(driveP, driveI, driveD);
-		rightPID.enable();
-		leftPID.enable();
-		SmartDashboard.putNumber("Drive P", driveP);
-		SmartDashboard.putNumber("Drive I", driveI);
-		SmartDashboard.putNumber("Drive D", driveD);
+		frontLeftMotor.set((leftSpeed + rightSpeed) / 2);
+		frontRightMotor.set((leftSpeed + rightSpeed) / 2);
+		
+		//below code is frickin stupid
+//		leftPID.setSetpoint((rightSpeed + leftSpeed)/2);
+//		rightPID.setSetpoint((rightSpeed + leftSpeed)/2);
+//		driveP = (((Robot.joystickLeft.getZ() * -1) + 1) / 2.0) * 0.01;
+//		driveI = (((Robot.joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
+//		driveD = (((Robot.joystickOp.getThrottle() * -1) + 1) / 2.0) * 0.01;
+//		rightPID.setPID(driveP, driveI, driveD);
+//		leftPID.setPID(driveP, driveI, driveD);
+//		rightPID.enable();
+//		leftPID.enable();
+//		SmartDashboard.putNumber("Drive P", driveP);
+//		SmartDashboard.putNumber("Drive I", driveI);
+//		SmartDashboard.putNumber("Drive D", driveD);
 	
 	}
 	

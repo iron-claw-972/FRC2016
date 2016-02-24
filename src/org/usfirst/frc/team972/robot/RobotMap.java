@@ -77,14 +77,14 @@ public class RobotMap {
 
 	// SPEEDS
 
-	public static final double SHOOTER_TOP_HIGH_SPEED = -22000;
-	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 20000;
-	public static final double SHOOTER_TOP_MEDIUM_SPEED = -17000;
-	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 16000;
-	public static final double SHOOTER_TOP_LOW_SPEED = -14000;
-	public static final double SHOOTER_BOTTOM_LOW_SPEED = 13000;
-	public static final double SHOOTER_TOP_REVERSE_SPEED = -700;
-	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = 700;
+	public static final double SHOOTER_TOP_HIGH_SPEED = -4000;
+	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 3800;
+	public static final double SHOOTER_TOP_MEDIUM_SPEED = -3000;
+	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 2800;
+	public static final double SHOOTER_TOP_LOW_SPEED = -1400;
+	public static final double SHOOTER_BOTTOM_LOW_SPEED = 1300;
+	public static final double SHOOTER_TOP_REVERSE_SPEED = -200;
+	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = 200;
 	// shooter speeds will not happen in actual bot because of PID
 	public static final double INTAKE_MOTOR_SPEED = 0.55;
 	public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.75;
@@ -114,7 +114,7 @@ public class RobotMap {
 	public static final int SHOOTER_PISTON_DOWN_STATE = 3;
 	public static int currentState = DO_NOTHING_STATE;
 
-	// AUTONOMOUS DEFENSES
+	// AUTONOMOUS DEFENSES STATE MACHINE
 
 	public static final int LOW_BAR_MODE = 0;
 	public static final int MOAT_MODE = 1;
@@ -123,8 +123,19 @@ public class RobotMap {
 	public static final int ROUGH_TERRAIN_MODE = 4;
 	public static final int DO_NOTHING_MODE = 5;
 
+	// AUTONOMOUS MODE STATE MACHINE
+
+	public static final int LOWER_OBSTACLE_MOTOR_MODE = 0;
+	public static final int FIRST_DRIVE_FORWARD_MODE = 1;
+	public static final int TURN_AROUND_MODE = 2;
+	public static final int FIRST_DRIVE_BACKWARD_MODE = 3;
+	public static final int TURN_MODE = 4;
+	public static final int GO_TO_NEXT_DEFENSE_MODE = 5;
+	public static final int TURN_TOWARD_DEFENSE_MODE = 6;
+	public static final int SECOND_DRIVE_FORWARD_MODE = 7;
+
 	// AUTONOMOUS START POSITIONS
-	
+
 	public static final int POSITION_1 = 0;
 	public static final int POSITION_2 = 1;
 	public static final int POSITION_3 = 2;
@@ -133,6 +144,7 @@ public class RobotMap {
 
 	// AUTONOMOUS MODES
 
+	public static int autonomousMode = FIRST_DRIVE_FORWARD_MODE;
 	public static int autonomousFirstDefenseMode = DO_NOTHING_MODE;
 	public static int autonomousFirstPositionMode = POSITION_1;
 	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
@@ -140,36 +152,27 @@ public class RobotMap {
 
 	// AUTONOMOUS DRIVE SPEEDS
 
+	public static final double AUTONOMOUS_SPEED_BETWEEN_DISTANCES = 0.5;
+	public static final double AUTONOMOUS_TURN_SPEED = 0.2;
 	public static final double LOW_BAR_DEFENSE_DRIVE_SPEED = 0.2;
-	public static final double LOW_BAR_TURN_SPEED = 0.2;
+	public static final double MOAT_DEFENSE_DRIVE_SPEED = 0.2;
+	public static final double RAMPARTS_DEFENSE_DRIVE_SPEED = 0.2;
+	public static final double ROCK_WALL_DEFENSE_DRIVE_SPEED = 0.2;
+	public static final double ROUGH_TERRAIN_DEFENSE_DRIVE_SPEED = 0.2;
 
 	// AUTONOMOUS DEFENSE DRIVE DISTANCE
 
-	public static final int LOW_BAR_LEFT_DRIVE_DISTANCE = 500;
-	public static final int LOW_BAR_RIGHT_DRIVE_DISTANCE = 500;
-	public static final int LOW_BAR_TURN_DISTANCE = 500; // TODO get correct numbers
-
-	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 12; // TODO add
-																	// actual
-																	// number
-	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 28; // TODO add actual
-																// number
-	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 62; // TODO add
-																	// actual
-																	// number
-	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 39; // TODO add
-																	// actual
-																	// number
-	public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 72; // TODO add
-																	// actual
-																	// number
-	public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 93; // TODO add
-																	// actual
-																	// number
+	public static final int AUTONOMOUS_DISTANCE_BETWEEN_DEFENSES = 7; // TODO
+	public static final int LOW_BAR_LEFT_DRIVE_DISTANCE = 500; // TODO
+	public static final int LOW_BAR_RIGHT_DRIVE_DISTANCE = 500; // TODO
+	public static final int LOW_BAR_TURN_DISTANCE = 500; // TODO
+	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 12; // TODO
+	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 28; // TODO
+	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 62; // TODO
+	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 39; // TODO
+	public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 72; // TODO
+	public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 93; // TODO
 	public static final int ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE = 2; // TODO
-																		// add
-																		// actual
-																		// number
 
 	// SHOOTER MOTOR PID
 
@@ -222,17 +225,6 @@ public class RobotMap {
 	public static final int SHOOTER_STOP_SHOOTER_STATE = 4;
 	public static final int SHOOTER_REVERSE_SHOOTER_STATE = 5;
 	public static int shooterState = SHOOTER_WAIT_STATE;
-	
-	// AUTONOMOUS TWO DEFENSE STATE MACHINE
-	
-	public static final int WAIT_MODE = 0;
-	public static final int FIRST_DRIVE_FORWARD_MODE = 1;
-	public static final int FIRST_DRIVE_BACKWARD_MODE = 2;
-	public static final int TURN_MODE = 3;
-	public static final int DRIVE_LEFT_RIGHT_MODE = 4;
-	public static final int TURN_TOWARD_DEFENSE_MODE = 5;
-	public static final int SECOND_DRIVE_FORWARD_MODE = 6;
-	public static int autonomousTwoDefenseMode = WAIT_MODE;
 
 	// CONSTANTS
 
@@ -240,6 +232,7 @@ public class RobotMap {
 	public static final int REVERSE_OUTTAKE_DELAY_TIME = 100; // In ms
 	public static final int SHOOTER_DELAY_TIME = 1500; // In ms
 	public static final double SHOOTER_DEADZONE = 0.01;
+	public static final int LOWER_OBSTACLE_MOTOR_TIME = 500; // In ms
 
 	// TESTING CONSTANTS
 

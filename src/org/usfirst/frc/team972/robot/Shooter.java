@@ -22,8 +22,6 @@ public class Shooter {
 	void shooterStop() {
 		topMotor.reset();
 		bottomMotor.reset();
-		topMotor.enable();
-		bottomMotor.enable();
 		topMotor.set(0);
 		bottomMotor.set(0);
 	}
@@ -102,17 +100,58 @@ public class Shooter {
 	}
 	
 	public void runShooter() {
+		topMotor.enable();
+		bottomMotor.enable();
 //		topMotor.set(-1*shooterTopSpeed);
 //		bottomMotor.set(shooterBottomSpeed);
-		topMotor.setPID(0.001, 0.024, 0.0);
-		bottomMotor.setPID(0.001, 0.024, 0.0);
+		double kP = (((Robot.joystickLeft.getZ() * -1) + 1) / 2.0) * 0.5;
+		double kI = (((Robot.joystickRight.getZ() * -1) + 1) / 2.0) * 0.01;
+		double kD = (((Robot.joystickOp.getThrottle() * -1) + 1) / 2.0) * 10;
+		if (Robot.joystickOp.getRawButton(11)) {
+			topMotor.setP(kP);
+			topMotor.setI(kI);
+			topMotor.setD(kD);
+		}
+		if (Robot.joystickOp.getRawButton(12)) {
+			bottomMotor.setP(kP);
+			bottomMotor.setI(kI);
+			bottomMotor.setD(kD);
+		}
+		SmartDashboard.putNumber("Shooter Top P", topMotor.getP());
+		SmartDashboard.putNumber("Shooter Bottom P", bottomMotor.getP());
+		SmartDashboard.putNumber("Shooter Top I", topMotor.getI());
+		SmartDashboard.putNumber("Shooter Bottom I", bottomMotor.getI());
+		SmartDashboard.putNumber("Shooter Top D", topMotor.getD());
+		SmartDashboard.putNumber("Shooter Bottom D", bottomMotor.getD());
 //		topMotor.set(shooterTopSpeed);
 //		bottomMotor.set(shooterBottomSpeed);
-		topMotor.set(-22000);
-		bottomMotor.set(20000);
+		topMotor.set(shooterTopSpeed);
+		bottomMotor.set(shooterBottomSpeed);
 	}
 	
 	public void reverseShooter() {
+		topMotor.enable();
+		bottomMotor.enable();
+		double kP = (((Robot.joystickLeft.getZ() * -1) + 1) / 2.0);
+		double kI = (((Robot.joystickRight.getZ() * -1) + 1) / 2.0);
+		double kD = (((Robot.joystickOp.getThrottle() * -1) + 1) / 2.0);
+		if (Robot.joystickOp.getRawButton(11)) {
+			topMotor.setP(kP);
+			topMotor.setI(kI);
+			topMotor.setD(kD);
+		}
+		if (Robot.joystickOp.getRawButton(12)) {
+			bottomMotor.setP(kP);
+			bottomMotor.setI(kI);
+		}
+		SmartDashboard.putNumber("Shooter Top P", topMotor.getP());
+		SmartDashboard.putNumber("Shooter Bottom P", bottomMotor.getP());
+		SmartDashboard.putNumber("Shooter Top I", topMotor.getI());
+		SmartDashboard.putNumber("Shooter Bottom I", bottomMotor.getI());
+		SmartDashboard.putNumber("Shooter Top D", topMotor.getD());
+		SmartDashboard.putNumber("Shooter Bottom D", bottomMotor.getD());
+		topMotor.setPID(kP, kI, kD);
+		bottomMotor.setPID(kP, kI, kD);
 		topMotor.set(RobotMap.SHOOTER_TOP_REVERSE_SPEED);
 		bottomMotor.set(RobotMap.SHOOTER_BOTTOM_REVERSE_SPEED);
 	}

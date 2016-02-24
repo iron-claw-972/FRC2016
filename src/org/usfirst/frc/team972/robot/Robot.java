@@ -414,9 +414,10 @@ public class Robot extends IterativeRobot {
 			if ((leftJoystickY > 0.8 && rightJoystickY > 0.8) || (leftJoystickY < -0.8 && rightJoystickY < -0.8)) {
 				driveController.straightDrive(driveStraightLeftPID, driveStraightRightPID, leftDriveSpeed, rightDriveSpeed);
 			} else {
+				setDriveMotorsToLeaders(); // Makes them all to PercentVBus
 				if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
 					botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier);
-					// Split arcade
+					// Split arcade -- this almost certainly should not be used in competition
 				} else {
 					driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
 				}
@@ -475,6 +476,8 @@ public class Robot extends IterativeRobot {
 		// frontRightMotor.get());
 		SmartDashboard.putNumber("Left Encoder Value", leftDriveEncoder.get());
 		SmartDashboard.putNumber("Right Encoder Value", rightDriveEncoder.get());
+		SmartDashboard.putNumber("Left Encoder Rate", leftDriveEncoder.getRate());
+		SmartDashboard.putNumber("Right Encoder Rate", rightDriveEncoder.getRate());
 		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get());
 		SmartDashboard.putNumber("Flippy Speed", obstacleMotorSpeed);
 		SmartDashboard.putBoolean("Upper LS", !obstacleMotorUpperLimitSwitch.get());
@@ -507,6 +510,13 @@ public class Robot extends IterativeRobot {
 											// enough" error message
 		stopEverything();
 		RobotMap.haveCam = true;
+	}
+	
+	public void setDriveMotorsToLeaders() {
+		frontLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
+		frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
+		backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
 	}
 
 	public void stopEverything() {
