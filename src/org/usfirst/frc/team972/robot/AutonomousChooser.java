@@ -11,7 +11,7 @@ public class AutonomousChooser {
 	SendableChooser autonomousSecondPositionChooser = new SendableChooser();
 	int autonomousDelay; // How long we delay
 	long chevalDeFriseStartTime = -1; // This means the timer has not been set
-	
+
 	public void createChooser() {
 		autonomousFirstDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
 		autonomousFirstDefenseChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
@@ -45,7 +45,7 @@ public class AutonomousChooser {
 		autonomousSecondPositionChooser.addObject("Position 5", new Integer(RobotMap.POSITION_5));
 		SmartDashboard.putData("Autonomous Second Position Chooser", autonomousSecondPositionChooser);
 	}
-	
+
 	public void checkChoices() {
 		RobotMap.autonomousFirstDefenseMode = ((Integer) (autonomousFirstDefenseChooser.getSelected())).intValue();
 		RobotMap.autonomousFirstPositionMode = ((Integer) (autonomousFirstPositionChooser.getSelected())).intValue();
@@ -129,7 +129,7 @@ public class AutonomousChooser {
 				System.out.println("Default Autonomous Second Defense Mode Error!!!");
 				break;
 		} // switch brace
-		
+
 		switch (RobotMap.autonomousSecondPositionMode) {
 			case RobotMap.NONE:
 				SmartDashboard.putString("Autonomous Second Position Mode", "None");
@@ -156,11 +156,11 @@ public class AutonomousChooser {
 				break;
 		} // switch brace
 	}
-	
+
 	public int getAutonomousDelay() {
 		return autonomousDelay;
 	}
-	
+
 	public static int getDefenseDistance(int defenseMode) {
 		switch (defenseMode) {
 			case RobotMap.LOW_BAR_MODE:
@@ -175,11 +175,12 @@ public class AutonomousChooser {
 				return RobotMap.ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE;
 			case RobotMap.DO_NOTHING_MODE:
 				return 0;
+			default:
+				// This should never happen
+				return 0;
 		}
-		// This should never happen
-		return 0;
 	}
-	
+
 	public static double getDefenseSpeed(int defenseMode) {
 		switch (defenseMode) {
 			case RobotMap.LOW_BAR_MODE:
@@ -197,12 +198,14 @@ public class AutonomousChooser {
 		}
 		// This should never happen
 		return 0.0;
-	}	
+	}
 
 	public static int getDifferenceInPosition() {
 		return RobotMap.autonomousSecondPositionMode - RobotMap.autonomousFirstPositionMode;
-		// Go right and turn clockwise is positive, go left and turn counterclockwise is negative
-		// This is the number of defense intervals (distance between two adjacent defenses)
+		// Go right and turn clockwise is positive, go left and turn
+		// counterclockwise is negative
+		// This is the number of defense intervals (distance between two
+		// adjacent defenses)
 	}
-	
+
 }

@@ -7,6 +7,7 @@ import com.ni.vision.NIVision;
 import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
@@ -25,6 +26,8 @@ import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.image.NIVisionException;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.vision.USBCamera;
@@ -80,21 +83,20 @@ public class Robot extends IterativeRobot {
 
 	// pneumatics
 	public static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
-	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL,
-			RobotMap.PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL);
+	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL);
 	// public static DoubleSolenoid gearboxPistonRight = new
 	// DoubleSolenoid(RobotMap.PCM_CAN_ID,
 	// RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL,
 	// RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
-	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL,
-			RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
-	public static DoubleSolenoid outtakePiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_OUTTAKE_FORWARD_CHANNEL,
-			RobotMap.PISTON_OUTTAKE_REVERSE_CHANNEL);
+	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
+	public static DoubleSolenoid outtakePiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_OUTTAKE_FORWARD_CHANNEL, RobotMap.PISTON_OUTTAKE_REVERSE_CHANNEL);
 
 	// sensors
 	public static DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
 	public static DigitalInput obstacleMotorUpperLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
 	public static DigitalInput obstacleMotorLowerLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
+
+	public static AnalogGyro gyro;
 
 	// intake
 
@@ -175,6 +177,12 @@ public class Robot extends IterativeRobot {
 
 		autonomousChooserSystem.createChooser();
 
+		try {
+			gyro = new AnalogGyro(0);
+		} catch (Exception e) {
+			System.out.println("Gyro fail: " + e);
+		}
+
 		/*
 		 * shooterBottomEncoder.setPIDSourceType(PIDSourceType.kRate);
 		 * shooterTopEncoder.setPIDSourceType(PIDSourceType.kRate);
@@ -206,31 +214,34 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
+		System.out.println("Autonomous Init");
 		// Starts cam during autonomous if possible to prevent lag in teleop
-		if (RobotMap.USE_OLD_CAM) {
-			try {
-				camFront = new USBCamera("cam0");
-				camBack = new USBCamera("cam1");
-				camFront.openCamera();
-				camBack.openCamera();
-				camFront.startCapture();
-				// startCapture so that it doesn't try to take a picture before
-				// the camera is on
-			} catch (VisionException e) {
-				System.out.println("VISION EXCEPTION ~ " + e);
-			}
-		} else {
-			cst = new CameraStreamingThread(this);
-			new Thread(cst).start();
-		}
+
+		// TODO Possibly uncomment if it works without this... Use this in
+		// competition though
+		// if (RobotMap.USE_OLD_CAM) {
+		// try {
+		// camFront = new USBCamera("cam0");
+		// camBack = new USBCamera("cam1");
+		// camFront.openCamera();
+		// camBack.openCamera();
+		// camFront.startCapture();
+		// // startCapture so that it doesn't try to take a picture before
+		// // the camera is on
+		// } catch (VisionException e) {
+		// System.out.println("VISION EXCEPTION ~ " + e);
+		// }
+		// } else {
+		// cst = new CameraStreamingThread(this);
+		// new Thread(cst).start();
+		// }
 
 		intakeSystem.spoonUp();
-		// System.out.println("autonomous init");
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
 
 		autonomousChooserSystem.checkChoices();
-		// Autonomous.startAutonomous();
+		Autonomous.startAutonomous(this, autonomousChooserSystem);
 
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
@@ -241,7 +252,7 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void autonomousPeriodic() {
-
+		// do nothing
 	}
 
 	public void teleopInit() {
@@ -285,11 +296,14 @@ public class Robot extends IterativeRobot {
 			// If both limit switches are triggered, automatically manual
 			// override (shouldn't happen)
 		}
-		if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
-				&& (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) { // Limit Switch true when not pressed
+		if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315) && (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) { // Limit
+																																												// Switch
+																																												// true
+																																												// when
+																																												// not
+																																												// pressed
 			obstacleMotor.set(-obstacleMotorSpeed); // Go up
-		} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
-				&& (obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
+		} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135) && (obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
 			obstacleMotor.set(obstacleMotorSpeed); // Go down
 		} else {
 			obstacleMotor.set(0);
@@ -383,19 +397,27 @@ public class Robot extends IterativeRobot {
 		kD = RobotMap.D_BRAKE;
 
 		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
+			SmartDashboard.putBoolean("Straight Drive", false);
 			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI, kD);
 		} else {
 			driveController.stopPIDBrake(pidMode, pidLeftDrive, pidRightDrive);
-			if ((leftJoystickY > 0.8 && rightJoystickY > 0.8) || (leftJoystickY < -0.8 && rightJoystickY < -0.8)) {
+			if (Math.abs(leftJoystickY - rightJoystickY) < 0.1 && (Math.abs(leftJoystickY) > 0.5 || Math.abs(rightJoystickY) > 0.5)) {
+				SmartDashboard.putBoolean("Straight Drive", true);
+				System.out.println("Straight Drive!");
 				driveController.straightDrive(driveStraightLeftPID, driveStraightRightPID, leftDriveSpeed, rightDriveSpeed);
 			} else {
+				SmartDashboard.putBoolean("Straight Drive", false);
 				setDriveMotorsToLeaders(); // Makes them all to PercentVBus
-				if (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON)) {
-					botDrive.drive(joystickRight.getY() * driveMultiplier, joystickLeft.getX() * driveMultiplier);
-					// Split arcade -- this almost certainly should not be used in competition
-				} else {
-					driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
-				}
+				// if
+				// (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON))
+				// {
+				// botDrive.drive(joystickRight.getY() * driveMultiplier,
+				// joystickLeft.getX() * driveMultiplier);
+				// // Split arcade -- this almost certainly should not be used
+				// // in competition
+				// } else {
+				driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
+				// }
 			}
 		}
 
@@ -462,6 +484,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
+		SmartDashboard.putNumber("Left - Right", leftDriveSpeed - rightDriveSpeed);
 		// SmartDashboard.putBoolean("Flippy Thing Manual Override",
 		// obstacleMotorManualOverride);
 		SmartDashboard.putNumber("Shooter Bottom Encoder Speed", shooterBottomMotor.getSpeed());
@@ -470,6 +493,11 @@ public class Robot extends IterativeRobot {
 			SmartDashboard.putString("Front Side", "BATTERY");
 		} else {
 			SmartDashboard.putString("Front Side", "INTAKE");
+		}
+		try {
+			SmartDashboard.putNumber("Gyro", gyro.getAngle());
+		} catch (Exception e) {
+			System.out.println("Gyro failed: " + gyro.getAngle());
 		}
 	}
 
@@ -486,7 +514,7 @@ public class Robot extends IterativeRobot {
 		stopEverything();
 		RobotMap.haveCam = true;
 	}
-	
+
 	public void setDriveMotorsToLeaders() {
 		frontLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
 		frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);

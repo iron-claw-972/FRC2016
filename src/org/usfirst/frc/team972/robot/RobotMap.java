@@ -77,8 +77,8 @@ public class RobotMap {
 
 	// SPEEDS
 
-	public static final double SHOOTER_TOP_HIGH_SPEED = -4000;
-	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 3800;
+	public static final double SHOOTER_TOP_HIGH_SPEED = -3600;
+	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 3400;
 	public static final double SHOOTER_TOP_MEDIUM_SPEED = -3000;
 	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 2800;
 	public static final double SHOOTER_TOP_LOW_SPEED = -1400;
@@ -92,11 +92,11 @@ public class RobotMap {
 
 	// DRIVE MULTIPLIERS
 
-	public static final double DRIVE_MODE_1 = 0.6;// TODO 0.6
-	public static final double DRIVE_MODE_2 = 0.7;// TODO 0.7
-	public static final double DRIVE_MODE_3 = 0.8;// TODO 0.8
-	public static final double DRIVE_MODE_4 = 0.9;// TODO 0.9
-	public static final double DRIVE_MODE_5 = 1.0;// TODO 1.0
+	public static final double DRIVE_MODE_1 = 0.6;
+	public static final double DRIVE_MODE_2 = 0.7;
+	public static final double DRIVE_MODE_3 = 0.8;
+	public static final double DRIVE_MODE_4 = 0.9;
+	public static final double DRIVE_MODE_5 = 1.0;
 	public static final double DEFAULT_DRIVE_MODE = DRIVE_MODE_5;
 
 	// PISTONS
@@ -116,12 +116,12 @@ public class RobotMap {
 
 	// AUTONOMOUS DEFENSES STATE MACHINE
 
-	public static final int LOW_BAR_MODE = 0;
-	public static final int MOAT_MODE = 1;
-	public static final int RAMPARTS_MODE = 2;
-	public static final int ROCK_WALL_MODE = 3;
-	public static final int ROUGH_TERRAIN_MODE = 4;
-	public static final int DO_NOTHING_MODE = 5;
+	public static final int DO_NOTHING_MODE = 0;
+	public static final int LOW_BAR_MODE = 1;
+	public static final int MOAT_MODE = 2;
+	public static final int RAMPARTS_MODE = 3;
+	public static final int ROCK_WALL_MODE = 4;
+	public static final int ROUGH_TERRAIN_MODE = 5;
 
 	// AUTONOMOUS MODE STATE MACHINE
 
@@ -145,8 +145,8 @@ public class RobotMap {
 
 	// AUTONOMOUS MODES
 
-	public static int autonomousMode = FIRST_DRIVE_FORWARD_MODE;
-	public static int autonomousFirstDefenseMode = DO_NOTHING_MODE;
+	public static int autonomousMode = LOWER_OBSTACLE_MOTOR_MODE;
+	public static int autonomousFirstDefenseMode = LOW_BAR_MODE;
 	public static int autonomousFirstPositionMode = POSITION_1;
 	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
 	public static int autonomousSecondPositionMode = POSITION_1;
@@ -156,13 +156,14 @@ public class RobotMap {
 	public static final double AUTONOMOUS_SPEED_BETWEEN_DISTANCES = 0.5;
 	public static final double AUTONOMOUS_TURN_SPEED = 0.2;
 	public static final double LOW_BAR_DEFENSE_DRIVE_SPEED = 0.2;
-	public static final double MOAT_DEFENSE_DRIVE_SPEED = 0.2;
-	public static final double RAMPARTS_DEFENSE_DRIVE_SPEED = 0.2;
-	public static final double ROCK_WALL_DEFENSE_DRIVE_SPEED = 0.2;
+	public static final double MOAT_DEFENSE_DRIVE_SPEED = 0.7;
+	public static final double RAMPARTS_DEFENSE_DRIVE_SPEED = 0.4;
+	public static final double ROCK_WALL_DEFENSE_DRIVE_SPEED = 1.0;
 	public static final double ROUGH_TERRAIN_DEFENSE_DRIVE_SPEED = 0.2;
 
 	// AUTONOMOUS DEFENSE DRIVE DISTANCE
 
+	// 121.61 inches -> 10.134 feet
 	public static final int AUTONOMOUS_DISTANCE_BETWEEN_DEFENSES = 7; // TODO
 	public static final int LOW_BAR_LEFT_DRIVE_DISTANCE = 500; // TODO
 	public static final int LOW_BAR_RIGHT_DRIVE_DISTANCE = 500; // TODO
@@ -177,19 +178,18 @@ public class RobotMap {
 
 	// SHOOTER MOTOR PID
 
-	public static final double HIGH_SPEED_SHOOTER_MOTOR_SETPOINT = 2800.0; // P=0.001,
-																			// I=0.009,
-																			// D=0.000
-	public static final double MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT = 1600.0;// P=0.001,
-																			// I=0.024,
-																			// D=0.000
-	public static final double LOW_SPEED_SHOOTER_MOTOR_SETPOINT = 700.0;// P=0.001,
-																		// I=0.024,
-																		// D=0.000
+	public static final double HIGH_SPEED_SHOOTER_MOTOR_SETPOINT = 2800.0;
+	// P=0.001, I=0.009, D=0.000
+	public static final double MEDIUM_SPEED_SHOOTER_MOTOR_SETPOINT = 1600.0;
+	// P=0.001, I=0.024, D=0.000
+	public static final double LOW_SPEED_SHOOTER_MOTOR_SETPOINT = 700.0;
+	// P=0.001, I=0.024, D=0.000
+	
 	// P is very low; increasing causes violent oscillation
 	// I increases as setpoint decreases; this is to prevent the rate from
 	// reversing and making robot oscillate between directions
 	// D is not necessary and does not help oscillation
+	
 	public static final double P_LOW_SPEED_SHOOTER = 0.001;
 	public static final double I_LOW_SPEED_SHOOTER = 0.024;
 	public static final double D_LOW_SPEED_SHOOTER = 0.000;
@@ -237,6 +237,7 @@ public class RobotMap {
 
 	// TESTING CONSTANTS
 
+	// These constants are used to test various functions
 	public static final boolean USE_OLD_CAM = false;
 	public static final boolean USE_SHOOTER_PID = false;
 

@@ -22,15 +22,18 @@ public class Drive {
 		this.backRightMotor = backRightMotor;
 	}
 	
+	// TODO Take out PID
 	public void straightDrive(PIDController leftPID, PIDController rightPID, double leftSpeed, double rightSpeed) {
-		frontLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
-		frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
-		backLeftMotor.changeControlMode(TalonControlMode.Follower);
-		backRightMotor.changeControlMode(TalonControlMode.Follower);
-		backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-		backRightMotor.set(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
-		frontLeftMotor.set((leftSpeed + rightSpeed) / 2);
-		frontRightMotor.set((leftSpeed + rightSpeed) / 2);
+//		frontLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
+//		frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+//		backLeftMotor.changeControlMode(TalonControlMode.Follower);
+//		backRightMotor.changeControlMode(TalonControlMode.Follower);
+//		backLeftMotor.set(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
+//		backRightMotor.set(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
+//		frontLeftMotor.set((leftSpeed + rightSpeed) / 2);
+//		frontRightMotor.set((leftSpeed + rightSpeed) / 2);
+		double speed = (leftSpeed + rightSpeed) / 2;
+		Robot.botDrive.tankDrive(speed, speed);
 		
 		//below code is frickin stupid
 //		leftPID.setSetpoint((rightSpeed + leftSpeed)/2);
@@ -45,7 +48,6 @@ public class Drive {
 //		SmartDashboard.putNumber("Drive P", driveP);
 //		SmartDashboard.putNumber("Drive I", driveI);
 //		SmartDashboard.putNumber("Drive D", driveD);
-	
 	}
 	
 	public double setDriveMultiplier(double originalDriveMultiplier) {

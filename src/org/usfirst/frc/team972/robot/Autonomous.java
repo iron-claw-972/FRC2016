@@ -37,21 +37,23 @@ public class Autonomous {
 
 	// Autonomous Drive Backward should never be used
 	// Distance and speed should both be negative
-//	public static boolean autonomousDriveBackward(int distance, double speed) {
-//		double leftDriveSpeed, rightDriveSpeed;
-//		if (Robot.leftDriveEncoder.get() > distance) {
-//			leftDriveSpeed = speed;
-//		} else {
-//			leftDriveSpeed = 0;
-//		}
-//		if (Robot.rightDriveEncoder.get() > distance) {
-//			rightDriveSpeed = speed;
-//		} else {
-//			rightDriveSpeed = 0;
-//		}
-//		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
-//		return Robot.leftDriveEncoder.get() <= distance && Robot.rightDriveEncoder.get() <= distance;
-//	}
+	// public static boolean autonomousDriveBackward(int distance, double speed)
+	// {
+	// double leftDriveSpeed, rightDriveSpeed;
+	// if (Robot.leftDriveEncoder.get() > distance) {
+	// leftDriveSpeed = speed;
+	// } else {
+	// leftDriveSpeed = 0;
+	// }
+	// if (Robot.rightDriveEncoder.get() > distance) {
+	// rightDriveSpeed = speed;
+	// } else {
+	// rightDriveSpeed = 0;
+	// }
+	// Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
+	// return Robot.leftDriveEncoder.get() <= distance &&
+	// Robot.rightDriveEncoder.get() <= distance;
+	// }
 
 	public static boolean autonomousTurnClockwise(int distance, double speed) {
 		double leftDriveSpeed, rightDriveSpeed;
@@ -92,16 +94,18 @@ public class Autonomous {
 
 	public static void startAutonomous(Robot r, AutonomousChooser autonomousChooserSystem) {
 
-		Robot.autonomousDelayStartTime = System.currentTimeMillis();
-		boolean finishedDelaying = false;
-		while (r.isAutonomous() && r.isEnabled() && !finishedDelaying) {
-			finishedDelaying = Autonomous.autonomousDelay(Robot.autonomousDelayStartTime, autonomousChooserSystem.getAutonomousDelay() * 1000);
-			// Converting from seconds to milliseconds
-		}
+		// Currently no autonomous delay
+		// Robot.autonomousDelayStartTime = System.currentTimeMillis();
+		// boolean finishedDelaying = false;
+		// while (r.isAutonomous() && r.isEnabled() && !finishedDelaying) {
+		// finishedDelaying =
+		// Autonomous.autonomousDelay(Robot.autonomousDelayStartTime,
+		// autonomousChooserSystem.getAutonomousDelay() * 1000);
+		// // Converting from seconds to milliseconds
+		// }
 
 		// botDrive.setSafetyEnabled(true); // Prevents "output not updated
 		// enough" error message
-		System.out.println("finished autonomous delay");
 
 		Robot.leftDriveEncoder.reset();
 		Robot.rightDriveEncoder.reset();
@@ -110,7 +114,10 @@ public class Autonomous {
 		double speed;
 		long startTime = System.currentTimeMillis();
 
-		while (r.isEnabled() && r.isAutonomous()) {
+		while (r.isEnabled() && r.isAutonomous()) { // will automatically return
+													// out of method when
+													// finished with state
+													// machine
 			switch (RobotMap.autonomousMode) {
 				case RobotMap.LOWER_OBSTACLE_MOTOR_MODE:
 					SmartDashboard.putString("Autonomous Mode", "Lower Obstacle Motor");
@@ -166,6 +173,11 @@ public class Autonomous {
 							Robot.rightDriveEncoder.reset();
 							RobotMap.autonomousMode = RobotMap.GO_TO_NEXT_DEFENSE_MODE;
 						}
+					} else {
+						Robot.botDrive.tankDrive(0, 0);
+						Robot.leftDriveEncoder.reset();
+						Robot.rightDriveEncoder.reset();
+						RobotMap.autonomousMode = RobotMap.GO_TO_NEXT_DEFENSE_MODE;
 					}
 					break;
 				case RobotMap.GO_TO_NEXT_DEFENSE_MODE:
