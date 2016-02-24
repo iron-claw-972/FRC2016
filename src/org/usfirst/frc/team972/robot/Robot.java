@@ -295,31 +295,6 @@ public class Robot extends IterativeRobot {
 			obstacleMotor.set(0);
 		}
 
-		// TODO remove if limit switch works
-		// if (obstacleMotorManualOverride) {
-		// if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 ||
-		// joystickOp.getPOV(0) == 315)) {
-		// obstacleMotor.set(-obstacleMotorSpeed); // Go up
-		// } else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) ==
-		// 225 || joystickOp.getPOV(0) == 135)) {
-		// obstacleMotor.set(obstacleMotorSpeed); // Go down
-		// } else {
-		// obstacleMotor.set(0);
-		// }
-		// } else { // normal circumstances
-		// if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 ||
-		// joystickOp.getPOV(0) == 315)
-		// && !obstacleMotorUpperLimitSwitch.get()) {
-		// obstacleMotor.set(-obstacleMotorSpeed); // Go up
-		// } else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) ==
-		// 225 || joystickOp.getPOV(0) == 135)
-		// && !obstacleMotorLowerLimitSwitch.get()) {
-		// obstacleMotor.set(obstacleMotorSpeed); // Go down
-		// } else {
-		// obstacleMotor.set(0);
-		// }
-		// }
-
 		// gearbox switch
 		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
 		if (gearboxSwitchingButtonIsPressed && !gearboxSwitchingPressedLastTime) {

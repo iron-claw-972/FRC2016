@@ -136,11 +136,12 @@ public class RobotMap {
 
 	// AUTONOMOUS START POSITIONS
 
-	public static final int POSITION_1 = 0;
-	public static final int POSITION_2 = 1;
-	public static final int POSITION_3 = 2;
-	public static final int POSITION_4 = 3;
-	public static final int POSITION_5 = 4;
+	public static final int NONE = 0;
+	public static final int POSITION_1 = 1;
+	public static final int POSITION_2 = 2;
+	public static final int POSITION_3 = 3;
+	public static final int POSITION_4 = 4;
+	public static final int POSITION_5 = 5;
 
 	// AUTONOMOUS MODES
 

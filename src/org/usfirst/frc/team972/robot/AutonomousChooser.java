@@ -18,9 +18,10 @@ public class AutonomousChooser {
 		autonomousFirstDefenseChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
 		autonomousFirstDefenseChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
 		autonomousFirstDefenseChooser.addObject("Rough Terrain", new Integer(RobotMap.ROUGH_TERRAIN_MODE));
-		autonomousSecondDefenseChooser.addDefault("None", new Integer(RobotMap.DO_NOTHING_MODE));
+		autonomousFirstDefenseChooser.addDefault("Do Nothing - First Chooser", new Integer(RobotMap.DO_NOTHING_MODE));
 		SmartDashboard.putData("Autonomous First Defense Chooser", autonomousFirstDefenseChooser);
 
+		autonomousFirstPositionChooser.addObject("First None", new Integer(RobotMap.NONE));
 		autonomousFirstPositionChooser.addDefault("Position 1", new Integer(RobotMap.POSITION_1));
 		autonomousFirstPositionChooser.addObject("Position 2", new Integer(RobotMap.POSITION_2));
 		autonomousFirstPositionChooser.addObject("Position 3", new Integer(RobotMap.POSITION_3));
@@ -33,9 +34,10 @@ public class AutonomousChooser {
 		autonomousSecondDefenseChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
 		autonomousSecondDefenseChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
 		autonomousSecondDefenseChooser.addObject("Rough Terrain", new Integer(RobotMap.ROUGH_TERRAIN_MODE));
-		autonomousSecondDefenseChooser.addDefault("None", new Integer(RobotMap.DO_NOTHING_MODE));
+		autonomousSecondDefenseChooser.addDefault("Do Nothing - Second Chooser", new Integer(RobotMap.DO_NOTHING_MODE));
 		SmartDashboard.putData("Autonomous Second Defense Chooser", autonomousSecondDefenseChooser);
 
+		autonomousSecondDefenseChooser.addObject("Second None", new Integer(RobotMap.NONE));
 		autonomousSecondPositionChooser.addDefault("Position 1", new Integer(RobotMap.POSITION_1));
 		autonomousSecondPositionChooser.addObject("Position 2", new Integer(RobotMap.POSITION_2));
 		autonomousSecondPositionChooser.addObject("Position 3", new Integer(RobotMap.POSITION_3));
@@ -77,6 +79,9 @@ public class AutonomousChooser {
 		}
 
 		switch (RobotMap.autonomousFirstPositionMode) {
+			case RobotMap.NONE:
+				SmartDashboard.putString("Autonomous First Position Mode", "None");
+				break;
 			case RobotMap.POSITION_1:
 				SmartDashboard.putString("Autonomous First Position Mode", "Position 1");
 				break;
@@ -126,6 +131,9 @@ public class AutonomousChooser {
 		} // switch brace
 		
 		switch (RobotMap.autonomousSecondPositionMode) {
+			case RobotMap.NONE:
+				SmartDashboard.putString("Autonomous Second Position Mode", "None");
+				break;
 			case RobotMap.POSITION_1:
 				SmartDashboard.putString("Autonomous Second Position Mode", "Position 1");
 				break;
@@ -193,7 +201,8 @@ public class AutonomousChooser {
 
 	public static int getDifferenceInPosition() {
 		return RobotMap.autonomousSecondPositionMode - RobotMap.autonomousFirstPositionMode;
-		// Go clockwise is positive, counterclockwise is negative
+		// Go right and turn clockwise is positive, go left and turn counterclockwise is negative
+		// This is the number of defense intervals (distance between two adjacent defenses)
 	}
 	
 }
