@@ -77,14 +77,15 @@ public class RobotMap {
 
 	// SPEEDS
 
-	public static final double SHOOTER_TOP_HIGH_SPEED = -3600;
-	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 3400;
-	public static final double SHOOTER_TOP_MEDIUM_SPEED = -3000;
-	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 2800;
-	public static final double SHOOTER_TOP_LOW_SPEED = -1400;
-	public static final double SHOOTER_BOTTOM_LOW_SPEED = 1300;
-	public static final double SHOOTER_TOP_REVERSE_SPEED = -200;
-	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = 200;
+	public static final double SHOOTER_TOP_HIGH_SPEED = -0.8;
+	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 0.75;
+	public static final double SHOOTER_TOP_MEDIUM_SPEED = -0.6;
+	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 0.55;
+	public static final double SHOOTER_TOP_LOW_SPEED = -0.4;
+	public static final double SHOOTER_BOTTOM_LOW_SPEED = 0.35;
+	public static final double SHOOTER_TOP_REVERSE_SPEED = -0.3;
+	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = 0.3;
+	
 	// shooter speeds will not happen in actual bot because of PID
 	public static final double INTAKE_MOTOR_SPEED = 0.55;
 	public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.75;
@@ -155,7 +156,7 @@ public class RobotMap {
 
 	public static final double AUTONOMOUS_SPEED_BETWEEN_DISTANCES = 0.5;
 	public static final double AUTONOMOUS_TURN_SPEED = 0.2;
-	public static final double LOW_BAR_DEFENSE_DRIVE_SPEED = 0.2;
+	public static final double LOW_BAR_DEFENSE_DRIVE_SPEED = 0.5;
 	public static final double MOAT_DEFENSE_DRIVE_SPEED = 0.7;
 	public static final double RAMPARTS_DEFENSE_DRIVE_SPEED = 0.4;
 	public static final double ROCK_WALL_DEFENSE_DRIVE_SPEED = 1.0;
@@ -165,10 +166,8 @@ public class RobotMap {
 
 	// 121.61 inches -> 10.134 feet
 	public static final int AUTONOMOUS_DISTANCE_BETWEEN_DEFENSES = 7; // TODO
-	public static final int LOW_BAR_LEFT_DRIVE_DISTANCE = 500; // TODO
-	public static final int LOW_BAR_RIGHT_DRIVE_DISTANCE = 500; // TODO
-	public static final int LOW_BAR_TURN_DISTANCE = 500; // TODO
-	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 12; // TODO
+	public static final int TURN_DISTANCE = 500; // TODO
+	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 1210; // TODO
 	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 28; // TODO
 	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 62; // TODO
 	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 39; // TODO

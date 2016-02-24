@@ -37,7 +37,7 @@ public class AutonomousChooser {
 		autonomousSecondDefenseChooser.addDefault("Do Nothing - Second Chooser", new Integer(RobotMap.DO_NOTHING_MODE));
 		SmartDashboard.putData("Autonomous Second Defense Chooser", autonomousSecondDefenseChooser);
 
-		autonomousSecondDefenseChooser.addObject("Second None", new Integer(RobotMap.NONE));
+		autonomousSecondPositionChooser.addObject("Second None", new Integer(RobotMap.NONE));
 		autonomousSecondPositionChooser.addDefault("Position 1", new Integer(RobotMap.POSITION_1));
 		autonomousSecondPositionChooser.addObject("Position 2", new Integer(RobotMap.POSITION_2));
 		autonomousSecondPositionChooser.addObject("Position 3", new Integer(RobotMap.POSITION_3));
@@ -201,6 +201,9 @@ public class AutonomousChooser {
 	}
 
 	public static int getDifferenceInPosition() {
+		if (RobotMap.autonomousSecondPositionMode == 0 || RobotMap.autonomousFirstPositionMode == 0) {
+			return 0;
+		}
 		return RobotMap.autonomousSecondPositionMode - RobotMap.autonomousFirstPositionMode;
 		// Go right and turn clockwise is positive, go left and turn
 		// counterclockwise is negative

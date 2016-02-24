@@ -27,7 +27,7 @@ public class CameraStreamingThread implements Runnable {
 		} catch (VisionException e) {
 			System.out.println("VISION EXCEPTION ~ " + e);
 		}
-		while ((r.isAutonomous() || r.isOperatorControl()) && r.isEnabled()) {
+		while ((r.isAutonomous() || r.isOperatorControl()) && r.isEnabled() && RobotMap.haveCam) {
 			try {
 				// camera streaming
 				if (Robot.rearCam) {
@@ -37,12 +37,10 @@ public class CameraStreamingThread implements Runnable {
 				}
 				camServer.setImage(img); // puts image on the dashboard
 			} catch (Exception e) {
-//				System.out.println("Error " + e.toString());
-//				e.printStackTrace();
-				if(RobotMap.haveCam) {
-					RobotMap.haveCam = false;
-					System.out.println("You don't have camera!");
-				}
+				// System.out.println("Error " + e.toString());
+				// e.printStackTrace();
+				RobotMap.haveCam = false;
+				System.out.println("You don't have camera!");
 			}
 		}
 	}

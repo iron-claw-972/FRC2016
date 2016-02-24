@@ -26,13 +26,13 @@ public class Autonomous {
 		} else {
 			leftDriveSpeed = 0;
 		}
-		if (Robot.rightDriveEncoder.get() < distance) {
+		if (-Robot.rightDriveEncoder.get() < distance) {
 			rightDriveSpeed = speed;
 		} else {
 			rightDriveSpeed = 0;
 		}
 		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
-		return Robot.leftDriveEncoder.get() >= distance && Robot.rightDriveEncoder.get() >= distance;
+		return Robot.leftDriveEncoder.get() >= distance || -Robot.rightDriveEncoder.get() >= distance;
 	}
 
 	// Autonomous Drive Backward should never be used
@@ -62,13 +62,13 @@ public class Autonomous {
 		} else {
 			leftDriveSpeed = 0;
 		}
-		if (Robot.rightDriveEncoder.get() > -distance) {
+		if (-Robot.rightDriveEncoder.get() > -distance) {
 			rightDriveSpeed = -speed;
 		} else {
 			rightDriveSpeed = 0;
 		}
 		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
-		return Robot.leftDriveEncoder.get() >= distance && Robot.rightDriveEncoder.get() <= -distance;
+		return Robot.leftDriveEncoder.get() >= distance || -Robot.rightDriveEncoder.get() <= -distance;
 	}
 
 	// distance and speed should be positive
@@ -79,13 +79,13 @@ public class Autonomous {
 		} else {
 			leftDriveSpeed = 0;
 		}
-		if (Robot.rightDriveEncoder.get() < distance) {
+		if (-Robot.rightDriveEncoder.get() < distance) {
 			rightDriveSpeed = speed;
 		} else {
 			rightDriveSpeed = 0;
 		}
 		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
-		return Robot.leftDriveEncoder.get() <= distance && Robot.rightDriveEncoder.get() >= -distance;
+		return Robot.leftDriveEncoder.get() <= distance || -Robot.rightDriveEncoder.get() >= -distance;
 	}
 
 	public static boolean autonomousFlippyThing(boolean flipUp) {
@@ -118,6 +118,8 @@ public class Autonomous {
 													// out of method when
 													// finished with state
 													// machine
+			Robot.printEverything();
+			
 			switch (RobotMap.autonomousMode) {
 				case RobotMap.LOWER_OBSTACLE_MOTOR_MODE:
 					SmartDashboard.putString("Autonomous Mode", "Lower Obstacle Motor");
@@ -140,7 +142,7 @@ public class Autonomous {
 				case RobotMap.TURN_AROUND_MODE:
 					SmartDashboard.putString("Autonomous Mode", "Turn Around");
 					// Twice the distance because we want two 90 degree turns
-					if (autonomousTurnClockwise(2 * RobotMap.LOW_BAR_TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
+					if (autonomousTurnClockwise(2 * RobotMap.TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
 						Robot.botDrive.tankDrive(0, 0);
 						Robot.leftDriveEncoder.reset();
 						Robot.rightDriveEncoder.reset();
@@ -160,14 +162,14 @@ public class Autonomous {
 				case RobotMap.TURN_MODE:
 					SmartDashboard.putString("Autonomous Mode", "Turn");
 					if (AutonomousChooser.getDifferenceInPosition() > 0) {
-						if (autonomousTurnCounterclockwise(RobotMap.LOW_BAR_TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
+						if (autonomousTurnCounterclockwise(RobotMap.TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
 							Robot.botDrive.tankDrive(0, 0);
 							Robot.leftDriveEncoder.reset();
 							Robot.rightDriveEncoder.reset();
 							RobotMap.autonomousMode = RobotMap.GO_TO_NEXT_DEFENSE_MODE;
 						}
 					} else if (AutonomousChooser.getDifferenceInPosition() < 0) {
-						if (autonomousTurnClockwise(RobotMap.LOW_BAR_TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
+						if (autonomousTurnClockwise(RobotMap.TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
 							Robot.botDrive.tankDrive(0, 0);
 							Robot.leftDriveEncoder.reset();
 							Robot.rightDriveEncoder.reset();
@@ -194,14 +196,14 @@ public class Autonomous {
 				case RobotMap.TURN_TOWARD_DEFENSE_MODE:
 					SmartDashboard.putString("Autonomous Mode", "Turn Toward Defense");
 					if (AutonomousChooser.getDifferenceInPosition() > 0) {
-						if (autonomousTurnCounterclockwise(RobotMap.LOW_BAR_TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
+						if (autonomousTurnCounterclockwise(RobotMap.TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
 							Robot.botDrive.tankDrive(0, 0);
 							Robot.leftDriveEncoder.reset();
 							Robot.rightDriveEncoder.reset();
 							RobotMap.autonomousMode = RobotMap.SECOND_DRIVE_FORWARD_MODE;
 						}
 					} else if (AutonomousChooser.getDifferenceInPosition() < 0) {
-						if (autonomousTurnClockwise(RobotMap.LOW_BAR_TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
+						if (autonomousTurnClockwise(RobotMap.TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
 							Robot.botDrive.tankDrive(0, 0);
 							Robot.leftDriveEncoder.reset();
 							Robot.rightDriveEncoder.reset();
@@ -224,4 +226,6 @@ public class Autonomous {
 			}
 		}
 	}
+	
+	// TODO Write a method that converts inches to encoder clicks so that it can be translated to the new bot
 }

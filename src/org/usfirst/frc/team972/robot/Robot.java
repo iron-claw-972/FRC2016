@@ -160,14 +160,24 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
-		shooterTopMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		shooterBottomMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		shooterTopMotor.configNominalOutputVoltage(+0.0f, -0.0f);
-		shooterBottomMotor.configNominalOutputVoltage(+0.0f, -0.0f);
-		shooterTopMotor.configPeakOutputVoltage(+12.0f, -12.0f);
-		shooterBottomMotor.configPeakOutputVoltage(+12.0f, -12.0f);
-		shooterTopMotor.changeControlMode(TalonControlMode.Speed);
-		shooterBottomMotor.changeControlMode(TalonControlMode.Speed);
+		// This is for Shooter PID, which we are not using
+		// shooterTopMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		// shooterBottomMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		// shooterTopMotor.configNominalOutputVoltage(+0.0f, -0.0f);
+		// shooterBottomMotor.configNominalOutputVoltage(+0.0f, -0.0f);
+		// shooterTopMotor.configPeakOutputVoltage(+12.0f, -12.0f);
+		// shooterBottomMotor.configPeakOutputVoltage(+12.0f, -12.0f);
+		// shooterTopMotor.changeControlMode(TalonControlMode.Speed);
+		// shooterBottomMotor.changeControlMode(TalonControlMode.Speed);
+
+		shooterTopMotor.changeControlMode(TalonControlMode.PercentVbus);
+		shooterBottomMotor.changeControlMode(TalonControlMode.PercentVbus);
+		
+		frontLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
+		frontRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
+		backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
+
 		System.out.println("Robot Init");
 		compressor.start();
 		// compressor.stop();
@@ -214,6 +224,7 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
+		compressor.stop(); // TODO
 		System.out.println("Autonomous Init");
 		// Starts cam during autonomous if possible to prevent lag in teleop
 
@@ -256,6 +267,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
+		compressor.start(); // TODO
 		stopEverything(); // stops all motors
 		if (RobotMap.USE_OLD_CAM) {
 			try {
@@ -397,28 +409,32 @@ public class Robot extends IterativeRobot {
 		kD = RobotMap.D_BRAKE;
 
 		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
-			SmartDashboard.putBoolean("Straight Drive", false);
+			// SmartDashboard.putBoolean("Straight Drive", false);
 			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI, kD);
 		} else {
 			driveController.stopPIDBrake(pidMode, pidLeftDrive, pidRightDrive);
-			if (Math.abs(leftJoystickY - rightJoystickY) < 0.1 && (Math.abs(leftJoystickY) > 0.5 || Math.abs(rightJoystickY) > 0.5)) {
-				SmartDashboard.putBoolean("Straight Drive", true);
-				System.out.println("Straight Drive!");
-				driveController.straightDrive(driveStraightLeftPID, driveStraightRightPID, leftDriveSpeed, rightDriveSpeed);
-			} else {
-				SmartDashboard.putBoolean("Straight Drive", false);
-				setDriveMotorsToLeaders(); // Makes them all to PercentVBus
-				// if
-				// (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON))
-				// {
-				// botDrive.drive(joystickRight.getY() * driveMultiplier,
-				// joystickLeft.getX() * driveMultiplier);
-				// // Split arcade -- this almost certainly should not be used
-				// // in competition
-				// } else {
-				driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
-				// }
-			}
+			// if (Math.abs(leftJoystickY - rightJoystickY) < 0.1 &&
+			// (Math.abs(leftJoystickY) > 0.5 || Math.abs(rightJoystickY) >
+			// 0.5)) {
+			// SmartDashboard.putBoolean("Straight Drive", true);
+			// System.out.println("Straight Drive!");
+			// driveController.straightDrive(driveStraightLeftPID,
+			// driveStraightRightPID, leftDriveSpeed, rightDriveSpeed);
+			// } else {
+			// SmartDashboard.putBoolean("Straight Drive", false);
+			// setDriveMotorsToLeaders(); // Makes them all to PercentVBus
+
+			// if
+			// (joystickRight.getRawButton(RobotMap.JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON))
+			// {
+			// botDrive.drive(joystickRight.getY() * driveMultiplier,
+			// joystickLeft.getX() * driveMultiplier);
+			// // Split arcade -- this almost certainly should not be used
+			// // in competition
+			// } else {
+			driveController.tankDrive(leftDriveSpeed, rightDriveSpeed);
+			// }
+			// }
 		}
 
 		intakeSystem.intakeStateMachine();
@@ -456,11 +472,11 @@ public class Robot extends IterativeRobot {
 		printEverything();
 	}
 
-	public void printEverything() {
+	public static void printEverything() {
 		// TODO Gearbox code
-		SmartDashboard.putNumber("P", kP);
-		SmartDashboard.putNumber("I", kI);
-		SmartDashboard.putNumber("D", kD);
+//		SmartDashboard.putNumber("P", kP);
+//		SmartDashboard.putNumber("I", kI);
+//		SmartDashboard.putNumber("D", kD);
 		// SmartDashboard.putNumber("Shooter Bottom Motor", shooterSpeed);
 		// SmartDashboard.putNumber("Shooter Top Motor", shooterSpeed);
 		// SmartDashboard.putNumber("Back Left Motor Speed",
@@ -472,19 +488,20 @@ public class Robot extends IterativeRobot {
 		// SmartDashboard.putNumber("Front Right Motor Speed",
 		// frontRightMotor.get());
 		SmartDashboard.putNumber("Left Encoder Value", leftDriveEncoder.get());
-		SmartDashboard.putNumber("Right Encoder Value", rightDriveEncoder.get());
+		SmartDashboard.putNumber("Right Encoder Value", -rightDriveEncoder.get());
 		SmartDashboard.putNumber("Left Encoder Rate", leftDriveEncoder.getRate());
 		SmartDashboard.putNumber("Right Encoder Rate", rightDriveEncoder.getRate());
 		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get());
-		SmartDashboard.putNumber("Flippy Speed", obstacleMotorSpeed);
+//		SmartDashboard.putNumber("Flippy Speed", obstacleMotorSpeed); // TODO
 		SmartDashboard.putBoolean("Upper LS", !obstacleMotorUpperLimitSwitch.get());
 		SmartDashboard.putBoolean("Lower LS", !obstacleMotorLowerLimitSwitch.get());
 		// SmartDashboard.putNumber("Left Joystick Y", leftJoystickY);
 		// SmartDashboard.putNumber("Right Joystick Y", rightJoystickY);
-		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
-		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
-		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-		SmartDashboard.putNumber("Left - Right", leftDriveSpeed - rightDriveSpeed);
+//		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));
+//		SmartDashboard.putNumber("Left Speed", leftDriveSpeed); // TODO
+//		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
+		// SmartDashboard.putNumber("Left - Right", leftDriveSpeed -
+		// rightDriveSpeed);
 		// SmartDashboard.putBoolean("Flippy Thing Manual Override",
 		// obstacleMotorManualOverride);
 		SmartDashboard.putNumber("Shooter Bottom Encoder Speed", shooterBottomMotor.getSpeed());
@@ -497,7 +514,7 @@ public class Robot extends IterativeRobot {
 		try {
 			SmartDashboard.putNumber("Gyro", gyro.getAngle());
 		} catch (Exception e) {
-			System.out.println("Gyro failed: " + gyro.getAngle());
+			System.out.println("Gyro failed: " + e);
 		}
 	}
 
