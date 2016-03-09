@@ -226,6 +226,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		compressor.stop(); // TODO
 		System.out.println("Autonomous Init");
+		
 		// Starts cam during autonomous if possible to prevent lag in teleop
 
 		// TODO Possibly uncomment if it works without this... Use this in
@@ -251,6 +252,11 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
 
+		frontLeftMotor.enableBrakeMode(true);
+		frontRightMotor.enableBrakeMode(true);
+		backLeftMotor.enableBrakeMode(true);
+		backRightMotor.enableBrakeMode(true);
+		
 		autonomousChooserSystem.checkChoices();
 		Autonomous.startAutonomous(this, autonomousChooserSystem);
 
@@ -269,6 +275,12 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		compressor.start(); // TODO
 		stopEverything(); // stops all motors
+
+		frontLeftMotor.enableBrakeMode(false);
+		frontRightMotor.enableBrakeMode(false);
+		backLeftMotor.enableBrakeMode(false);
+		backRightMotor.enableBrakeMode(false);
+		
 		if (RobotMap.USE_OLD_CAM) {
 			try {
 				camFront = new USBCamera("cam1");
