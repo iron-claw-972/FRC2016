@@ -83,9 +83,8 @@ public class RobotMap {
 	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 0.55;
 	public static final double SHOOTER_TOP_LOW_SPEED = -0.4;
 	public static final double SHOOTER_BOTTOM_LOW_SPEED = 0.35;
-	public static final double SHOOTER_TOP_REVERSE_SPEED = -0.3;
-	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = 0.3;
-	// TODO Switch
+	public static final double SHOOTER_TOP_REVERSE_SPEED = 0.3;
+	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = -0.3;
 	
 	// shooter speeds will not happen in actual bot because of PID
 	public static final double INTAKE_MOTOR_SPEED = 0.55;
