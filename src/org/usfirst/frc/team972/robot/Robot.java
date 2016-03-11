@@ -249,8 +249,8 @@ public class Robot extends IterativeRobot {
 		// }
 
 		intakeSystem.spoonUp();
-		botDrive.setSafetyEnabled(false); // Prevents "output not updated
-											// enough" error message
+		botDrive.setSafetyEnabled(false);
+		// Prevents "output not updated enough" error message
 
 		frontLeftMotor.enableBrakeMode(true);
 		frontRightMotor.enableBrakeMode(true);
@@ -260,6 +260,7 @@ public class Robot extends IterativeRobot {
 		autonomousChooserSystem.checkChoices();
 		Autonomous.startAutonomous(this, autonomousChooserSystem);
 
+		SmartDashboard.putString("Autonomous Mode", "Done");
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
 	} // autonomous brace
@@ -503,10 +504,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Right Encoder Value", -rightDriveEncoder.get());
 		SmartDashboard.putNumber("Left Encoder Rate", leftDriveEncoder.getRate());
 		SmartDashboard.putNumber("Right Encoder Rate", rightDriveEncoder.getRate());
-		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get());
+		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get()); // By default, OS is true
 //		SmartDashboard.putNumber("Flippy Speed", obstacleMotorSpeed); // TODO
-		SmartDashboard.putBoolean("Upper LS", !obstacleMotorUpperLimitSwitch.get());
-		SmartDashboard.putBoolean("Lower LS", !obstacleMotorLowerLimitSwitch.get());
+		SmartDashboard.putBoolean("Upper LS", !obstacleMotorUpperLimitSwitch.get()); // By default, LS is true
+		SmartDashboard.putBoolean("Lower LS", !obstacleMotorLowerLimitSwitch.get()); // By default, LS is true
 		// SmartDashboard.putNumber("Left Joystick Y", leftJoystickY);
 		// SmartDashboard.putNumber("Right Joystick Y", rightJoystickY);
 //		SmartDashboard.putNumber("Drive Multiplier", (driveMultiplier));

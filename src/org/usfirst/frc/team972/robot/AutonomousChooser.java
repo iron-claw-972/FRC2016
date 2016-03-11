@@ -9,7 +9,7 @@ public class AutonomousChooser {
 	SendableChooser autonomousFirstPositionChooser = new SendableChooser();
 	SendableChooser autonomousSecondDefenseChooser = new SendableChooser();
 	SendableChooser autonomousSecondPositionChooser = new SendableChooser();
-	int autonomousDelay; // How long we delay
+//	int autonomousDelay; // How long we delay
 	long chevalDeFriseStartTime = -1; // This means the timer has not been set
 
 	public void createChooser() {
@@ -157,9 +157,9 @@ public class AutonomousChooser {
 		} // switch brace
 	}
 
-	public int getAutonomousDelay() {
-		return autonomousDelay;
-	}
+//	public int getAutonomousDelay() {
+//		return autonomousDelay;
+//	}
 
 	public static int getDefenseDistance(int defenseMode) {
 		switch (defenseMode) {
@@ -209,6 +209,12 @@ public class AutonomousChooser {
 		// counterclockwise is negative
 		// This is the number of defense intervals (distance between two
 		// adjacent defenses)
+	}
+	
+	// return true if 2 defenses and false if 1 defense
+	public static boolean doingTwoDefenses() {
+		return !(RobotMap.autonomousSecondDefenseMode == RobotMap.DO_NOTHING_MODE ||
+				RobotMap.autonomousSecondPositionMode == RobotMap.NONE);
 	}
 
 }

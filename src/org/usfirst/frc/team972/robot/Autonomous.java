@@ -20,16 +20,17 @@ public class Autonomous {
 		return ((System.currentTimeMillis() >= start + millis));
 	}
 
-	// TODO Uncomment at competition
-//	public static boolean lowerObstacleMotor(long startTime) {
-//		// If the lower limit switch is not pressed, lower the obstacle motor
-//		if (Robot.obstacleMotorLowerLimitSwitch.get()) {
-//			Robot.obstacleMotor.set(0.2);
-//		} else {
-//			Robot.obstacleMotor.set(0.0);
-//		}
-//		return System.currentTimeMillis() >= startTime + RobotMap.LOWER_OBSTACLE_MOTOR_TIME;
-//	}
+	// This should loower the obstacle motor for a set lenght of time and
+	// stop the motor if it hits the lower limit switch
+	public static boolean lowerObstacleMotor(long startTime) {
+		// If the lower limit switch is not pressed, lower the obstacle motor
+		if (Robot.obstacleMotorLowerLimitSwitch.get()) { // LS is true if not pressed
+			Robot.obstacleMotor.set(0.2);
+		} else {
+			Robot.obstacleMotor.set(0.0);
+		}
+		return System.currentTimeMillis() >= startTime + RobotMap.LOWER_OBSTACLE_MOTOR_TIME;
+	}
 
 	public static boolean autonomousDrive(int distance, double speed) {
 		double leftDriveSpeed, rightDriveSpeed;
@@ -121,13 +122,11 @@ public class Autonomous {
 			
 			switch (RobotMap.autonomousMode) {
 				case RobotMap.LOWER_OBSTACLE_MOTOR_MODE:
-					// TODO Uncomment at competition
 					SmartDashboard.putString("Autonomous Mode", "Lower Obstacle Motor");
-//					if (lowerObstacleMotor(startTime)) {
-//						Robot.obstacleMotor.set(0);
-						
+					if (lowerObstacleMotor(startTime)) {
+						Robot.obstacleMotor.set(0);						
 						RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
-//					}
+					}
 					break;
 				case RobotMap.FIRST_DRIVE_FORWARD_MODE:
 					SmartDashboard.putString("Autonomous Mode", "First Drive Forward");
@@ -138,7 +137,13 @@ public class Autonomous {
 						Robot.leftDriveEncoder.reset();
 						Robot.rightDriveEncoder.reset();
 						
-						RobotMap.autonomousMode = RobotMap.TURN_AROUND_MODE;
+						if(AutonomousChooser.doingTwoDefenses()) {
+							RobotMap.autonomousMode = RobotMap.TURN_AROUND_MODE;
+							// If you're doing 2 defenses, turn around and go back
+						} else {
+							// If you're only doing 1 defense, stay
+							return;
+						}
 					}
 					break;
 				case RobotMap.TURN_AROUND_MODE:
@@ -235,10 +240,9 @@ public class Autonomous {
 						Robot.rightDriveEncoder.reset();
 						SmartDashboard.putNumber("Left Speed", 0);
 						SmartDashboard.putNumber("Right Speed", 0);
-						SmartDashboard.putString("Autonomous Mode", "FINISHED");
+						SmartDashboard.putString("Autonomous Mode", "Done");
 						return;
 					}
-					SmartDashboard.putString("Autonomous Mode", "First Drive Forward");
 					break;
 				default:
 					SmartDashboard.putString("Autonomous Mode", "DEFAULT");
