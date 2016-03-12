@@ -159,6 +159,7 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
+		System.out.println("robotInit()");
 		// This is for Shooter PID, which we are not using
 		// shooterTopMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		// shooterBottomMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -223,6 +224,7 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
+		System.out.println("Begin autonomousInit()");
 		compressor.stop(); // TODO
 		System.out.println("Autonomous Init");
 		
@@ -243,6 +245,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putString("Autonomous Mode", "Done");
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
+		
+		System.out.println("End autonomousInit()");
 	} // autonomous brace
 
 	/**
@@ -254,6 +258,8 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
+		System.out.println("Start teleopInit()");
+		
 		compressor.start(); // TODO
 		stopEverything(); // stops all motors
 
@@ -284,6 +290,8 @@ public class Robot extends IterativeRobot {
 
 		intakeSystem.spoonUp(); // Move spoon up at the beginning
 		outtakePiston.set(DoubleSolenoid.Value.kReverse);
+		
+		System.out.println("End teleopInit()");
 	}
 
 	public void teleopPeriodic() {
@@ -523,11 +531,14 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void disabledInit() {
+		System.out.println("Start disabledInit()");
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
 		stopEverything();
 		RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
 		RobotMap.haveCam = true;
+		
+		System.out.println("End disabledInit()");
 	}
 
 	public void setDriveMotorsToLeaders() {

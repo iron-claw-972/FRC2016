@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Autonomous {
 
 	static boolean doneRaisingObstacleMotor = false;
+	static double slowedSpeed = 0.0;
 
 	public static boolean autonomousDelay(long start, int millis) {
 		return ((System.currentTimeMillis() >= start + millis));
@@ -47,21 +48,43 @@ public class Autonomous {
 	}
 
 	public static boolean autonomousDrive(int distance, double speed) {
-		double leftDriveSpeed, rightDriveSpeed;
-		if (Robot.leftDriveEncoder.get() < distance) {
-			leftDriveSpeed = speed;
+		// OLD JERKY STOP CODE
+//		double leftDriveSpeed, rightDriveSpeed;
+//		if (Robot.leftDriveEncoder.get() < distance) {
+//			leftDriveSpeed = speed;
+//		} else {
+//			leftDriveSpeed = 0; // Don't want a jerky stop
+//		}
+//		if (Robot.rightDriveEncoder.get() < distance) {
+//			rightDriveSpeed = speed;
+//		} else {
+//			rightDriveSpeed = 0; // Don't want a jerky stop
+//		}
+//		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
+//		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
+//		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
+//		return Robot.leftDriveEncoder.get() >= distance || Robot.rightDriveEncoder.get() >= distance;
+		
+		// NEW GRADUAL CODE
+		if (Robot.leftDriveEncoder.get() >= distance || Robot.rightDriveEncoder.get() >= distance) {
+			// If one has gone full distance, slow down
+			return autonomousSlowDown(speed) == 0;
+			// Return if your current speed is 0
 		} else {
-			leftDriveSpeed = 0;
+			Robot.botDrive.tankDrive(speed, speed);
+			return false;
 		}
-		if (Robot.rightDriveEncoder.get() < distance) {
-			rightDriveSpeed = speed;
+	}
+	
+	public static double autonomousSlowDown(double startSpeed) {
+		double driveSpeed;
+		if (startSpeed > RobotMap.AUTONOMOUS_SLOW_DOWN_INCREMENT) {
+			driveSpeed = startSpeed - RobotMap.AUTONOMOUS_SLOW_DOWN_INCREMENT;
+			Robot.botDrive.tankDrive(driveSpeed, driveSpeed);
 		} else {
-			rightDriveSpeed = 0;
+			driveSpeed = 0;
 		}
-		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
-		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
-		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-		return Robot.leftDriveEncoder.get() >= distance || Robot.rightDriveEncoder.get() >= distance;
+		return driveSpeed;
 	}
 
 	public static boolean autonomousTurnClockwise(int leftDistance, int rightDistance, double speed) {
@@ -127,6 +150,8 @@ public class Autonomous {
 		int distance;
 		double speed;
 		long startTime = 0;
+		
+		slowedSpeed = 0.0;
 
 		System.out.println("Autonomous State Machine Start");
 		while (r.isEnabled() && r.isAutonomous()) {
