@@ -126,7 +126,8 @@ public class RobotMap {
 
 	// AUTONOMOUS MODE STATE MACHINE
 
-	public static final int FIRST_OBSTACLE_MOTOR_MODE = 0;
+//	public static final int FIRST_OBSTACLE_MOTOR_RAISE_MODE = 9;
+//	public static final int FIRST_OBSTACLE_MOTOR_LOWER_MODE = 0;
 	public static final int FIRST_DRIVE_FORWARD_MODE = 1;
 	public static final int TURN_AROUND_MODE = 2;
 	public static final int FIRST_DRIVE_BACKWARD_MODE = 3;
@@ -147,7 +148,7 @@ public class RobotMap {
 
 	// AUTONOMOUS MODES
 
-	public static int autonomousMode = FIRST_OBSTACLE_MOTOR_MODE;
+	public static int autonomousMode = FIRST_DRIVE_FORWARD_MODE;
 	public static int autonomousFirstDefenseMode = LOW_BAR_MODE;
 	public static int autonomousFirstPositionMode = POSITION_1;
 	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
@@ -168,13 +169,14 @@ public class RobotMap {
 	public static final int AUTONOMOUS_DISTANCE_BETWEEN_DEFENSES = 500; // TODO
 	public static final int LEFT_TURN_DISTANCE = 4000; // 470 prac
 	public static final int RIGHT_TURN_DISTANCE = 4000; // 344 prac
-	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
-	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
-	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
-	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
-	public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
-	public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
-	public static final int ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
+	
+	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
 
 	// SHOOTER MOTOR PID
 
@@ -233,7 +235,7 @@ public class RobotMap {
 	public static final int REVERSE_OUTTAKE_DELAY_TIME = 100; // In ms
 	public static final int SHOOTER_DELAY_TIME = 1500; // In ms
 	public static final double SHOOTER_DEADZONE = 0.01;
-	public static final int LOWER_OBSTACLE_MOTOR_TIME = 450; // In ms
+	public static final int LOWER_OBSTACLE_MOTOR_TIME = 300; // In ms
 
 	// TESTING CONSTANTS
 

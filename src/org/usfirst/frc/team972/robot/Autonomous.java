@@ -35,10 +35,10 @@ public class Autonomous {
 	}
 
 	public static boolean raiseObstacleMotor() {
-		if (Robot.obstacleMotorUpperLimitSwitch.get()) { // LS is true if not
-															// pressed
+		if (Robot.obstacleMotorUpperLimitSwitch.get()) {
+			// LS is true if not pressed
 			// Run this code if the upper LS is not pressed
-			Robot.obstacleMotor.set(-0.35);
+			Robot.obstacleMotor.set(-0.5);
 			return false;
 		} else {
 			Robot.obstacleMotor.set(0.0);
@@ -126,7 +126,7 @@ public class Autonomous {
 
 		int distance;
 		double speed;
-		long startTime = System.currentTimeMillis();
+		long startTime = 0;
 
 		System.out.println("Autonomous State Machine Start");
 		while (r.isEnabled() && r.isAutonomous()) {
@@ -135,35 +135,41 @@ public class Autonomous {
 			Robot.printEverything();
 
 			switch (RobotMap.autonomousMode) {
-				case RobotMap.FIRST_OBSTACLE_MOTOR_MODE:
-					SmartDashboard.putString("Autonomous Mode", "First Obstacle Motor");
-					// if (!doneRaisingObstacleMotor) {
-					// doneRaisingObstacleMotor = raiseObstacleMotor();
-					// if (doneRaisingObstacleMotor) {
-					// startTime = System.currentTimeMillis();
-					// }
-					// } else {
-					// if (!AutonomousChooser.lowerObstacleMotorFirst() ||
-					// lowerObstacleMotor(startTime)) {
-					// // if you don't want to lower obstacle motor OR
-					// // if you are done lowering it, move on
-					// // If AC.lowerObstacleMotor() returns false, it
-					// // won't call lowerObstacleMotor()
-					// Robot.obstacleMotor.set(0);
-					// RobotMap.autonomousMode =
-					// RobotMap.FIRST_DRIVE_FORWARD_MODE;
-					// }
-					// }
-					if (AutonomousChooser.lowerObstacleMotorFirst()) {
-						System.out.println("LOWER OBSTACLE MOTOR");
-						if (lowerObstacleMotor(startTime)) {
-							Robot.obstacleMotor.set(0);
-							RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
-						}
-					} else {
-						RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
-					}
-					break;
+//				case RobotMap.FIRST_OBSTACLE_MOTOR_RAISE_MODE:
+//					if (raiseObstacleMotor()) {
+//						Robot.obstacleMotor.set(0);
+//						startTime = System.currentTimeMillis();
+//						RobotMap.autonomousMode = RobotMap.FIRST_OBSTACLE_MOTOR_LOWER_MODE;
+//					}
+//					break;
+//				case RobotMap.FIRST_OBSTACLE_MOTOR_LOWER_MODE:
+//					SmartDashboard.putString("Autonomous Mode", "First Obstacle Motor");
+//					// if (!doneRaisingObstacleMotor) {
+//					// doneRaisingObstacleMotor = raiseObstacleMotor();
+//					// if (doneRaisingObstacleMotor) {
+//					// startTime = System.currentTimeMillis();
+//					// }
+//					// } else {
+//					// if (!AutonomousChooser.lowerObstacleMotorFirst() ||
+//					// lowerObstacleMotor(startTime)) {
+//					// // if you don't want to lower obstacle motor OR
+//					// // if you are done lowering it, move on
+//					// // If AC.lowerObstacleMotor() returns false, it
+//					// // won't call lowerObstacleMotor()
+//					// Robot.obstacleMotor.set(0);
+//					// RobotMap.autonomousMode =
+//					// RobotMap.FIRST_DRIVE_FORWARD_MODE;
+//					// }
+//					// }
+//					if (AutonomousChooser.lowerObstacleMotorFirst()) {
+//						if (lowerObstacleMotor(startTime)) {
+//							Robot.obstacleMotor.set(0);
+//							RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
+//						}
+//					} else {
+//						RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
+//					}
+//					break;
 				case RobotMap.FIRST_DRIVE_FORWARD_MODE:
 					SmartDashboard.putString("Autonomous Mode", "First Drive Forward");
 					distance = AutonomousChooser.getDefenseDistance(RobotMap.autonomousFirstDefenseMode);

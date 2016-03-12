@@ -526,6 +526,7 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
 		stopEverything();
+		RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
 		RobotMap.haveCam = true;
 	}
 

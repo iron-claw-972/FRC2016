@@ -123,12 +123,10 @@ public class Drive {
 	public void switchModes(DoubleSolenoid gearboxPiston/*, DoubleSolenoid gearboxPistonRight*/) { //we used to have two solenoids; now we have one
 		if (gearboxPistonForward == false) {
 			gearboxPiston.set(DoubleSolenoid.Value.kForward);
-//			gearboxPistonRight.set(DoubleSolenoid.Value.kReverse);
 			gearboxPistonForward = true;
 			SmartDashboard.putString("Gear", "High");
 		} else {
 			gearboxPiston.set(DoubleSolenoid.Value.kReverse);
-//			gearboxPistonRight.set(DoubleSolenoid.Value.kForward);
 			gearboxPistonForward = false;
 			SmartDashboard.putString("Gear", "Low");
 		}
