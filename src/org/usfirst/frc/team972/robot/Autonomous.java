@@ -137,20 +137,31 @@ public class Autonomous {
 			switch (RobotMap.autonomousMode) {
 				case RobotMap.FIRST_OBSTACLE_MOTOR_MODE:
 					SmartDashboard.putString("Autonomous Mode", "First Obstacle Motor");
-					if (!doneRaisingObstacleMotor) {
-						doneRaisingObstacleMotor = raiseObstacleMotor();
-						if (doneRaisingObstacleMotor) {
-							startTime = System.currentTimeMillis();
-						}
-					} else {
-						if (!AutonomousChooser.lowerObstacleMotorFirst() || lowerObstacleMotor(startTime)) {
-							// if you don't want to lower obstacle motor OR
-							// if you are done lowering it, move on
-							// If AC.lowerObstacleMotor() returns false, it
-							// won't call lowerObstacleMotor()
+					// if (!doneRaisingObstacleMotor) {
+					// doneRaisingObstacleMotor = raiseObstacleMotor();
+					// if (doneRaisingObstacleMotor) {
+					// startTime = System.currentTimeMillis();
+					// }
+					// } else {
+					// if (!AutonomousChooser.lowerObstacleMotorFirst() ||
+					// lowerObstacleMotor(startTime)) {
+					// // if you don't want to lower obstacle motor OR
+					// // if you are done lowering it, move on
+					// // If AC.lowerObstacleMotor() returns false, it
+					// // won't call lowerObstacleMotor()
+					// Robot.obstacleMotor.set(0);
+					// RobotMap.autonomousMode =
+					// RobotMap.FIRST_DRIVE_FORWARD_MODE;
+					// }
+					// }
+					if (AutonomousChooser.lowerObstacleMotorFirst()) {
+						System.out.println("LOWER OBSTACLE MOTOR");
+						if (lowerObstacleMotor(startTime)) {
 							Robot.obstacleMotor.set(0);
 							RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
 						}
+					} else {
+						RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
 					}
 					break;
 				case RobotMap.FIRST_DRIVE_FORWARD_MODE:

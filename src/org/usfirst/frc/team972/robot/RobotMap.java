@@ -88,7 +88,7 @@ public class RobotMap {
 
 	// shooter speeds will not happen in actual bot because of PID
 	public static final double INTAKE_MOTOR_SPEED = 0.55;
-	public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.75;
+	public static final double INTAKE_REVERSE_MOTOR_SPEED = -1.0;
 	public static final double OBSTACLE_MOTOR_SPEED = 0.2;
 
 	// DRIVE MULTIPLIERS
@@ -168,13 +168,13 @@ public class RobotMap {
 	public static final int AUTONOMOUS_DISTANCE_BETWEEN_DEFENSES = 500; // TODO
 	public static final int LEFT_TURN_DISTANCE = 4000; // 470 prac
 	public static final int RIGHT_TURN_DISTANCE = 4000; // 344 prac
-	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
+	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
+	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
+	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
+	public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
+	public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
+	public static final int ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE = 4000; // TODO
 
 	// SHOOTER MOTOR PID
 
@@ -233,7 +233,7 @@ public class RobotMap {
 	public static final int REVERSE_OUTTAKE_DELAY_TIME = 100; // In ms
 	public static final int SHOOTER_DELAY_TIME = 1500; // In ms
 	public static final double SHOOTER_DEADZONE = 0.01;
-	public static final int LOWER_OBSTACLE_MOTOR_TIME = 500; // In ms
+	public static final int LOWER_OBSTACLE_MOTOR_TIME = 450; // In ms
 
 	// TESTING CONSTANTS
 
