@@ -417,7 +417,7 @@ public class Robot extends IterativeRobot {
 		kI = RobotMap.I_BRAKE;
 		kD = RobotMap.D_BRAKE;
 
-		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
+		if (joystickLeft.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
 			// SmartDashboard.putBoolean("Straight Drive", false);
 			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI, kD);
 		} else {

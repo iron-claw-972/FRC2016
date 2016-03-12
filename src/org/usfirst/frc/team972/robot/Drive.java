@@ -51,19 +51,19 @@ public class Drive {
 	}
 	
 	public double setDriveMultiplier(double originalDriveMultiplier) {
-		if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_1_BUTTON)) {
-			return RobotMap.DRIVE_MODE_1;
-		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_2_BUTTON)) {
-			return RobotMap.DRIVE_MODE_2;
-		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_3_BUTTON)) {
-			return RobotMap.DRIVE_MODE_3;
-		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_4_BUTTON)) {
-			return RobotMap.DRIVE_MODE_4;
-		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_5_BUTTON)) {
-			return RobotMap.DRIVE_MODE_5;
-		} else {
+//		if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_1_BUTTON)) { //This stuff got used for testing but Driver hates it.
+//			return RobotMap.DRIVE_MODE_1;
+//		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_2_BUTTON)) {
+//			return RobotMap.DRIVE_MODE_2;
+//		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_3_BUTTON)) {
+//			return RobotMap.DRIVE_MODE_3;
+//		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_4_BUTTON)) {
+//			return RobotMap.DRIVE_MODE_4;
+//		} else if (Robot.joystickLeft.getRawButton(RobotMap.JOYSTICK_SPEED_5_BUTTON)) {
+//			return RobotMap.DRIVE_MODE_5;
+//		} else {
 			return originalDriveMultiplier;
-		}
+//		}
 	}
 	
 	public void reverse() {
@@ -84,8 +84,8 @@ public class Drive {
 			pidLeftDrive.setSetpoint(0);
 			pidRightDrive.setSetpoint(0);
 
-			SmartDashboard.putNumber("Left Error", pidLeftDrive.getError());
-			SmartDashboard.putNumber("Right Error", pidRightDrive.getError());
+//			SmartDashboard.putNumber("Left Error", pidLeftDrive.getError()); //Not used by Drive Team.
+//			SmartDashboard.putNumber("Right Error", pidRightDrive.getError());
 
 			// this sets all the motors except front left to be followers
 			// this way they will do the same thing that the front left motor does
@@ -120,14 +120,14 @@ public class Drive {
 		botDrive.arcadeDrive(moveDriveSpeed, rotateDriveSpeed);
 	}
 	
-	public void switchModes(DoubleSolenoid gearboxPistonLeft/*, DoubleSolenoid gearboxPistonRight*/) {
+	public void switchModes(DoubleSolenoid gearboxPiston/*, DoubleSolenoid gearboxPistonRight*/) { //we used to have two solenoids; now we have one
 		if (gearboxPistonForward == false) {
-			gearboxPistonLeft.set(DoubleSolenoid.Value.kForward);
+			gearboxPiston.set(DoubleSolenoid.Value.kForward);
 //			gearboxPistonRight.set(DoubleSolenoid.Value.kReverse);
 			gearboxPistonForward = true;
 			SmartDashboard.putBoolean("High Gear", false);
 		} else {
-			gearboxPistonLeft.set(DoubleSolenoid.Value.kReverse);
+			gearboxPiston.set(DoubleSolenoid.Value.kReverse);
 //			gearboxPistonRight.set(DoubleSolenoid.Value.kForward);
 			gearboxPistonForward = false;
 			SmartDashboard.putBoolean("High Gear", true);

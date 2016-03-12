@@ -160,7 +160,7 @@ public class Shooter {
 		setShooterSpeeds();
 		switch (RobotMap.shooterState) {
 			case RobotMap.SHOOTER_WAIT_STATE:
-				SmartDashboard.putString("Shooter State", "Wait");
+				//SmartDashboard.putString("Shooter State", "Wait"); //Not used by Drive Team.
 				shooterStop();
 				if (Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_USE_SHOOTER_BUTTON)) {
 					RobotMap.shooterState = RobotMap.SHOOTER_SPIN_MOTORS_STATE;
@@ -173,7 +173,7 @@ public class Shooter {
 				}
 				break;
 			case RobotMap.SHOOTER_SPIN_MOTORS_STATE:
-				SmartDashboard.putString("Shooter State", "Shoot");
+				//SmartDashboard.putString("Shooter State", "Shoot"); //Not used by Drive Team.
 				runShooter();
 				if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_USE_SHOOTER_BUTTON)) {
 					RobotMap.shooterState = RobotMap.SHOOTER_DELAY_AFTER_SHOOTING_STATE;
@@ -181,7 +181,7 @@ public class Shooter {
 				}
 				break;
 			case RobotMap.SHOOTER_DELAY_AFTER_SHOOTING_STATE:
-				SmartDashboard.putString("Shooter State", "Spoon Up");
+//				SmartDashboard.putString("Shooter State", "Spoon Up"); //Not used by Drive Team.
 				runShooter();
 				if (startTime == -1) {
 					startTime = System.currentTimeMillis();
@@ -193,7 +193,7 @@ public class Shooter {
 				}
 				break;
 			case RobotMap.SHOOTER_REVERSE_SHOOTER_STATE:
-				SmartDashboard.putString("Shooter State", "Reverse Shooter");
+//				SmartDashboard.putString("Shooter State", "Reverse Shooter"); //Not used by Drive Team.
 				reverseShooter();
 				if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_SHOOTER_BUTTON)) {
 					RobotMap.shooterState = RobotMap.SHOOTER_STOP_SHOOTER_STATE;
@@ -201,7 +201,7 @@ public class Shooter {
 				}
 				break;
 			case RobotMap.SHOOTER_STOP_SHOOTER_STATE:
-				SmartDashboard.putString("Shooter State", "Stop Shooter");
+//				SmartDashboard.putString("Shooter State", "Stop Shooter"); //Not used by Drive Team.
 				shooterStop();
 				RobotMap.shooterState = RobotMap.SHOOTER_WAIT_STATE;
 				break;

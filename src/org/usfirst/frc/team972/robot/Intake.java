@@ -36,13 +36,13 @@ public class Intake {
 					RobotMap.intakeState = RobotMap.INTAKE_REVERSE_SPOON_DOWN_STATE;
 				}
 				lastTimePressed = buttonPressed;
-				SmartDashboard.putString("Intake State", "Wait");
+//				SmartDashboard.putString("Intake State", "Wait"); //Not used by Drive Team.
 				break;
 			case RobotMap.INTAKE_SPOON_DOWN_STATE:
 				spoonPiston.set(DoubleSolenoid.Value.kForward);
 				// Spoon is down
 				RobotMap.intakeState = RobotMap.INTAKE_START_INTAKE_STATE;
-				SmartDashboard.putString("Intake State", "Spoon Down");
+//				SmartDashboard.putString("Intake State", "Spoon Down"); //Not used by Drive Team.
 				break;
 			case RobotMap.INTAKE_START_INTAKE_STATE:
 				intakeMotor.set(RobotMap.INTAKE_MOTOR_SPEED);
@@ -59,17 +59,17 @@ public class Intake {
 					System.out.println("Leaving start intake");
 					RobotMap.intakeState = RobotMap.INTAKE_SPOON_UP_STATE;
 				}
-				SmartDashboard.putString("Intake State", "Start Intake Motor");
+//				SmartDashboard.putString("Intake State", "Start Intake Motor"); //Not used by Drive Team.
 				break;
 			case RobotMap.INTAKE_SPOON_UP_STATE:
 				intakeMotor.set(0);
 				spoonPiston.set(DoubleSolenoid.Value.kReverse);
 				// Spoon is up
 				RobotMap.intakeState = RobotMap.INTAKE_WAIT_STATE;
-				SmartDashboard.putString("Intake State", "Spoon Up");
+//				SmartDashboard.putString("Intake State", "Spoon Up"); //Not used by Drive Team.
 				break;
 			case RobotMap.INTAKE_REVERSE_SPOON_DOWN_STATE:
-				SmartDashboard.putString("Intake State", "Reverse Spoon");
+//				SmartDashboard.putString("Intake State", "Reverse Spoon"); //Not used by Drive Team.
 				System.out.println("Reverse Intake");
 				spoonPiston.set(DoubleSolenoid.Value.kForward);
 				// Spoon is down to allow the ball to reach the intake motor
@@ -84,7 +84,7 @@ public class Intake {
 				// after the spoon is down
 				break;
 			case RobotMap.INTAKE_REVERSE_OUTTAKE_STATE:
-				SmartDashboard.putString("Intake State", "Reverse Outtake");
+//				SmartDashboard.putString("Intake State", "Reverse Outtake"); //Not used by Drive Team.
 				outtakePiston.set(DoubleSolenoid.Value.kForward);
 				intakeMotor.set(RobotMap.INTAKE_REVERSE_MOTOR_SPEED);
 				if (!Robot.joystickOp.getRawButton(RobotMap.JOYSTICK_REVERSE_INTAKE_BUTTON)) {
@@ -98,7 +98,7 @@ public class Intake {
 				break;
 			default:
 				System.out.println("Intake State Machine Error!");
-				SmartDashboard.putString("Intake State", "Error");
+//				SmartDashboard.putString("Intake State", "Error"); //Not used by Drive Team.
 				break;
 		}
 
