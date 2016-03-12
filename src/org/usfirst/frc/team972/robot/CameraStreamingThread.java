@@ -16,7 +16,7 @@ public class CameraStreamingThread implements Runnable {
 	public CameraStreamingThread(Robot r) {
 		this.r = r;
 		camServer.setQuality(25);
-		this.rearCam = false;
+		this.rearCam = Robot.rearCam;
 	}
 
 	public void run() {
@@ -25,7 +25,8 @@ public class CameraStreamingThread implements Runnable {
 			Robot.camBack = new USBCamera("cam0");
 			Robot.camFront.openCamera();
 			Robot.camBack.openCamera();
-			Robot.camFront.startCapture();
+//			Robot.camFront.startCapture();
+			checkReverse();
 		} catch (VisionException e) {
 			System.out.println("VISION EXCEPTION ~ " + e);
 		}

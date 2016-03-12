@@ -113,7 +113,7 @@ public class Robot extends IterativeRobot {
 	double rightDriveSpeed = 0.0;
 	// camera stuff
 	static boolean cameraSwitchPressedLastTime = false;
-	static boolean rearCam = false; // stores whether the front camera is on
+	static boolean rearCam = true; // stores whether the front camera is on
 	// starts front cam
 
 	public static USBCamera camFront;
@@ -235,17 +235,17 @@ public class Robot extends IterativeRobot {
 		// TODO Possibly uncomment if it works without this... Use this in
 		// competition though
 		if (RobotMap.USE_OLD_CAM) {
-			try {
-				camFront = new USBCamera("cam0");
-				camBack = new USBCamera("cam1");
-				camFront.openCamera();
-				camBack.openCamera();
-				camFront.startCapture();
-				// startCapture so that it doesn't try to take a picture before
-				// the camera is on
-			} catch (VisionException e) {
-				System.out.println("VISION EXCEPTION ~ " + e);
-			}
+//			try {
+//				camFront = new USBCamera("cam0");
+//				camBack = new USBCamera("cam1");
+//				camFront.openCamera();
+//				camBack.openCamera();
+//				camFront.startCapture();
+//				// startCapture so that it doesn't try to take a picture before
+//				// the camera is on
+//			} catch (VisionException e) {
+//				System.out.println("VISION EXCEPTION ~ " + e);
+//			}
 		} else {
 			cst = new CameraStreamingThread(this);
 			cstThread = new Thread(cst);
@@ -287,20 +287,20 @@ public class Robot extends IterativeRobot {
 		backRightMotor.enableBrakeMode(false);
 
 		if (RobotMap.USE_OLD_CAM) {
-			try {
-				camFront = new USBCamera("cam1");
-				camBack = new USBCamera("cam0");
-				camFront.openCamera();
-				camBack.openCamera();
-				camFront.startCapture();
-				// startCapture so that it doesn't try to take a picture
-				// before
-				// the
-				// camera is on
-
-			} catch (VisionException e) {
-				System.out.println("VISION EXCEPTION ~ " + e);
-			}
+//			try {
+//				camFront = new USBCamera("cam1");
+//				camBack = new USBCamera("cam0");
+//				camFront.openCamera();
+//				camBack.openCamera();
+//				camFront.startCapture();
+//				// startCapture so that it doesn't try to take a picture
+//				// before
+//				// the
+//				// camera is on
+//
+//			} catch (VisionException e) {
+//				System.out.println("VISION EXCEPTION ~ " + e);
+//			}
 		} else {
 			cst = new CameraStreamingThread(this);
 			new Thread(cst).start();
