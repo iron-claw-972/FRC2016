@@ -83,11 +83,7 @@ public class Robot extends IterativeRobot {
 
 	// pneumatics
 	public static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
-	public static DoubleSolenoid gearboxPistonLeft = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL);
-	// public static DoubleSolenoid gearboxPistonRight = new
-	// DoubleSolenoid(RobotMap.PCM_CAN_ID,
-	// RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_FORWARD_CHANNEL,
-	// RobotMap.PISTON_GEARBOX_RIGHT_SHIFTING_REVERSE_CHANNEL);
+	public static DoubleSolenoid gearboxPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL);
 	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
 	public static DoubleSolenoid outtakePiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_OUTTAKE_FORWARD_CHANNEL, RobotMap.PISTON_OUTTAKE_REVERSE_CHANNEL);
 
@@ -229,6 +225,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		compressor.stop(); // TODO
 		System.out.println("Autonomous Init");
+		
+		driveController.switchToLowGear(gearboxPiston);
 
 		// Starts cam during autonomous if possible to prevent lag in teleop
 
@@ -341,7 +339,7 @@ public class Robot extends IterativeRobot {
 		// gearbox switch
 		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
 		if (gearboxSwitchingButtonIsPressed && !gearboxSwitchingPressedLastTime) {
-			driveController.switchModes(gearboxPistonLeft);
+			driveController.switchModes(gearboxPiston);
 		}
 		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
 

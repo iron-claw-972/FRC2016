@@ -133,4 +133,10 @@ public class Drive {
 			SmartDashboard.putString("Gear", "High");
 		}
 	}
+	
+	public void switchToLowGear(DoubleSolenoid gearboxPiston) {
+		gearboxPiston.set(DoubleSolenoid.Value.kForward);
+		gearboxPistonForward = true;
+		SmartDashboard.putString("Gear", "Low");
+	}
 }
