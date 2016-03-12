@@ -228,28 +228,6 @@ public class Robot extends IterativeRobot {
 		
 		driveController.switchToLowGear(gearboxPiston);
 
-		// Starts cam during autonomous if possible to prevent lag in teleop
-
-		// TODO Possibly uncomment if it works without this... Use this in
-		// competition though
-		if (RobotMap.USE_OLD_CAM) {
-//			try {
-//				camFront = new USBCamera("cam0");
-//				camBack = new USBCamera("cam1");
-//				camFront.openCamera();
-//				camBack.openCamera();
-//				camFront.startCapture();
-//				// startCapture so that it doesn't try to take a picture before
-//				// the camera is on
-//			} catch (VisionException e) {
-//				System.out.println("VISION EXCEPTION ~ " + e);
-//			}
-		} else {
-			cst = new CameraStreamingThread(this);
-			cstThread = new Thread(cst);
-			cstThread.start();
-		}
-
 		intakeSystem.spoonUp();
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" error message
