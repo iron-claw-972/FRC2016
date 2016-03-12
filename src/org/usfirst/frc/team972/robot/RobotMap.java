@@ -85,7 +85,7 @@ public class RobotMap {
 	public static final double SHOOTER_BOTTOM_LOW_SPEED = 0.35;
 	public static final double SHOOTER_TOP_REVERSE_SPEED = 0.3;
 	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = -0.3;
-	
+
 	// shooter speeds will not happen in actual bot because of PID
 	public static final double INTAKE_MOTOR_SPEED = 0.55;
 	public static final double INTAKE_REVERSE_MOTOR_SPEED = -0.75;
@@ -126,14 +126,15 @@ public class RobotMap {
 
 	// AUTONOMOUS MODE STATE MACHINE
 
-	public static final int LOWER_OBSTACLE_MOTOR_MODE = 0;
+	public static final int FIRST_OBSTACLE_MOTOR_MODE = 0;
 	public static final int FIRST_DRIVE_FORWARD_MODE = 1;
 	public static final int TURN_AROUND_MODE = 2;
 	public static final int FIRST_DRIVE_BACKWARD_MODE = 3;
 	public static final int TURN_MODE = 4;
 	public static final int GO_TO_NEXT_DEFENSE_MODE = 5;
 	public static final int TURN_TOWARD_DEFENSE_MODE = 6;
-	public static final int SECOND_DRIVE_FORWARD_MODE = 7;
+	public static final int SECOND_OBSTACLE_MOTOR_MODE = 7;
+	public static final int SECOND_DRIVE_FORWARD_MODE = 8;
 
 	// AUTONOMOUS START POSITIONS
 
@@ -146,7 +147,7 @@ public class RobotMap {
 
 	// AUTONOMOUS MODES
 
-	public static int autonomousMode = LOWER_OBSTACLE_MOTOR_MODE;
+	public static int autonomousMode = FIRST_OBSTACLE_MOTOR_MODE;
 	public static int autonomousFirstDefenseMode = LOW_BAR_MODE;
 	public static int autonomousFirstPositionMode = POSITION_1;
 	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
@@ -166,7 +167,7 @@ public class RobotMap {
 
 	// 121.61 inches -> 10.134 feet
 	public static final int AUTONOMOUS_DISTANCE_BETWEEN_DEFENSES = 300; // TODO
-	public static final int LEFT_TURN_DISTANCE = 470; 
+	public static final int LEFT_TURN_DISTANCE = 470;
 	public static final int RIGHT_TURN_DISTANCE = 344; // TODO
 	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 600; // TODO
 	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 600; // TODO
@@ -184,12 +185,12 @@ public class RobotMap {
 	// P=0.001, I=0.024, D=0.000
 	public static final double LOW_SPEED_SHOOTER_MOTOR_SETPOINT = 700.0;
 	// P=0.001, I=0.024, D=0.000
-	
+
 	// P is very low; increasing causes violent oscillation
 	// I increases as setpoint decreases; this is to prevent the rate from
 	// reversing and making robot oscillate between directions
 	// D is not necessary and does not help oscillation
-	
+
 	public static final double P_LOW_SPEED_SHOOTER = 0.001;
 	public static final double I_LOW_SPEED_SHOOTER = 0.024;
 	public static final double D_LOW_SPEED_SHOOTER = 0.000;

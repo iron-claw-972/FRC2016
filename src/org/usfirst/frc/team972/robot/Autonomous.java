@@ -15,21 +15,35 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Autonomous {
 
+	static boolean doneRaisingObstacleMotor = false;
 
 	public static boolean autonomousDelay(long start, int millis) {
 		return ((System.currentTimeMillis() >= start + millis));
 	}
 
-	// This should loower the obstacle motor for a set lenght of time and
+	// This should lower the obstacle motor for a set length of time and
 	// stop the motor if it hits the lower limit switch
 	public static boolean lowerObstacleMotor(long startTime) {
 		// If the lower limit switch is not pressed, lower the obstacle motor
-		if (Robot.obstacleMotorLowerLimitSwitch.get()) { // LS is true if not pressed
-			Robot.obstacleMotor.set(0.2);
+		if (Robot.obstacleMotorLowerLimitSwitch.get()) { // LS is true if not
+															// pressed
+			Robot.obstacleMotor.set(0.35);
 		} else {
 			Robot.obstacleMotor.set(0.0);
 		}
 		return System.currentTimeMillis() >= startTime + RobotMap.LOWER_OBSTACLE_MOTOR_TIME;
+	}
+
+	public static boolean raiseObstacleMotor() {
+		if (Robot.obstacleMotorUpperLimitSwitch.get()) { // LS is true if not
+															// pressed
+			// Run this code if the upper LS is not pressed
+			Robot.obstacleMotor.set(-0.35);
+			return false;
+		} else {
+			Robot.obstacleMotor.set(0.0);
+			return true;
+		}
 	}
 
 	public static boolean autonomousDrive(int distance, double speed) {
@@ -49,7 +63,7 @@ public class Autonomous {
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
 		return Robot.leftDriveEncoder.get() >= distance && Robot.rightDriveEncoder.get() >= distance;
 	}
-	
+
 	public static boolean autonomousTurnClockwise(int leftDistance, int rightDistance, double speed) {
 		double leftDriveSpeed, rightDriveSpeed;
 		if (Robot.leftDriveEncoder.get() < leftDistance) {
@@ -91,7 +105,7 @@ public class Autonomous {
 	public static boolean autonomousFlippyThing(boolean flipUp) {
 		return true;
 	}
-	
+
 	public static void startAutonomous(Robot r, AutonomousChooser autonomousChooserSystem) {
 
 		// Currently no autonomous delay
@@ -116,16 +130,27 @@ public class Autonomous {
 
 		System.out.println("Autonomous State Machine Start");
 		while (r.isEnabled() && r.isAutonomous()) {
-			// will automatically return out of method when finished with state machine
+			// will automatically return out of method when finished with state
+			// machine
 			Robot.printEverything();
-			
-			
+
 			switch (RobotMap.autonomousMode) {
-				case RobotMap.LOWER_OBSTACLE_MOTOR_MODE:
-					SmartDashboard.putString("Autonomous Mode", "Lower Obstacle Motor");
-					if (lowerObstacleMotor(startTime)) {
-						Robot.obstacleMotor.set(0);						
-						RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
+				case RobotMap.FIRST_OBSTACLE_MOTOR_MODE:
+					SmartDashboard.putString("Autonomous Mode", "First Obstacle Motor");
+					if (!doneRaisingObstacleMotor) {
+						doneRaisingObstacleMotor = raiseObstacleMotor();
+						if (doneRaisingObstacleMotor) {
+							startTime = System.currentTimeMillis();
+						}
+					} else {
+						if (!AutonomousChooser.lowerObstacleMotorFirst() || lowerObstacleMotor(startTime)) {
+							// if you don't want to lower obstacle motor OR
+							// if you are done lowering it, move on
+							// If AC.lowerObstacleMotor() returns false, it
+							// won't call lowerObstacleMotor()
+							Robot.obstacleMotor.set(0);
+							RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
+						}
 					}
 					break;
 				case RobotMap.FIRST_DRIVE_FORWARD_MODE:
@@ -136,10 +161,11 @@ public class Autonomous {
 						Robot.botDrive.tankDrive(0, 0);
 						Robot.leftDriveEncoder.reset();
 						Robot.rightDriveEncoder.reset();
-						
-						if(AutonomousChooser.doingTwoDefenses()) {
+
+						if (AutonomousChooser.doingTwoDefenses()) {
 							RobotMap.autonomousMode = RobotMap.TURN_AROUND_MODE;
-							// If you're doing 2 defenses, turn around and go back
+							// If you're doing 2 defenses, turn around and go
+							// back
 						} else {
 							// If you're only doing 1 defense, stay
 							return;
@@ -149,11 +175,11 @@ public class Autonomous {
 				case RobotMap.TURN_AROUND_MODE:
 					SmartDashboard.putString("Autonomous Mode", "Turn Around");
 					// Twice the distance because we want two 90 degree turns
-					if (autonomousTurnClockwise(2 * RobotMap.LEFT_TURN_DISTANCE, 2 * RobotMap.RIGHT_TURN_DISTANCE,  RobotMap.AUTONOMOUS_TURN_SPEED)) {
+					if (autonomousTurnClockwise(2 * RobotMap.LEFT_TURN_DISTANCE, 2 * RobotMap.RIGHT_TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
 						Robot.botDrive.tankDrive(0, 0);
 						Robot.leftDriveEncoder.reset();
 						Robot.rightDriveEncoder.reset();
-						
+
 						RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_BACKWARD_MODE;
 					}
 					break;
@@ -165,7 +191,7 @@ public class Autonomous {
 						Robot.botDrive.tankDrive(0, 0);
 						Robot.leftDriveEncoder.reset();
 						Robot.rightDriveEncoder.reset();
-						
+
 						RobotMap.autonomousMode = RobotMap.TURN_MODE;
 					}
 					break;
@@ -177,25 +203,27 @@ public class Autonomous {
 							Robot.botDrive.tankDrive(0, 0);
 							Robot.leftDriveEncoder.reset();
 							Robot.rightDriveEncoder.reset();
-							
+
 							RobotMap.autonomousMode = RobotMap.GO_TO_NEXT_DEFENSE_MODE;
 						}
-					// Second obstacle to the left (from driver's perspective)
+						// Second obstacle to the left (from driver's
+						// perspective)
 					} else if (AutonomousChooser.getDifferenceInPosition() < 0) {
 						if (autonomousTurnClockwise(RobotMap.LEFT_TURN_DISTANCE, RobotMap.RIGHT_TURN_DISTANCE, RobotMap.AUTONOMOUS_TURN_SPEED)) {
 							Robot.botDrive.tankDrive(0, 0);
 							Robot.leftDriveEncoder.reset();
 							Robot.rightDriveEncoder.reset();
-							
+
 							RobotMap.autonomousMode = RobotMap.GO_TO_NEXT_DEFENSE_MODE;
 						}
-					// You are done
+						// You are done
 					} else {
 						return;
-//						Robot.botDrive.tankDrive(0, 0);
-//						Robot.leftDriveEncoder.reset();
-//						Robot.rightDriveEncoder.reset();
-//						RobotMap.autonomousMode = RobotMap.GO_TO_NEXT_DEFENSE_MODE;
+						// Robot.botDrive.tankDrive(0, 0);
+						// Robot.leftDriveEncoder.reset();
+						// Robot.rightDriveEncoder.reset();
+						// RobotMap.autonomousMode =
+						// RobotMap.GO_TO_NEXT_DEFENSE_MODE;
 					}
 					break;
 				case RobotMap.GO_TO_NEXT_DEFENSE_MODE:
@@ -206,7 +234,7 @@ public class Autonomous {
 						Robot.botDrive.tankDrive(0, 0);
 						Robot.leftDriveEncoder.reset();
 						Robot.rightDriveEncoder.reset();
-						
+
 						RobotMap.autonomousMode = RobotMap.TURN_TOWARD_DEFENSE_MODE;
 					}
 					break;
@@ -217,7 +245,7 @@ public class Autonomous {
 							Robot.botDrive.tankDrive(0, 0);
 							Robot.leftDriveEncoder.reset();
 							Robot.rightDriveEncoder.reset();
-							
+
 							RobotMap.autonomousMode = RobotMap.SECOND_DRIVE_FORWARD_MODE;
 						}
 					} else if (AutonomousChooser.getDifferenceInPosition() < 0) {
@@ -225,10 +253,29 @@ public class Autonomous {
 							Robot.botDrive.tankDrive(0, 0);
 							Robot.leftDriveEncoder.reset();
 							Robot.rightDriveEncoder.reset();
-							
+
 							RobotMap.autonomousMode = RobotMap.SECOND_DRIVE_FORWARD_MODE;
 						}
 					}
+					break;
+				case RobotMap.SECOND_OBSTACLE_MOTOR_MODE:
+					SmartDashboard.putString("Autonomous Mode", "Second Obstacle Motor");
+					if (!doneRaisingObstacleMotor) {
+						doneRaisingObstacleMotor = raiseObstacleMotor();
+						if (doneRaisingObstacleMotor) {
+							startTime = System.currentTimeMillis();
+						}
+					} else {
+						if (!AutonomousChooser.lowerObstacleMotorSecond() || lowerObstacleMotor(startTime)) {
+							// if you don't want to lower obstacle motor OR
+							// if you are done lowering it, move on
+							// If AC.lowerObstacleMotor() returns false, it
+							// won't call lowerObstacleMotor()
+							Robot.obstacleMotor.set(0);
+							RobotMap.autonomousMode = RobotMap.SECOND_DRIVE_FORWARD_MODE;
+						}
+					}
+
 					break;
 				case RobotMap.SECOND_DRIVE_FORWARD_MODE:
 					SmartDashboard.putString("Autonomous Mode", "Second Drive Forward");
@@ -250,5 +297,5 @@ public class Autonomous {
 			}
 		}
 	}
-    
+
 }

@@ -217,5 +217,41 @@ public class AutonomousChooser {
 				RobotMap.autonomousSecondDefenseMode == RobotMap.DO_NOTHING_MODE ||
 				RobotMap.autonomousSecondPositionMode == RobotMap.ONE_DEFENSE_ONLY);
 	}
+	
+	public static boolean lowerObstacleMotorFirst() {
+		switch (RobotMap.autonomousFirstDefenseMode) {
+			case RobotMap.LOW_BAR_MODE:
+				return true;
+			case RobotMap.MOAT_MODE:
+				return false;
+			case RobotMap.RAMPARTS_MODE:
+				return false;
+			case RobotMap.ROCK_WALL_MODE:
+				return false;
+			case RobotMap.ROUGH_TERRAIN_MODE:
+				return false;
+			case RobotMap.DO_NOTHING_MODE:
+				return false;
+		}
+		return false;
+	}
+	
+	public static boolean lowerObstacleMotorSecond() {
+		switch (RobotMap.autonomousSecondDefenseMode) {
+			case RobotMap.LOW_BAR_MODE:
+				return true;
+			case RobotMap.MOAT_MODE:
+				return false;
+			case RobotMap.RAMPARTS_MODE:
+				return false;
+			case RobotMap.ROCK_WALL_MODE:
+				return false;
+			case RobotMap.ROUGH_TERRAIN_MODE:
+				return false;
+			case RobotMap.DO_NOTHING_MODE:
+				return false;
+		}
+		return false;
+	}
 
 }
