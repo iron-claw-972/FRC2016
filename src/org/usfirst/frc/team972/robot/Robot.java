@@ -498,8 +498,8 @@ public class Robot extends IterativeRobot {
 		// frontRightMotor.get());
 		SmartDashboard.putNumber("Left Encoder Value", leftDriveEncoder.get());
 		SmartDashboard.putNumber("Right Encoder Value", -rightDriveEncoder.get());
-		SmartDashboard.putNumber("Left Encoder Rate", leftDriveEncoder.getRate());
-		SmartDashboard.putNumber("Right Encoder Rate", rightDriveEncoder.getRate());
+//		SmartDashboard.putNumber("Left Encoder Rate", leftDriveEncoder.getRate());
+//		SmartDashboard.putNumber("Right Encoder Rate", rightDriveEncoder.getRate());
 		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get()); // By
 																				// default,
 																				// OS
@@ -525,18 +525,18 @@ public class Robot extends IterativeRobot {
 		// rightDriveSpeed);
 		// SmartDashboard.putBoolean("Flippy Thing Manual Override",
 		// obstacleMotorManualOverride);
-		SmartDashboard.putNumber("Shooter Bottom Encoder Speed", shooterBottomMotor.getSpeed());
-		SmartDashboard.putNumber("Shooter Top Encoder Speed", shooterTopMotor.getSpeed());
+//		SmartDashboard.putNumber("Shooter Bottom Encoder Speed", shooterBottomMotor.getSpeed());
+//		SmartDashboard.putNumber("Shooter Top Encoder Speed", shooterTopMotor.getSpeed());
 		if (rearCam) {
 			SmartDashboard.putString("Front Side", "BATTERY");
 		} else {
 			SmartDashboard.putString("Front Side", "INTAKE");
 		}
-		try {
-			SmartDashboard.putNumber("Gyro", gyro.getAngle());
-		} catch (Exception e) {
-			System.out.println("Gyro failed: " + e);
-		}
+//		try {
+//			SmartDashboard.putNumber("Gyro", gyro.getAngle());
+//		} catch (Exception e) {
+//			System.out.println("Gyro failed: " + e);
+//		}
 	}
 
 	/**

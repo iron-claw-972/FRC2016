@@ -155,27 +155,26 @@ public class RobotMap {
 
 	// AUTONOMOUS DRIVE SPEEDS
 
-	public static final double AUTONOMOUS_SPEED_BETWEEN_DISTANCES = 0.5;
-	public static final double AUTONOMOUS_TURN_SPEED = 0.2;
-	public static final double LOW_BAR_DEFENSE_DRIVE_SPEED = 0.5;
-	public static final double MOAT_DEFENSE_DRIVE_SPEED = 0.7;
-	public static final double RAMPARTS_DEFENSE_DRIVE_SPEED = 0.4;
+	public static final double AUTONOMOUS_SPEED_BETWEEN_DISTANCES = 1.0;
+	public static final double AUTONOMOUS_TURN_SPEED = 1.0;
+	public static final double LOW_BAR_DEFENSE_DRIVE_SPEED = 1.0;
+	public static final double MOAT_DEFENSE_DRIVE_SPEED = 1.0;
+	public static final double RAMPARTS_DEFENSE_DRIVE_SPEED = 1.0;
 	public static final double ROCK_WALL_DEFENSE_DRIVE_SPEED = 1.0;
-	public static final double ROUGH_TERRAIN_DEFENSE_DRIVE_SPEED = 0.2;
+	public static final double ROUGH_TERRAIN_DEFENSE_DRIVE_SPEED = 1.0;
 
 	// AUTONOMOUS DEFENSE DRIVE DISTANCE
 
-	// 121.61 inches -> 10.134 feet
-	public static final int AUTONOMOUS_DISTANCE_BETWEEN_DEFENSES = 300; // TODO
-	public static final int LEFT_TURN_DISTANCE = 470;
-	public static final int RIGHT_TURN_DISTANCE = 344; // TODO
-	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 600; // TODO
-	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 600; // TODO
-	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 600; // TODO
-	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 600; // TODO
-	public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 600; // TODO
-	public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 600; // TODO
-	public static final int ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE = 600; // TODO
+	public static final int AUTONOMOUS_DISTANCE_BETWEEN_DEFENSES = 500; // TODO
+	public static final int LEFT_TURN_DISTANCE = 4000; // 470 prac
+	public static final int RIGHT_TURN_DISTANCE = 4000; // 344 prac
+	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
 
 	// SHOOTER MOTOR PID
 

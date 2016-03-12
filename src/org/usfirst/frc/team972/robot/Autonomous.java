@@ -61,7 +61,7 @@ public class Autonomous {
 		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-		return Robot.leftDriveEncoder.get() >= distance && Robot.rightDriveEncoder.get() >= distance;
+		return Robot.leftDriveEncoder.get() >= distance || Robot.rightDriveEncoder.get() >= distance;
 	}
 
 	public static boolean autonomousTurnClockwise(int leftDistance, int rightDistance, double speed) {
