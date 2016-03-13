@@ -99,8 +99,8 @@ public class Robot extends IterativeRobot {
 	static Intake intakeSystem = new Intake(intakeMotor, spoonPiston, outtakePiston, ballOpticalSensor);
 	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor, spoonPiston);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
-	static AutonomousChooser autonomousChooserSystem = new AutonomousChooser();
-	
+//	static AutonomousChooser autonomousChooserSystem = new AutonomousChooser();
+
 	public static Thread cstThread;
 
 	// speeds and multipliers
@@ -153,9 +153,11 @@ public class Robot extends IterativeRobot {
 	CameraServer camServer = CameraServer.getInstance();
 	public boolean shooterReverseButtonPressed;
 	public double shooterBottomSpeed = 0;
-	
+
 	public boolean brakeMode;
 	public boolean brakeCoastButtonPressedLastTime = false;
+
+	SendableChooser autonomousDefenseChooser = new SendableChooser();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -163,6 +165,18 @@ public class Robot extends IterativeRobot {
 	 */
 	public void robotInit() {
 		System.out.println("robotInit()");
+
+//		autonomousDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
+//		autonomousDefenseChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
+//		autonomousDefenseChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
+//		autonomousDefenseChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
+//		autonomousDefenseChooser.addObject("Rough Terrain", new Integer(RobotMap.ROUGH_TERRAIN_MODE));
+//		autonomousDefenseChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
+		autonomousDefenseChooser.addObject("Foward", new Integer(RobotMap.FORWARD));
+//		autonomousDefenseChooser.addObject("Forward Back", new Integer(RobotMap.FORWARD_BACK));
+		autonomousDefenseChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING));
+		SmartDashboard.putData("Autonomous Defense Chooser", autonomousDefenseChooser);
+
 		// This is for Shooter PID, which we are not using
 		// shooterTopMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		// shooterBottomMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -188,7 +202,7 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" message mostly
 
-		autonomousChooserSystem.createChooser();
+//		autonomousChooserSystem.createChooser();
 
 		try {
 			gyro = new AnalogGyro(0);
@@ -229,8 +243,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		System.out.println("Begin autonomousInit()");
 		compressor.stop(); // TODO
-		System.out.println("Autonomous Init");
-		
+
 		driveController.switchToLowGear(gearboxPiston);
 
 		intakeSystem.spoonUp();
@@ -242,22 +255,36 @@ public class Robot extends IterativeRobot {
 		backLeftMotor.enableBrakeMode(true);
 		backRightMotor.enableBrakeMode(true);
 
-		// TODO REMOVE -- This way uses time in lieu of encoders (which don't currently work)
-//		long start = System.currentTimeMillis();
-//		while(System.currentTimeMillis() - start < 1500) {
-//			driveController.botDrive.tankDrive(1.0, 1.0);
-//		}
-//		driveController.botDrive.tankDrive(0, 0);
-		
+		// TODO REMOVE -- This way uses time in lieu of encoders (which don't
+		// currently work)
+		// long start = System.currentTimeMillis();
+		// while(System.currentTimeMillis() - start < 2000) {
+		// driveController.botDrive.tankDrive(1.0, 1.0);
+		// }
+		// driveController.botDrive.tankDrive(0, 0);
+
 		// TODO UNCOMMENT
 		// NOTE: ENCODERS RETURN ZERO CONSTANTLY
-		autonomousChooserSystem.checkChoices();
-		Autonomous.startAutonomous(this, autonomousChooserSystem);
+		// autonomousChooserSystem.checkChoices();
+		// Autonomous.startAutonomous(this, autonomousChooserSystem);
+
+		int autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
+
+		switch (RobotMap.autonomousDefenseMode) {
+			case RobotMap.FORWARD:
+				autonomousForward();
+				break;
+//			case RobotMap.FORWARD_BACK:
+//				autonomousForwardBack();
+//				break;
+			case RobotMap.DO_NOTHING:
+				break;
+		}
 
 		SmartDashboard.putString("Autonomous Mode", "Done");
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
-		
+
 		System.out.println("End autonomousInit()");
 	} // autonomous brace
 
@@ -271,7 +298,7 @@ public class Robot extends IterativeRobot {
 
 	public void teleopInit() {
 		System.out.println("Start teleopInit()");
-		
+
 		compressor.start(); // TODO
 		stopEverything(); // stops all motors
 
@@ -282,20 +309,20 @@ public class Robot extends IterativeRobot {
 		backRightMotor.enableBrakeMode(false);
 
 		if (RobotMap.USE_OLD_CAM) {
-//			try {
-//				camFront = new USBCamera("cam1");
-//				camBack = new USBCamera("cam0");
-//				camFront.openCamera();
-//				camBack.openCamera();
-//				camFront.startCapture();
-//				// startCapture so that it doesn't try to take a picture
-//				// before
-//				// the
-//				// camera is on
-//
-//			} catch (VisionException e) {
-//				System.out.println("VISION EXCEPTION ~ " + e);
-//			}
+			// try {
+			// camFront = new USBCamera("cam1");
+			// camBack = new USBCamera("cam0");
+			// camFront.openCamera();
+			// camBack.openCamera();
+			// camFront.startCapture();
+			// // startCapture so that it doesn't try to take a picture
+			// // before
+			// // the
+			// // camera is on
+			//
+			// } catch (VisionException e) {
+			// System.out.println("VISION EXCEPTION ~ " + e);
+			// }
 		} else {
 			cst = new CameraStreamingThread(this);
 			new Thread(cst).start();
@@ -303,11 +330,13 @@ public class Robot extends IterativeRobot {
 
 		intakeSystem.spoonUp(); // Move spoon up at the beginning
 		outtakePiston.set(DoubleSolenoid.Value.kReverse);
-		
+
 		System.out.println("End teleopInit()");
 	}
 
 	public void teleopPeriodic() {
+		System.out.println("LEFT YEE " + leftDriveEncoder.get());
+		System.out.println("RIGHT YEE " + rightDriveEncoder.get());
 		botDrive.setSafetyEnabled(true); // Helps prevent "output not updated
 											// enough"
 
@@ -413,19 +442,20 @@ public class Robot extends IterativeRobot {
 		kP = RobotMap.P_BRAKE;
 		kI = RobotMap.I_BRAKE;
 		kD = RobotMap.D_BRAKE;
-		
-//		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_BUTTON)) {
-//			frontLeftMotor.enableBrakeMode(true);
-//			frontRightMotor.enableBrakeMode(true);
-//			backLeftMotor.enableBrakeMode(true);
-//			backRightMotor.enableBrakeMode(true);
-//		} else if (joystickRight.getRawButton(RobotMap.JOYSTICK_COAST_BUTTON)) {
-//			frontLeftMotor.enableBrakeMode(false);
-//			frontRightMotor.enableBrakeMode(false);
-//			backLeftMotor.enableBrakeMode(false);
-//			backRightMotor.enableBrakeMode(false);
-//		}
-		
+
+		// if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_BUTTON)) {
+		// frontLeftMotor.enableBrakeMode(true);
+		// frontRightMotor.enableBrakeMode(true);
+		// backLeftMotor.enableBrakeMode(true);
+		// backRightMotor.enableBrakeMode(true);
+		// } else if
+		// (joystickRight.getRawButton(RobotMap.JOYSTICK_COAST_BUTTON)) {
+		// frontLeftMotor.enableBrakeMode(false);
+		// frontRightMotor.enableBrakeMode(false);
+		// backLeftMotor.enableBrakeMode(false);
+		// backRightMotor.enableBrakeMode(false);
+		// }
+
 		boolean brakeCoastButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_TOGGLE_BRAKE_COAST_BUTTON);
 		if (brakeCoastButtonPressed) {
 			if (!brakeCoastButtonPressedLastTime) {
@@ -527,8 +557,10 @@ public class Robot extends IterativeRobot {
 		// frontRightMotor.get());
 		SmartDashboard.putNumber("Left Encoder Value", leftDriveEncoder.get());
 		SmartDashboard.putNumber("Right Encoder Value", -rightDriveEncoder.get());
-//		SmartDashboard.putNumber("Left Encoder Rate", leftDriveEncoder.getRate());
-//		SmartDashboard.putNumber("Right Encoder Rate", rightDriveEncoder.getRate());
+		// SmartDashboard.putNumber("Left Encoder Rate",
+		// leftDriveEncoder.getRate());
+		// SmartDashboard.putNumber("Right Encoder Rate",
+		// rightDriveEncoder.getRate());
 		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get()); // By
 																				// default,
 																				// OS
@@ -554,18 +586,20 @@ public class Robot extends IterativeRobot {
 		// rightDriveSpeed);
 		// SmartDashboard.putBoolean("Flippy Thing Manual Override",
 		// obstacleMotorManualOverride);
-//		SmartDashboard.putNumber("Shooter Bottom Encoder Speed", shooterBottomMotor.getSpeed());
-//		SmartDashboard.putNumber("Shooter Top Encoder Speed", shooterTopMotor.getSpeed());
+		// SmartDashboard.putNumber("Shooter Bottom Encoder Speed",
+		// shooterBottomMotor.getSpeed());
+		// SmartDashboard.putNumber("Shooter Top Encoder Speed",
+		// shooterTopMotor.getSpeed());
 		if (rearCam) {
 			SmartDashboard.putString("Front Side", "BATTERY");
 		} else {
 			SmartDashboard.putString("Front Side", "INTAKE");
 		}
-//		try {
-//			SmartDashboard.putNumber("Gyro", gyro.getAngle());
-//		} catch (Exception e) {
-//			System.out.println("Gyro failed: " + e);
-//		}
+		// try {
+		// SmartDashboard.putNumber("Gyro", gyro.getAngle());
+		// } catch (Exception e) {
+		// System.out.println("Gyro failed: " + e);
+		// }
 	}
 
 	/**
@@ -580,9 +614,9 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
 		stopEverything();
-		RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
+//		RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
 		RobotMap.haveCam = true;
-		
+
 		System.out.println("End disabledInit()");
 	}
 
@@ -612,6 +646,63 @@ public class Robot extends IterativeRobot {
 
 		pidMode = false;
 	}
+
+	public void autonomousForward() {
+		long start = System.currentTimeMillis();
+		while (System.currentTimeMillis() - start < 2250) {
+			driveController.botDrive.tankDrive(1.0, 1.0);
+		}
+		driveController.botDrive.tankDrive(0, 0);
+	}
+
+	public void autonomousForwardBack() {
+		long start = System.currentTimeMillis();
+		while (System.currentTimeMillis() - start < 2250) {
+			driveController.botDrive.tankDrive(1.0, 1.0);
+		}
+		driveController.botDrive.tankDrive(0, 0);
+
+		start = System.currentTimeMillis();
+		while (System.currentTimeMillis() - start < 3000) {
+			// DO NOTHING AND WAIT FOR ROBOT TO FALL PROPERLY FROM ITS WHEELIE
+		}
+
+		start = System.currentTimeMillis();
+		while (System.currentTimeMillis() - start < 2000) {
+			driveController.botDrive.tankDrive(-1.0, -1.0);
+		}
+		driveController.botDrive.tankDrive(0, 0);
+	}
+	
+//	public void autonomousForwardBackForward() {
+//		long start = System.currentTimeMillis();
+//		while (System.currentTimeMillis() - start < 2250) {
+//			driveController.botDrive.tankDrive(1.0, 1.0);
+//		}
+//		driveController.botDrive.tankDrive(0, 0);
+//
+//		start = System.currentTimeMillis();
+//		while (System.currentTimeMillis() - start < 3000) {
+//			// DO NOTHING AND WAIT FOR ROBOT TO FALL PROPERLY FROM ITS WHEELIE
+//		}
+//
+//		start = System.currentTimeMillis();
+//		while (System.currentTimeMillis() - start < 2000) {
+//			driveController.botDrive.tankDrive(-1.0, -1.0);
+//		}
+//		driveController.botDrive.tankDrive(0, 0);		
+//
+//		start = System.currentTimeMillis();
+//		while (System.currentTimeMillis() - start < 3000) {
+//			// DO NOTHING AND WAIT FOR ROBOT TO FALL PROPERLY FROM ITS WHEELIE
+//		}
+//		
+//		start = System.currentTimeMillis();
+//		while (System.currentTimeMillis() - start < 2250) {
+//			driveController.botDrive.tankDrive(1.0, 1.0);
+//		}
+//		driveController.botDrive.tankDrive(0, 0);
+//	}
 }
 
 /**

@@ -82,8 +82,8 @@ public class RobotMap {
 
 	public static final double SHOOTER_TOP_HIGH_SPEED = -0.8;
 	public static final double SHOOTER_BOTTOM_HIGH_SPEED = 0.75;
-	public static final double SHOOTER_TOP_MEDIUM_SPEED = -0.6;
-	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 0.55;
+	public static final double SHOOTER_TOP_MEDIUM_SPEED = -0.625;
+	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 0.575;
 	public static final double SHOOTER_TOP_LOW_SPEED = -0.4;
 	public static final double SHOOTER_BOTTOM_LOW_SPEED = 0.35;
 	public static final double SHOOTER_TOP_REVERSE_SPEED = 0.3;
@@ -118,14 +118,17 @@ public class RobotMap {
 	public static final int SHOOTER_PISTON_DOWN_STATE = 3;
 	public static int currentState = DO_NOTHING_STATE;
 
-	// AUTONOMOUS DEFENSES STATE MACHINE
+	// AUTONOMOUS DEFENSES STATE MACHINE --- NOT ACTUALLY A STATE MACHINE...
 
-	public static final int DO_NOTHING_MODE = 0;
-	public static final int LOW_BAR_MODE = 1;
-	public static final int MOAT_MODE = 2;
-	public static final int RAMPARTS_MODE = 3;
-	public static final int ROCK_WALL_MODE = 4;
-	public static final int ROUGH_TERRAIN_MODE = 5;
+//	public static final int DO_NOTHING_MODE = 0;
+//	public static final int LOW_BAR_MODE = 1;
+//	public static final int MOAT_MODE = 2;
+//	public static final int RAMPARTS_MODE = 3;
+//	public static final int ROCK_WALL_MODE = 4;
+//	public static final int ROUGH_TERRAIN_MODE = 5;
+	public static final int FORWARD = 1;
+	public static final int FORWARD_BACK = 2;
+	public static final int DO_NOTHING = 0;
 
 	// AUTONOMOUS MODE STATE MACHINE
 
@@ -151,11 +154,12 @@ public class RobotMap {
 
 	// AUTONOMOUS MODES
 
-	public static int autonomousMode = FIRST_DRIVE_FORWARD_MODE;
-	public static int autonomousFirstDefenseMode = LOW_BAR_MODE;
-	public static int autonomousFirstPositionMode = POSITION_1;
-	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
-	public static int autonomousSecondPositionMode = POSITION_1;
+	public static int autonomousDefenseMode = FORWARD;
+//	public static int autonomousMode = FIRST_DRIVE_FORWARD_MODE;
+//	public static int autonomousFirstDefenseMode = LOW_BAR_MODE;
+//	public static int autonomousFirstPositionMode = POSITION_1;
+//	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
+//	public static int autonomousSecondPositionMode = POSITION_1;
 
 	// AUTONOMOUS DRIVE SPEEDS
 
