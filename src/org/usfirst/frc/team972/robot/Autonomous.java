@@ -49,33 +49,35 @@ public class Autonomous {
 
 	public static boolean autonomousDrive(int distance, double speed) {
 		// OLD JERKY STOP CODE
-//		double leftDriveSpeed, rightDriveSpeed;
-//		if (Robot.leftDriveEncoder.get() < distance) {
-//			leftDriveSpeed = speed;
-//		} else {
-//			leftDriveSpeed = 0; // Don't want a jerky stop
-//		}
-//		if (Robot.rightDriveEncoder.get() < distance) {
-//			rightDriveSpeed = speed;
-//		} else {
-//			rightDriveSpeed = 0; // Don't want a jerky stop
-//		}
-//		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
-//		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
-//		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-//		return Robot.leftDriveEncoder.get() >= distance || Robot.rightDriveEncoder.get() >= distance;
-		
-		// NEW GRADUAL CODE
-		if (Robot.leftDriveEncoder.get() >= distance || Robot.rightDriveEncoder.get() >= distance) {
-			// If one has gone full distance, slow down
-			return autonomousSlowDown(speed) == 0;
-			// Return if your current speed is 0
+		double leftDriveSpeed, rightDriveSpeed;
+		if (Robot.leftDriveEncoder.get() < distance) {
+			leftDriveSpeed = speed;
 		} else {
-			Robot.botDrive.tankDrive(speed, speed);
-			return false;
+			leftDriveSpeed = 0; // Don't want a jerky stop
 		}
+		if (Robot.rightDriveEncoder.get() < distance) {
+			rightDriveSpeed = speed;
+		} else {
+			rightDriveSpeed = 0; // Don't want a jerky stop
+		}
+		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
+		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
+		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
+		System.out.println(Robot.leftDriveEncoder.get() + " " + Robot.rightDriveEncoder.get() + " " + distance);
+		return Robot.leftDriveEncoder.get() >= distance || Robot.rightDriveEncoder.get() >= distance;
+
+		// NEW GRADUAL CODE
+		// if (Robot.leftDriveEncoder.get() >= distance ||
+		// Robot.rightDriveEncoder.get() >= distance) {
+		// // If one has gone full distance, slow down
+		// return autonomousSlowDown(speed) == 0;
+		// // Return if your current speed is 0
+		// } else {
+		// Robot.botDrive.tankDrive(speed, speed);
+		// return false;
+		// }
 	}
-	
+
 	public static double autonomousSlowDown(double startSpeed) {
 		double driveSpeed;
 		if (startSpeed > RobotMap.AUTONOMOUS_SLOW_DOWN_INCREMENT) {
@@ -102,7 +104,7 @@ public class Autonomous {
 		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-		return Robot.leftDriveEncoder.get() >= leftDistance && Robot.rightDriveEncoder.get() <= -rightDistance;
+		return Robot.leftDriveEncoder.get() >= leftDistance || Robot.rightDriveEncoder.get() <= -rightDistance;
 	}
 
 	// distance and speed should be positive
@@ -121,12 +123,7 @@ public class Autonomous {
 		Robot.botDrive.tankDrive(leftDriveSpeed, rightDriveSpeed);
 		SmartDashboard.putNumber("Left Speed", leftDriveSpeed);
 		SmartDashboard.putNumber("Right Speed", rightDriveSpeed);
-		return Robot.leftDriveEncoder.get() <= -leftDistance && Robot.rightDriveEncoder.get() >= rightDistance;
-	}
-
-	// TODO: Doesn't actually do anything
-	public static boolean autonomousFlippyThing(boolean flipUp) {
-		return true;
+		return Robot.leftDriveEncoder.get() <= -leftDistance || Robot.rightDriveEncoder.get() >= rightDistance;
 	}
 
 	public static void startAutonomous(Robot r, AutonomousChooser autonomousChooserSystem) {
@@ -150,7 +147,7 @@ public class Autonomous {
 		int distance;
 		double speed;
 		long startTime = 0;
-		
+
 		slowedSpeed = 0.0;
 
 		System.out.println("Autonomous State Machine Start");
@@ -158,43 +155,47 @@ public class Autonomous {
 			// will automatically return out of method when finished with state
 			// machine
 			Robot.printEverything();
+			SmartDashboard.putNumber("Auto Left Encoder", Robot.leftDriveEncoder.get());
+			SmartDashboard.putNumber("Auto Right Encoder", Robot.rightDriveEncoder.get());
 
 			switch (RobotMap.autonomousMode) {
-//				case RobotMap.FIRST_OBSTACLE_MOTOR_RAISE_MODE:
-//					if (raiseObstacleMotor()) {
-//						Robot.obstacleMotor.set(0);
-//						startTime = System.currentTimeMillis();
-//						RobotMap.autonomousMode = RobotMap.FIRST_OBSTACLE_MOTOR_LOWER_MODE;
-//					}
-//					break;
-//				case RobotMap.FIRST_OBSTACLE_MOTOR_LOWER_MODE:
-//					SmartDashboard.putString("Autonomous Mode", "First Obstacle Motor");
-//					// if (!doneRaisingObstacleMotor) {
-//					// doneRaisingObstacleMotor = raiseObstacleMotor();
-//					// if (doneRaisingObstacleMotor) {
-//					// startTime = System.currentTimeMillis();
-//					// }
-//					// } else {
-//					// if (!AutonomousChooser.lowerObstacleMotorFirst() ||
-//					// lowerObstacleMotor(startTime)) {
-//					// // if you don't want to lower obstacle motor OR
-//					// // if you are done lowering it, move on
-//					// // If AC.lowerObstacleMotor() returns false, it
-//					// // won't call lowerObstacleMotor()
-//					// Robot.obstacleMotor.set(0);
-//					// RobotMap.autonomousMode =
-//					// RobotMap.FIRST_DRIVE_FORWARD_MODE;
-//					// }
-//					// }
-//					if (AutonomousChooser.lowerObstacleMotorFirst()) {
-//						if (lowerObstacleMotor(startTime)) {
-//							Robot.obstacleMotor.set(0);
-//							RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
-//						}
-//					} else {
-//						RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
-//					}
-//					break;
+				// case RobotMap.FIRST_OBSTACLE_MOTOR_RAISE_MODE:
+				// if (raiseObstacleMotor()) {
+				// Robot.obstacleMotor.set(0);
+				// startTime = System.currentTimeMillis();
+				// RobotMap.autonomousMode =
+				// RobotMap.FIRST_OBSTACLE_MOTOR_LOWER_MODE;
+				// }
+				// break;
+				// case RobotMap.FIRST_OBSTACLE_MOTOR_LOWER_MODE:
+				// SmartDashboard.putString("Autonomous Mode", "First Obstacle
+				// Motor");
+				// // if (!doneRaisingObstacleMotor) {
+				// // doneRaisingObstacleMotor = raiseObstacleMotor();
+				// // if (doneRaisingObstacleMotor) {
+				// // startTime = System.currentTimeMillis();
+				// // }
+				// // } else {
+				// // if (!AutonomousChooser.lowerObstacleMotorFirst() ||
+				// // lowerObstacleMotor(startTime)) {
+				// // // if you don't want to lower obstacle motor OR
+				// // // if you are done lowering it, move on
+				// // // If AC.lowerObstacleMotor() returns false, it
+				// // // won't call lowerObstacleMotor()
+				// // Robot.obstacleMotor.set(0);
+				// // RobotMap.autonomousMode =
+				// // RobotMap.FIRST_DRIVE_FORWARD_MODE;
+				// // }
+				// // }
+				// if (AutonomousChooser.lowerObstacleMotorFirst()) {
+				// if (lowerObstacleMotor(startTime)) {
+				// Robot.obstacleMotor.set(0);
+				// RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
+				// }
+				// } else {
+				// RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
+				// }
+				// break;
 				case RobotMap.FIRST_DRIVE_FORWARD_MODE:
 					SmartDashboard.putString("Autonomous Mode", "First Drive Forward");
 					distance = AutonomousChooser.getDefenseDistance(RobotMap.autonomousFirstDefenseMode);
@@ -300,25 +301,27 @@ public class Autonomous {
 						}
 					}
 					break;
-				case RobotMap.SECOND_OBSTACLE_MOTOR_MODE:
-					SmartDashboard.putString("Autonomous Mode", "Second Obstacle Motor");
-					if (!doneRaisingObstacleMotor) {
-						doneRaisingObstacleMotor = raiseObstacleMotor();
-						if (doneRaisingObstacleMotor) {
-							startTime = System.currentTimeMillis();
-						}
-					} else {
-						if (!AutonomousChooser.lowerObstacleMotorSecond() || lowerObstacleMotor(startTime)) {
-							// if you don't want to lower obstacle motor OR
-							// if you are done lowering it, move on
-							// If AC.lowerObstacleMotor() returns false, it
-							// won't call lowerObstacleMotor()
-							Robot.obstacleMotor.set(0);
-							RobotMap.autonomousMode = RobotMap.SECOND_DRIVE_FORWARD_MODE;
-						}
-					}
-
-					break;
+				// case RobotMap.SECOND_OBSTACLE_MOTOR_MODE:
+				// SmartDashboard.putString("Autonomous Mode", "Second Obstacle
+				// Motor");
+				// if (!doneRaisingObstacleMotor) {
+				// doneRaisingObstacleMotor = raiseObstacleMotor();
+				// if (doneRaisingObstacleMotor) {
+				// startTime = System.currentTimeMillis();
+				// }
+				// } else {
+				// if (!AutonomousChooser.lowerObstacleMotorSecond() ||
+				// lowerObstacleMotor(startTime)) {
+				// // if you don't want to lower obstacle motor OR
+				// // if you are done lowering it, move on
+				// // If AC.lowerObstacleMotor() returns false, it
+				// // won't call lowerObstacleMotor()
+				// Robot.obstacleMotor.set(0);
+				// RobotMap.autonomousMode = RobotMap.SECOND_DRIVE_FORWARD_MODE;
+				// }
+				// }
+				//
+				// break;
 				case RobotMap.SECOND_DRIVE_FORWARD_MODE:
 					SmartDashboard.putString("Autonomous Mode", "Second Drive Forward");
 					distance = AutonomousChooser.getDefenseDistance(RobotMap.autonomousSecondDefenseMode);

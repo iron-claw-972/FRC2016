@@ -239,6 +239,14 @@ public class Robot extends IterativeRobot {
 		backLeftMotor.enableBrakeMode(true);
 		backRightMotor.enableBrakeMode(true);
 
+		// TODO REMOVE
+//		long start = System.currentTimeMillis();
+//		while(System.currentTimeMillis() - start < 1500) {
+//			driveController.botDrive.tankDrive(1.0, 1.0);
+//		}
+//		driveController.botDrive.tankDrive(0, 0);
+		
+		// TODO UNCOMMENT
 		autonomousChooserSystem.checkChoices();
 		Autonomous.startAutonomous(this, autonomousChooserSystem);
 
@@ -400,6 +408,18 @@ public class Robot extends IterativeRobot {
 		kP = RobotMap.P_BRAKE;
 		kI = RobotMap.I_BRAKE;
 		kD = RobotMap.D_BRAKE;
+		
+		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_BUTTON)) {
+			frontLeftMotor.enableBrakeMode(true);
+			frontRightMotor.enableBrakeMode(true);
+			backLeftMotor.enableBrakeMode(true);
+			backRightMotor.enableBrakeMode(true);
+		} else if (joystickRight.getRawButton(RobotMap.JOYSTICK_COAST_BUTTON)) {
+			frontLeftMotor.enableBrakeMode(false);
+			frontRightMotor.enableBrakeMode(false);
+			backLeftMotor.enableBrakeMode(false);
+			backRightMotor.enableBrakeMode(false);
+		}
 
 		if (joystickLeft.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
 			// SmartDashboard.putBoolean("Straight Drive", false);

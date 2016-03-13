@@ -60,6 +60,8 @@ public class RobotMap {
 	// RIGHT JOYSTICK
 
 	public static final int JOYSTICK_GEARSHIFT_BUTTON = 1;
+	public static final int JOYSTICK_BRAKE_BUTTON = 3;
+	public static final int JOYSTICK_COAST_BUTTON = 5;
 	//public static final int JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON = 3; //Never used in code because Split Arcade sucks.
 	//public static final int JOYSTICK_DRIVE_SET_DISTANCE_BUTTON = 2; //Too annoying to implement for a very unused feature.
 
@@ -134,7 +136,7 @@ public class RobotMap {
 	public static final int TURN_MODE = 4;
 	public static final int GO_TO_NEXT_DEFENSE_MODE = 5;
 	public static final int TURN_TOWARD_DEFENSE_MODE = 6;
-	public static final int SECOND_OBSTACLE_MOTOR_MODE = 7;
+//	public static final int SECOND_OBSTACLE_MOTOR_MODE = 7;
 	public static final int SECOND_DRIVE_FORWARD_MODE = 8;
 
 	// AUTONOMOUS START POSITIONS
