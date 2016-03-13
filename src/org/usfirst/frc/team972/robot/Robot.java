@@ -153,6 +153,9 @@ public class Robot extends IterativeRobot {
 	CameraServer camServer = CameraServer.getInstance();
 	public boolean shooterReverseButtonPressed;
 	public double shooterBottomSpeed = 0;
+	
+	public boolean brakeMode;
+	public boolean brakeCoastButtonPressedLastTime = false;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -239,7 +242,7 @@ public class Robot extends IterativeRobot {
 		backLeftMotor.enableBrakeMode(true);
 		backRightMotor.enableBrakeMode(true);
 
-		// TODO REMOVE
+		// TODO REMOVE -- This way uses time in lieu of encoders (which don't currently work)
 //		long start = System.currentTimeMillis();
 //		while(System.currentTimeMillis() - start < 1500) {
 //			driveController.botDrive.tankDrive(1.0, 1.0);
@@ -247,6 +250,7 @@ public class Robot extends IterativeRobot {
 //		driveController.botDrive.tankDrive(0, 0);
 		
 		// TODO UNCOMMENT
+		// NOTE: ENCODERS RETURN ZERO CONSTANTLY
 		autonomousChooserSystem.checkChoices();
 		Autonomous.startAutonomous(this, autonomousChooserSystem);
 
@@ -271,6 +275,7 @@ public class Robot extends IterativeRobot {
 		compressor.start(); // TODO
 		stopEverything(); // stops all motors
 
+		brakeMode = false;
 		frontLeftMotor.enableBrakeMode(false);
 		frontRightMotor.enableBrakeMode(false);
 		backLeftMotor.enableBrakeMode(false);
@@ -409,17 +414,37 @@ public class Robot extends IterativeRobot {
 		kI = RobotMap.I_BRAKE;
 		kD = RobotMap.D_BRAKE;
 		
-		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_BUTTON)) {
-			frontLeftMotor.enableBrakeMode(true);
-			frontRightMotor.enableBrakeMode(true);
-			backLeftMotor.enableBrakeMode(true);
-			backRightMotor.enableBrakeMode(true);
-		} else if (joystickRight.getRawButton(RobotMap.JOYSTICK_COAST_BUTTON)) {
-			frontLeftMotor.enableBrakeMode(false);
-			frontRightMotor.enableBrakeMode(false);
-			backLeftMotor.enableBrakeMode(false);
-			backRightMotor.enableBrakeMode(false);
+//		if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_BUTTON)) {
+//			frontLeftMotor.enableBrakeMode(true);
+//			frontRightMotor.enableBrakeMode(true);
+//			backLeftMotor.enableBrakeMode(true);
+//			backRightMotor.enableBrakeMode(true);
+//		} else if (joystickRight.getRawButton(RobotMap.JOYSTICK_COAST_BUTTON)) {
+//			frontLeftMotor.enableBrakeMode(false);
+//			frontRightMotor.enableBrakeMode(false);
+//			backLeftMotor.enableBrakeMode(false);
+//			backRightMotor.enableBrakeMode(false);
+//		}
+		
+		boolean brakeCoastButtonPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_TOGGLE_BRAKE_COAST_BUTTON);
+		if (brakeCoastButtonPressed) {
+			if (!brakeCoastButtonPressedLastTime) {
+				if (brakeMode) {
+					brakeMode = false;
+					frontLeftMotor.enableBrakeMode(false);
+					frontRightMotor.enableBrakeMode(false);
+					backLeftMotor.enableBrakeMode(false);
+					backRightMotor.enableBrakeMode(false);
+				} else {
+					brakeMode = true;
+					frontLeftMotor.enableBrakeMode(true);
+					frontRightMotor.enableBrakeMode(true);
+					backLeftMotor.enableBrakeMode(true);
+					backRightMotor.enableBrakeMode(true);
+				}
+			}
 		}
+		brakeCoastButtonPressedLastTime = brakeCoastButtonPressed;
 
 		if (joystickLeft.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
 			// SmartDashboard.putBoolean("Straight Drive", false);
