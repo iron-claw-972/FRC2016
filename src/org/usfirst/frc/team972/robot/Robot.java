@@ -99,7 +99,8 @@ public class Robot extends IterativeRobot {
 	static Intake intakeSystem = new Intake(intakeMotor, spoonPiston, outtakePiston, ballOpticalSensor);
 	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor, spoonPiston);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
-//	static AutonomousChooser autonomousChooserSystem = new AutonomousChooser();
+	// static AutonomousChooser autonomousChooserSystem = new
+	// AutonomousChooser();
 
 	public static Thread cstThread;
 
@@ -129,6 +130,9 @@ public class Robot extends IterativeRobot {
 	// intake button variables
 	boolean intakeButtonPressed = false;
 	boolean intakeReverseButtonPressed = false;
+
+	// obstacle motor variables
+	boolean flippyUpMode = false;
 
 	static long autonomousDelayStartTime;
 
@@ -166,17 +170,23 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		System.out.println("robotInit()");
 
-//		autonomousDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
-//		autonomousDefenseChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
-//		autonomousDefenseChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
-//		autonomousDefenseChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
-//		autonomousDefenseChooser.addObject("Rough Terrain", new Integer(RobotMap.ROUGH_TERRAIN_MODE));
-//		autonomousDefenseChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
+		// autonomousDefenseChooser.addObject("Low Bar", new
+		// Integer(RobotMap.LOW_BAR_MODE));
+		// autonomousDefenseChooser.addObject("Moat", new
+		// Integer(RobotMap.MOAT_MODE));
+		// autonomousDefenseChooser.addObject("Ramparts", new
+		// Integer(RobotMap.RAMPARTS_MODE));
+		// autonomousDefenseChooser.addObject("Rock Wall", new
+		// Integer(RobotMap.ROCK_WALL_MODE));
+		// autonomousDefenseChooser.addObject("Rough Terrain", new
+		// Integer(RobotMap.ROUGH_TERRAIN_MODE));
+		// autonomousDefenseChooser.addDefault("Do Nothing", new
+		// Integer(RobotMap.DO_NOTHING_MODE));
 		autonomousDefenseChooser.addObject("Foward", new Integer(RobotMap.FORWARD));
-//		autonomousDefenseChooser.addObject("Forward Back", new Integer(RobotMap.FORWARD_BACK));
+		// autonomousDefenseChooser.addObject("Forward Back", new
+		// Integer(RobotMap.FORWARD_BACK));
 		autonomousDefenseChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING));
 		SmartDashboard.putData("Autonomous Defense Chooser", autonomousDefenseChooser);
-
 		// This is for Shooter PID, which we are not using
 		// shooterTopMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		// shooterBottomMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -202,7 +212,7 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" message mostly
 
-//		autonomousChooserSystem.createChooser();
+		// autonomousChooserSystem.createChooser();
 
 		try {
 			gyro = new AnalogGyro(0);
@@ -270,15 +280,19 @@ public class Robot extends IterativeRobot {
 
 		int autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
 
-		switch (RobotMap.autonomousDefenseMode) {
+		switch (autonomousDefenseMode) {
 			case RobotMap.FORWARD:
 				autonomousForward();
 				break;
-//			case RobotMap.FORWARD_BACK:
-//				autonomousForwardBack();
-//				break;
+			// case RobotMap.FORWARD_BACK:
+			// autonomousForwardBack();
+			// break;
 			case RobotMap.DO_NOTHING:
-				break;
+				botDrive.tankDrive(0, 0);
+				return;
+			default:
+				botDrive.tankDrive(0, 0);
+				return;
 		}
 
 		SmartDashboard.putString("Autonomous Mode", "Done");
@@ -340,28 +354,39 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(true); // Helps prevent "output not updated
 											// enough"
 
+		if (joystickOp.getRawButton(RobotMap.JOYSTICK_OBSTACLE_MOTOR_KEEP_FLIPPY_UP_BUTTON)) {
+			flippyUpMode = true;
+		}
+
 		obstacleMotorSpeed = (((-joystickOp.getThrottle()) + 1) / 2);
 		// Operator joystick throttle (0.0 bottom to 1.0 top)
 
 		// MAKE SURE YOU HAVE FLIPPY SPEED AT NOT ZERO (not down)
 		obstacleMotorManualOverride = joystickOp.getRawButton(RobotMap.JOYSTICK_OBSTACLE_MOTOR_MANUAL_OVERRIDE_BUTTON);
+		if (obstacleMotorManualOverride) {
+			flippyUpMode = false;
+		}
 
 		if (obstacleMotorUpperLimitSwitch.get() && obstacleMotorLowerLimitSwitch.get()) {
 			obstacleMotorManualOverride = true;
 			// If both limit switches are triggered, automatically manual
 			// override (shouldn't happen)
 		}
-		if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315) && (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) { // Limit
-																																												// Switch
-																																												// true
-																																												// when
-																																												// not
-																																												// pressed
-			obstacleMotor.set(-obstacleMotorSpeed); // Go up
-		} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135) && (obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
-			obstacleMotor.set(obstacleMotorSpeed); // Go down
+		if (flippyUpMode) {
+			keepFlippyUp();
 		} else {
-			obstacleMotor.set(0);
+			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315) && (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) { // Limit
+																																													// Switch
+																																													// true
+																																													// when
+																																													// not
+																																													// pressed
+				obstacleMotor.set(-obstacleMotorSpeed); // Go up
+			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135) && (obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
+				obstacleMotor.set(obstacleMotorSpeed); // Go down
+			} else {
+				obstacleMotor.set(0);
+			}
 		}
 
 		// gearbox switch
@@ -614,7 +639,7 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(false); // Prevents "output not updated
 											// enough" error message
 		stopEverything();
-//		RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
+		// RobotMap.autonomousMode = RobotMap.FIRST_DRIVE_FORWARD_MODE;
 		RobotMap.haveCam = true;
 
 		System.out.println("End disabledInit()");
@@ -648,11 +673,22 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousForward() {
+		System.out.println("METHOD");
 		long start = System.currentTimeMillis();
 		while (System.currentTimeMillis() - start < 2250) {
+			keepFlippyUp();
 			driveController.botDrive.tankDrive(1.0, 1.0);
 		}
 		driveController.botDrive.tankDrive(0, 0);
+		obstacleMotor.set(0.0);
+	}
+
+	public void keepFlippyUp() {
+		if (obstacleMotorUpperLimitSwitch.get()) {
+			obstacleMotor.set(-0.5);
+		} else {
+			obstacleMotor.set(0.0);
+		}
 	}
 
 	public void autonomousForwardBack() {
@@ -673,36 +709,36 @@ public class Robot extends IterativeRobot {
 		}
 		driveController.botDrive.tankDrive(0, 0);
 	}
-	
-//	public void autonomousForwardBackForward() {
-//		long start = System.currentTimeMillis();
-//		while (System.currentTimeMillis() - start < 2250) {
-//			driveController.botDrive.tankDrive(1.0, 1.0);
-//		}
-//		driveController.botDrive.tankDrive(0, 0);
-//
-//		start = System.currentTimeMillis();
-//		while (System.currentTimeMillis() - start < 3000) {
-//			// DO NOTHING AND WAIT FOR ROBOT TO FALL PROPERLY FROM ITS WHEELIE
-//		}
-//
-//		start = System.currentTimeMillis();
-//		while (System.currentTimeMillis() - start < 2000) {
-//			driveController.botDrive.tankDrive(-1.0, -1.0);
-//		}
-//		driveController.botDrive.tankDrive(0, 0);		
-//
-//		start = System.currentTimeMillis();
-//		while (System.currentTimeMillis() - start < 3000) {
-//			// DO NOTHING AND WAIT FOR ROBOT TO FALL PROPERLY FROM ITS WHEELIE
-//		}
-//		
-//		start = System.currentTimeMillis();
-//		while (System.currentTimeMillis() - start < 2250) {
-//			driveController.botDrive.tankDrive(1.0, 1.0);
-//		}
-//		driveController.botDrive.tankDrive(0, 0);
-//	}
+
+	// public void autonomousForwardBackForward() {
+	// long start = System.currentTimeMillis();
+	// while (System.currentTimeMillis() - start < 2250) {
+	// driveController.botDrive.tankDrive(1.0, 1.0);
+	// }
+	// driveController.botDrive.tankDrive(0, 0);
+	//
+	// start = System.currentTimeMillis();
+	// while (System.currentTimeMillis() - start < 3000) {
+	// // DO NOTHING AND WAIT FOR ROBOT TO FALL PROPERLY FROM ITS WHEELIE
+	// }
+	//
+	// start = System.currentTimeMillis();
+	// while (System.currentTimeMillis() - start < 2000) {
+	// driveController.botDrive.tankDrive(-1.0, -1.0);
+	// }
+	// driveController.botDrive.tankDrive(0, 0);
+	//
+	// start = System.currentTimeMillis();
+	// while (System.currentTimeMillis() - start < 3000) {
+	// // DO NOTHING AND WAIT FOR ROBOT TO FALL PROPERLY FROM ITS WHEELIE
+	// }
+	//
+	// start = System.currentTimeMillis();
+	// while (System.currentTimeMillis() - start < 2250) {
+	// driveController.botDrive.tankDrive(1.0, 1.0);
+	// }
+	// driveController.botDrive.tankDrive(0, 0);
+	// }
 }
 
 /**

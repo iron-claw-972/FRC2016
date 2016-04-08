@@ -77,6 +77,7 @@ public class RobotMap {
 	public static final int JOYSTICK_STOP_SHOOTER_BUTTON = 6;
 	public static final int JOYSTICK_REVERSE_SHOOTER_BUTTON = 9;
 	public static final int JOYSTICK_OBSTACLE_MOTOR_MANUAL_OVERRIDE_BUTTON = 11;
+	public static final int JOYSTICK_OBSTACLE_MOTOR_KEEP_FLIPPY_UP_BUTTON = 12;
 
 	// SPEEDS
 
@@ -90,7 +91,7 @@ public class RobotMap {
 	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = -0.3;
 
 	// shooter speeds will not happen in actual bot because of PID
-	public static final double INTAKE_MOTOR_SPEED = 0.55;
+	public static final double INTAKE_MOTOR_SPEED = 0.8;
 	public static final double INTAKE_REVERSE_MOTOR_SPEED = -1.0;
 	public static final double OBSTACLE_MOTOR_SPEED = 0.2;
 
@@ -154,7 +155,6 @@ public class RobotMap {
 
 	// AUTONOMOUS MODES
 
-	public static int autonomousDefenseMode = FORWARD;
 //	public static int autonomousMode = FIRST_DRIVE_FORWARD_MODE;
 //	public static int autonomousFirstDefenseMode = LOW_BAR_MODE;
 //	public static int autonomousFirstPositionMode = POSITION_1;
