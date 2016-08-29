@@ -1,8 +1,6 @@
 
 package org.usfirst.frc.team972.robot;
 
-import javax.swing.plaf.basic.BasicLabelUI;
-
 import com.ni.vision.NIVision;
 import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
@@ -39,6 +37,7 @@ import edu.wpi.first.wpilibj.vision.USBCamera;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
+
 public class Robot extends IterativeRobot {
 
 	// joysticks
@@ -48,18 +47,20 @@ public class Robot extends IterativeRobot {
 
 	// motors
 	public static CANTalon frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-	// public static CANTalon frontLeftMotor = new
-	// CANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
-	// NOTE: this is called a PID Reverse CAN Talon because PIDControllers
-	// cannot reverse output on their own.
-	// Therefore, we subclassed the CANTalon object and reversed all PID Outputs
-	// Normal outputs are NOT reversed on a PIDReverseCANTalon
-	// See source code for this subclass at bottom of Robot.java
 	public static CANTalon frontRightMotor = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
-	// public static PIDReverseCANTalon frontRightMotor = new
-	// PIDReverseCANTalon(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
 	public static CANTalon backLeftMotor = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CAN_ID);
 	public static CANTalon backRightMotor = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CAN_ID);
+
+	/*
+	 * NOTE: this is called a PID Reverse CAN Talon because PIDControllers
+	 * cannot reverse output on their own. Therefore, we subclassed the CANTalon
+	 * object and reversed all PID Outputs Normal outputs are NOT reversed on a
+	 * PIDReverseCANTalon See source code for this subclass at bottom of
+	 * Robot.java. This class is not currently in use.
+	 */
+
+	// public static PIDReverseCANTalon frontRightMotor = new
+	// PIDReverseCANTalon(RobotMap.FRONT_RIGHT_MOTOR_CAN_ID);
 
 	public static CANTalon shooterBottomMotor = new CANTalon(RobotMap.SHOOTER_BOTTOM_MOTOR_CAN_ID);
 	public static CANTalon shooterTopMotor = new CANTalon(RobotMap.SHOOTER_TOP_MOTOR_CAN_ID);
@@ -69,13 +70,18 @@ public class Robot extends IterativeRobot {
 	public static RobotDrive botDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
 	// encoders and PID
-	public static Encoder rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT, RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
-	public static Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT, RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
+	public static Encoder rightDriveEncoder = new Encoder(RobotMap.RIGHT_DRIVE_ENCODER_DIO_A_PORT,
+			RobotMap.RIGHT_DRIVE_ENCODER_DIO_B_PORT);
+	public static Encoder leftDriveEncoder = new Encoder(RobotMap.LEFT_DRIVE_ENCODER_DIO_A_PORT,
+			RobotMap.LEFT_DRIVE_ENCODER_DIO_B_PORT);
 
 	public static PIDController pidRightDrive = new PIDController(0, 0, 0, rightDriveEncoder, frontRightMotor);
 	public static PIDController pidLeftDrive = new PIDController(0, 0, 0, leftDriveEncoder, frontLeftMotor);
 	public static PIDController driveStraightRightPID = new PIDController(0, 0, 0, rightDriveEncoder, frontRightMotor);
 	public static PIDController driveStraightLeftPID = new PIDController(0, 0, 0, leftDriveEncoder, frontLeftMotor);
+
+	// These are used for PID Shooter
+
 	// public static PIDController pidBottomShooter = new PIDController(0, 0, 0,
 	// shooterBottomEncoder, frontLeftMotor);
 	// public static PIDController pidTopShooter = new PIDController(0, 0, 0,
@@ -83,19 +89,25 @@ public class Robot extends IterativeRobot {
 
 	// pneumatics
 	public static Compressor compressor = new Compressor(RobotMap.PCM_CAN_ID);
-	public static DoubleSolenoid gearboxPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL);
-	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
-	public static DoubleSolenoid outtakePiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID, RobotMap.PISTON_OUTTAKE_FORWARD_CHANNEL, RobotMap.PISTON_OUTTAKE_REVERSE_CHANNEL);
+	public static DoubleSolenoid gearboxPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID,
+			RobotMap.PISTON_GEARBOX_SHIFTING_FORWARD_CHANNEL, RobotMap.PISTON_GEARBOX_SHIFTING_REVERSE_CHANNEL);
+	public static DoubleSolenoid spoonPiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID,
+			RobotMap.PISTON_BALL_PUSHER_FORWARD_CHANNEL, RobotMap.PISTON_BALL_PUSHER_REVERSE_CHANNEL);
+	public static DoubleSolenoid outtakePiston = new DoubleSolenoid(RobotMap.PCM_CAN_ID,
+			RobotMap.PISTON_OUTTAKE_FORWARD_CHANNEL, RobotMap.PISTON_OUTTAKE_REVERSE_CHANNEL);
 
 	// sensors
 	public static DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
-	public static DigitalInput obstacleMotorUpperLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
-	public static DigitalInput obstacleMotorLowerLimitSwitch = new DigitalInput(RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
+	public static DigitalInput obstacleMotorUpperLimitSwitch = new DigitalInput(
+			RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
+	public static DigitalInput obstacleMotorLowerLimitSwitch = new DigitalInput(
+			RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
+			// TODO: Pick a name, flippy thing or obstacle motor
 
+	// TODO: Make this work
 	public static AnalogGyro gyro;
 
 	// intake
-
 	static Intake intakeSystem = new Intake(intakeMotor, spoonPiston, outtakePiston, ballOpticalSensor);
 	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor, spoonPiston);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
@@ -103,21 +115,22 @@ public class Robot extends IterativeRobot {
 	// AutonomousChooser();
 
 	public static Thread cstThread;
+	// This is a thread to stream camera while not lagging the robot
 
 	// speeds and multipliers
 	double driveMultiplier = RobotMap.DEFAULT_DRIVE_MODE;
 	double leftDriveSpeed = 0.0;
 	double rightDriveSpeed = 0.0;
+	
 	// camera stuff
-	static boolean cameraSwitchPressedLastTime = false;
-	static boolean rearCam = true; // stores whether the front camera is on
-	// starts front cam
+	static boolean cameraSwitchPressedLastTime = false; // used for camera toggle
+	static boolean rearCam = true; // if streaming rear cam currently
 
 	public static USBCamera camFront;
 	public static USBCamera camBack;
 
 	// gearbox switching variables
-	boolean gearboxSwitchingPressedLastTime = false;
+	boolean gearboxSwitchingPressedLastTime = false; // used for gearbox toggle
 
 	// PID variables
 	boolean pidMode = false;
@@ -125,7 +138,7 @@ public class Robot extends IterativeRobot {
 	// shooter piston variables
 	boolean shooterPistonPressedLastTime = false;
 	boolean shooterPistonForward = false;
-	long pistonTimer = -1;
+	long pistonTimer = -1; // -1 shows that it hasn't been started yet
 
 	// intake button variables
 	boolean intakeButtonPressed = false;
@@ -281,16 +294,16 @@ public class Robot extends IterativeRobot {
 		int autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
 
 		switch (autonomousDefenseMode) {
-			case RobotMap.FORWARD:
+			case RobotMap.FORWARD :
 				autonomousForward();
 				break;
 			// case RobotMap.FORWARD_BACK:
 			// autonomousForwardBack();
 			// break;
-			case RobotMap.DO_NOTHING:
+			case RobotMap.DO_NOTHING :
 				botDrive.tankDrive(0, 0);
 				return;
-			default:
+			default :
 				botDrive.tankDrive(0, 0);
 				return;
 		}
@@ -375,14 +388,16 @@ public class Robot extends IterativeRobot {
 		if (flippyUpMode) {
 			keepFlippyUp();
 		} else {
-			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315) && (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) { // Limit
-																																													// Switch
-																																													// true
-																																													// when
-																																													// not
-																																													// pressed
+			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
+					&& (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) { // Limit
+																								// Switch
+																								// true
+																								// when
+																								// not
+																								// pressed
 				obstacleMotor.set(-obstacleMotorSpeed); // Go up
-			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135) && (obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
+			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
+					&& (obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
 				obstacleMotor.set(obstacleMotorSpeed); // Go down
 			} else {
 				obstacleMotor.set(0);
@@ -503,7 +518,8 @@ public class Robot extends IterativeRobot {
 
 		if (joystickLeft.getRawButton(RobotMap.JOYSTICK_BRAKE_MODE_BUTTON)) {
 			// SmartDashboard.putBoolean("Straight Drive", false);
-			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI, kD);
+			driveController.pidBrake(pidMode, pidLeftDrive, pidRightDrive, leftDriveEncoder, rightDriveEncoder, kP, kI,
+					kD);
 		} else {
 			driveController.stopPIDBrake(pidMode, pidLeftDrive, pidRightDrive);
 			// if (Math.abs(leftJoystickY - rightJoystickY) < 0.1 &&
