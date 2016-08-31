@@ -102,7 +102,7 @@ public class Robot extends IterativeRobot {
 			RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
 	public static DigitalInput obstacleMotorLowerLimitSwitch = new DigitalInput(
 			RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
-			// TODO: Pick a name, flippy thing or obstacle motor
+	// TODO: Pick a name, flippy thing or obstacle motor
 
 	// TODO: Make this work
 	public static AnalogGyro gyro;
@@ -121,9 +121,10 @@ public class Robot extends IterativeRobot {
 	double driveMultiplier = RobotMap.DEFAULT_DRIVE_MODE;
 	double leftDriveSpeed = 0.0;
 	double rightDriveSpeed = 0.0;
-	
+
 	// camera stuff
-	static boolean cameraSwitchPressedLastTime = false; // used for camera toggle
+	static boolean cameraSwitchPressedLastTime = false; // used for camera
+														// toggle
 	static boolean rearCam = true; // if streaming rear cam currently
 
 	public static USBCamera camFront;
@@ -171,7 +172,7 @@ public class Robot extends IterativeRobot {
 	public boolean shooterReverseButtonPressed;
 	public double shooterBottomSpeed = 0;
 
-	public boolean brakeMode;
+	public boolean brakeMode; // Brake vs Coast Motor Mode
 	public boolean brakeCoastButtonPressedLastTime = false;
 
 	SendableChooser autonomousDefenseChooser = new SendableChooser();
@@ -218,7 +219,6 @@ public class Robot extends IterativeRobot {
 		backLeftMotor.changeControlMode(TalonControlMode.PercentVbus);
 		backRightMotor.changeControlMode(TalonControlMode.PercentVbus);
 
-		System.out.println("Robot Init");
 		compressor.start();
 		// compressor.stop();
 
@@ -227,6 +227,7 @@ public class Robot extends IterativeRobot {
 
 		// autonomousChooserSystem.createChooser();
 
+		// TODO: Fix gyro
 		try {
 			gyro = new AnalogGyro(0);
 		} catch (Exception e) {
@@ -264,7 +265,7 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
-		System.out.println("Begin autonomousInit()");
+		System.out.println("autonomousInit()");
 		compressor.stop(); // TODO
 
 		driveController.switchToLowGear(gearboxPiston);
@@ -294,23 +295,23 @@ public class Robot extends IterativeRobot {
 		int autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
 
 		switch (autonomousDefenseMode) {
-			case RobotMap.FORWARD :
-				autonomousForward();
-				break;
-			// case RobotMap.FORWARD_BACK:
-			// autonomousForwardBack();
-			// break;
-			case RobotMap.DO_NOTHING :
-				botDrive.tankDrive(0, 0);
-				return;
-			default :
-				botDrive.tankDrive(0, 0);
-				return;
+		case RobotMap.FORWARD:
+			autonomousForward();
+			break;
+		// case RobotMap.FORWARD_BACK:
+		// autonomousForwardBack();
+		// break;
+		case RobotMap.DO_NOTHING:
+			botDrive.tankDrive(0, 0);
+			return;
+		default:
+			botDrive.tankDrive(0, 0);
+			return;
 		}
 
 		SmartDashboard.putString("Autonomous Mode", "Done");
-		botDrive.setSafetyEnabled(false); // Prevents "output not updated
-											// enough" error message
+		botDrive.setSafetyEnabled(false);
+		// Prevents "output not updated enough" error message
 
 		System.out.println("End autonomousInit()");
 	} // autonomous brace
@@ -326,34 +327,18 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		System.out.println("Start teleopInit()");
 
-		compressor.start(); // TODO
+		compressor.start();
 		stopEverything(); // stops all motors
 
+		// Brake vs Coast Motor Mode
 		brakeMode = false;
 		frontLeftMotor.enableBrakeMode(false);
 		frontRightMotor.enableBrakeMode(false);
 		backLeftMotor.enableBrakeMode(false);
 		backRightMotor.enableBrakeMode(false);
 
-		if (RobotMap.USE_OLD_CAM) {
-			// try {
-			// camFront = new USBCamera("cam1");
-			// camBack = new USBCamera("cam0");
-			// camFront.openCamera();
-			// camBack.openCamera();
-			// camFront.startCapture();
-			// // startCapture so that it doesn't try to take a picture
-			// // before
-			// // the
-			// // camera is on
-			//
-			// } catch (VisionException e) {
-			// System.out.println("VISION EXCEPTION ~ " + e);
-			// }
-		} else {
-			cst = new CameraStreamingThread(this);
-			new Thread(cst).start();
-		}
+		cst = new CameraStreamingThread(this);
+		new Thread(cst).start();
 
 		intakeSystem.spoonUp(); // Move spoon up at the beginning
 		outtakePiston.set(DoubleSolenoid.Value.kReverse);
@@ -362,10 +347,11 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
-		System.out.println("LEFT YEE " + leftDriveEncoder.get());
-		System.out.println("RIGHT YEE " + rightDriveEncoder.get());
-		botDrive.setSafetyEnabled(true); // Helps prevent "output not updated
-											// enough"
+		System.out.println("Left Drive Encoder " + leftDriveEncoder.get());
+		System.out.println("Right Drive Encoder " + rightDriveEncoder.get());
+
+		botDrive.setSafetyEnabled(true);
+		// Helps prevent "output not updated enough"
 
 		if (joystickOp.getRawButton(RobotMap.JOYSTICK_OBSTACLE_MOTOR_KEEP_FLIPPY_UP_BUTTON)) {
 			flippyUpMode = true;
@@ -388,13 +374,10 @@ public class Robot extends IterativeRobot {
 		if (flippyUpMode) {
 			keepFlippyUp();
 		} else {
+			// the joystickOp POV is the hat
+			// Limit Switch true when not pressed due to wiring
 			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
-					&& (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) { // Limit
-																								// Switch
-																								// true
-																								// when
-																								// not
-																								// pressed
+					&& (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) {
 				obstacleMotor.set(-obstacleMotorSpeed); // Go up
 			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
 					&& (obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
@@ -404,58 +387,20 @@ public class Robot extends IterativeRobot {
 			}
 		}
 
-		// gearbox switch
+		// gearshift
 		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
 		if (gearboxSwitchingButtonIsPressed && !gearboxSwitchingPressedLastTime) {
 			driveController.switchModes(gearboxPiston);
 		}
 		gearboxSwitchingPressedLastTime = gearboxSwitchingButtonIsPressed;
 
-		if (RobotMap.USE_OLD_CAM) {
-			// try {
-			// // switch front of robot
-			// boolean cameraToggleButtonPressed =
-			// joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-			// if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-			// if (rearCam) {
-			// camBack.stopCapture();
-			// camFront.startCapture();
-			// rearCam = false;
-			// } else {
-			// camFront.stopCapture();
-			// camBack.startCapture();
-			// rearCam = true;
-			// }
-			// }
-			// cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// // end switch front of robot
-			//
-			// // camera streaming
-			// if (rearCam) {
-			// camBack.getImage(img);
-			// } else {
-			// camFront.getImage(img);
-			// }
-			// camServer.setImage(img); // puts image on the dashboard
-			// } catch (Exception e) {
-			// // switch front of robot
-			// boolean cameraToggleButtonPressed =
-			// joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-			// if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-			// rearCam = !rearCam;
-			// }
-			// cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// // finish switching front of robot
-			// } // end catch
-		} else {
-			// switch front of robot
-			boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
-			if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
-				driveController.reverse();
-			}
-			cameraSwitchPressedLastTime = cameraToggleButtonPressed;
-			// end switch front of robot
+		// switch front of robot
+		boolean cameraToggleButtonPressed = joystickLeft.getRawButton(RobotMap.JOYSTICK_CAMERA_TOGGLE_BUTTON);
+		if (cameraToggleButtonPressed && !cameraSwitchPressedLastTime) {
+			driveController.reverse();
 		}
+		cameraSwitchPressedLastTime = cameraToggleButtonPressed;
+		// end switch front of robot
 
 		driveMultiplier = driveController.setDriveMultiplier(driveMultiplier);
 
@@ -483,6 +428,8 @@ public class Robot extends IterativeRobot {
 		kI = RobotMap.I_BRAKE;
 		kD = RobotMap.D_BRAKE;
 
+		// Separate brake/coast buttons replaced with a toggle
+		
 		// if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_BUTTON)) {
 		// frontLeftMotor.enableBrakeMode(true);
 		// frontRightMotor.enableBrakeMode(true);
