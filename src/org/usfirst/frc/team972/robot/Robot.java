@@ -266,7 +266,7 @@ public class Robot extends IterativeRobot {
 	 */
 	public void autonomousInit() {
 		System.out.println("autonomousInit()");
-		compressor.stop(); // TODO
+		compressor.stop(); // To keep consistent voltage while moving
 
 		driveController.switchToLowGear(gearboxPiston);
 
