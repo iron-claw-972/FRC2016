@@ -533,8 +533,8 @@ public class Robot extends IterativeRobot {
 		// SmartDashboard.putNumber("P", kP);
 		// SmartDashboard.putNumber("I", kI);
 		// SmartDashboard.putNumber("D", kD);
-		// SmartDashboard.putNumber("Shooter Bottom Motor", shooterSpeed);
-		// SmartDashboard.putNumber("Shooter Top Motor", shooterSpeed);
+		SmartDashboard.putNumber("Shooter Bottom Motor Speed", shooterBottomMotor.getSpeed());
+		SmartDashboard.putNumber("Shooter Top Motor Speed", shooterTopMotor.getSpeed());
 		// SmartDashboard.putNumber("Back Left Motor Speed",
 		// backLeftMotor.get());
 		// SmartDashboard.putNumber("Back Right Motor Speed",
