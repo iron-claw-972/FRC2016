@@ -9,7 +9,7 @@ public class Autonomous {
 	
 	public static void createChooser() {
 		autonomousModeChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_DRIVE_FORWARD_MODE));
-		autonomousModeChooser.addObject("Low Bar Forward Back Mode", new Integer(RobotMap.LOW_BAR_SHOOT_MODE));
+		autonomousModeChooser.addObject("Low Bar Shoot", new Integer(RobotMap.LOW_BAR_SHOOT_MODE));
 		autonomousModeChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
 		autonomousModeChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
 		autonomousModeChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
@@ -28,7 +28,7 @@ public class Autonomous {
 				break;
 			case RobotMap.LOW_BAR_SHOOT_MODE:
 				lowBarShoot(r);
-				SmartDashboard.putString("Autonomous Mode", "Low Bar Forward Back");
+				SmartDashboard.putString("Autonomous Mode", "Low Bar Shoot");
 				break;
 			case RobotMap.MOAT_MODE:
 				SmartDashboard.putString("Autonomous Mode", "Moat");
