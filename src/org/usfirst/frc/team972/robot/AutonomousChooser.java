@@ -13,7 +13,7 @@
 //	long chevalDeFriseStartTime = -1; // This means the timer has not been set
 //
 //	public void createChooser() {
-//		autonomousFirstDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_MODE));
+////		autonomousFirstDefenseChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_DRIVE_FMODE));
 //		autonomousFirstDefenseChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
 //		autonomousFirstDefenseChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
 //		autonomousFirstDefenseChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));

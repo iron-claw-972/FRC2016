@@ -292,23 +292,28 @@ public class Robot extends IterativeRobot {
 		// autonomousChooserSystem.checkChoices();
 		// Autonomous.startAutonomous(this, autonomousChooserSystem);
 
-		int autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
+//		int autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
 
-		switch (autonomousDefenseMode) {
-		case RobotMap.FORWARD:
-			autonomousForward();
-			break;
-		// case RobotMap.FORWARD_BACK:
-		// autonomousForwardBack();
-		// break;
-		case RobotMap.DO_NOTHING:
-			botDrive.tankDrive(0, 0);
-			return;
-		default:
-			botDrive.tankDrive(0, 0);
-			return;
-		}
-
+//		switch (autonomousDefenseMode) {
+//		case RobotMap.FORWARD:
+//			autonomousForward();
+//			break;
+//		// case RobotMap.FORWARD_BACK:
+//		// autonomousForwardBack();
+//		// break;
+//		case RobotMap.DO_NOTHING:
+//			botDrive.tankDrive(0, 0);
+//			return;
+//		default:
+//			botDrive.tankDrive(0, 0);
+//			return;
+//		}
+		
+		Autonomous.createChooser();
+		Autonomous.checkChoices();
+		
+		leftDriveEncoder.reset();
+		
 		SmartDashboard.putString("Autonomous Mode", "Done");
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" error message
@@ -321,7 +326,7 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void autonomousPeriodic() {
-		// do nothing
+//		 Autonomous.lowBarDrive();
 	}
 
 	public void teleopInit() {

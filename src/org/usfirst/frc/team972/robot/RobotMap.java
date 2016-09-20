@@ -121,15 +121,16 @@ public class RobotMap {
 
 	// AUTONOMOUS DEFENSES STATE MACHINE --- NOT ACTUALLY A STATE MACHINE...
 
-//	public static final int DO_NOTHING_MODE = 0;
-//	public static final int LOW_BAR_MODE = 1;
-//	public static final int MOAT_MODE = 2;
-//	public static final int RAMPARTS_MODE = 3;
-//	public static final int ROCK_WALL_MODE = 4;
-//	public static final int ROUGH_TERRAIN_MODE = 5;
-	public static final int FORWARD = 1;
-	public static final int FORWARD_BACK = 2;
-	public static final int DO_NOTHING = 0;
+	public static final int DO_NOTHING_MODE = 0;
+	public static final int LOW_BAR_DRIVE_FORWARD_MODE = 1;
+	public static final int LOW_BAR_SHOOT_MODE = 2;
+	public static final int MOAT_MODE = 6;
+	public static final int RAMPARTS_MODE = 3;
+	public static final int ROCK_WALL_MODE = 4;
+	public static final int ROUGH_TERRAIN_MODE = 5;
+//	public static final int FORWARD = 1;
+//	public static final int FORWARD_BACK = 2;
+//	public static final int DO_NOTHING = 0;
 
 	// AUTONOMOUS MODE STATE MACHINE
 
@@ -156,7 +157,7 @@ public class RobotMap {
 	// AUTONOMOUS MODES
 
 //	public static int autonomousMode = FIRST_DRIVE_FORWARD_MODE;
-//	public static int autonomousFirstDefenseMode = LOW_BAR_MODE;
+	public static int autonomousMode = LOW_BAR_DRIVE_FORWARD_MODE;
 //	public static int autonomousFirstPositionMode = POSITION_1;
 //	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
 //	public static int autonomousSecondPositionMode = POSITION_1;
@@ -177,7 +178,9 @@ public class RobotMap {
 	public static final int LEFT_TURN_DISTANCE = 4000; // 470 prac
 	public static final int RIGHT_TURN_DISTANCE = 4000; // 344 prac
 	
-	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 2000;
+	public static final int LOW_BAR_TURN_TO_GOAL = 700;
+	public static final int LOW_BAR_TO_GOAL_DRIVE_DISTANCE = 3000;
 	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
 	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
 	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
