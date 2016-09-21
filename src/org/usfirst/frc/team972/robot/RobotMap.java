@@ -122,7 +122,7 @@ public class RobotMap {
 	// AUTONOMOUS DEFENSES STATE MACHINE --- NOT ACTUALLY A STATE MACHINE...
 
 	public static final int DO_NOTHING_MODE = 0;
-	public static final int LOW_BAR_DRIVE_FORWARD_MODE = 1;
+	public static final int AUTO_DRIVE_FORWARD_MODE = 1;
 	public static final int LOW_BAR_SHOOT_MODE = 2;
 	public static final int MOAT_MODE = 6;
 	public static final int RAMPARTS_MODE = 3;
@@ -157,7 +157,7 @@ public class RobotMap {
 	// AUTONOMOUS MODES
 
 //	public static int autonomousMode = FIRST_DRIVE_FORWARD_MODE;
-	public static int autonomousMode = LOW_BAR_DRIVE_FORWARD_MODE;
+	public static int autonomousMode = AUTO_DRIVE_FORWARD_MODE;
 //	public static int autonomousFirstPositionMode = POSITION_1;
 //	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
 //	public static int autonomousSecondPositionMode = POSITION_1;

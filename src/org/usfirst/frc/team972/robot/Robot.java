@@ -196,10 +196,10 @@ public class Robot extends IterativeRobot {
 		// Integer(RobotMap.ROUGH_TERRAIN_MODE));
 		// autonomousDefenseChooser.addDefault("Do Nothing", new
 		// Integer(RobotMap.DO_NOTHING_MODE));
-		autonomousDefenseChooser.addObject("Foward", new Integer(RobotMap.FORWARD));
+		// autonomousDefenseChooser.addObject("Foward", new Integer(RobotMap.FORWARD));
 		// autonomousDefenseChooser.addObject("Forward Back", new
 		// Integer(RobotMap.FORWARD_BACK));
-		autonomousDefenseChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING));
+		autonomousDefenseChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
 		SmartDashboard.putData("Autonomous Defense Chooser", autonomousDefenseChooser);
 		// This is for Shooter PID, which we are not using
 		// shooterTopMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -310,7 +310,7 @@ public class Robot extends IterativeRobot {
 //		}
 		
 		Autonomous.createChooser();
-		Autonomous.checkChoices();
+		Autonomous.checkChoices(this);
 		
 		leftDriveEncoder.reset();
 		

@@ -8,12 +8,8 @@ public class Autonomous {
 	static SendableChooser autonomousModeChooser = new SendableChooser();
 	
 	public static void createChooser() {
-		autonomousModeChooser.addObject("Low Bar", new Integer(RobotMap.LOW_BAR_DRIVE_FORWARD_MODE));
+		autonomousModeChooser.addObject("Low Bar", new Integer(RobotMap.AUTO_DRIVE_FORWARD_MODE));
 		autonomousModeChooser.addObject("Low Bar Shoot", new Integer(RobotMap.LOW_BAR_SHOOT_MODE));
-		autonomousModeChooser.addObject("Moat", new Integer(RobotMap.MOAT_MODE));
-		autonomousModeChooser.addObject("Ramparts", new Integer(RobotMap.RAMPARTS_MODE));
-		autonomousModeChooser.addObject("Rock Wall", new Integer(RobotMap.ROCK_WALL_MODE));
-		autonomousModeChooser.addObject("Rough Terrain", new Integer(RobotMap.ROUGH_TERRAIN_MODE));
 		autonomousModeChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
 		SmartDashboard.putData("Autonomous Mode Chooser", autonomousModeChooser);
 	}
@@ -22,33 +18,20 @@ public class Autonomous {
 		RobotMap.autonomousMode = ((Integer) (autonomousModeChooser.getSelected())).intValue();
 		
 		switch (RobotMap.autonomousMode) {
-			case RobotMap.LOW_BAR_DRIVE_FORWARD_MODE:
+			case RobotMap.AUTO_DRIVE_FORWARD_MODE:
 				lowBarDrive(r);
-				SmartDashboard.putString("Autonomous Mode", "Low Bar");
+				SmartDashboard.putString("Autonomous Mode", "Drive Forward Mode");
 				break;
 			case RobotMap.LOW_BAR_SHOOT_MODE:
 				lowBarShoot(r);
-				SmartDashboard.putString("Autonomous Mode", "Low Bar Shoot");
-				break;
-			case RobotMap.MOAT_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Moat");
-				break;
-			case RobotMap.RAMPARTS_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Ramparts");
-				break;
-			case RobotMap.ROCK_WALL_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Rock Wall");
-				break;
-			case RobotMap.ROUGH_TERRAIN_MODE:
-				SmartDashboard.putString("Autonomous Mode", "Rough Terrain");
+				SmartDashboard.putString("Autonomous Mode", "Low Bar Shoot Mode");
 				break;
 			case RobotMap.DO_NOTHING_MODE:
-				memes(r);
 				SmartDashboard.putString("Autonomous Mode", "Do Nothing Mode");
 			default:
 				// This should never happen
 				SmartDashboard.putString("Autonomous Mode", "Default error!!!");
-				System.out.println("Default Autonomous First Defense Mode Error!!!");
+				System.out.println("Default Autonomous Error!!!");
 				break;
 		}
 	}
@@ -86,26 +69,4 @@ public class Autonomous {
 			Robot.intakeMotor.set(0);
 		}
 	}
-	
-	public static void memes(Robot r) {
-		//THIS IS MEME
-		while(r.isAutonomous() && r.isEnabled()) {
-			System.out.println("MEMES");
-		}
-	}
-	
-	public static void lowBarForwardBack(Robot r) {
-		Robot.leftDriveEncoder.reset();
-		lowBarDrive(r);
-		Robot.leftDriveEncoder.reset();
-		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_TURN_AROUND_DISTANCE && r.isAutonomous() && r.isEnabled()) {
-			Robot.botDrive.tankDrive(RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED, -RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED);
-		}
-		Robot.leftDriveEncoder.reset();
-		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_DEFENSE_DRIVE_DISTANCE && r.isAutonomous() && r.isEnabled()) { // WE ONLY HAVE 1 ENCODER
-			Robot.botDrive.tankDrive(RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED, RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED);
-		}
-		Robot.botDrive.tankDrive(0, 0);
-	}
-	
 }
