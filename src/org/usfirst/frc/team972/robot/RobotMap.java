@@ -247,6 +247,7 @@ public class RobotMap {
 	public static final double SHOOTER_DEADZONE = 0.01;
 	public static final int LOWER_OBSTACLE_MOTOR_TIME = 300; // In ms
 	public static final double AUTONOMOUS_SLOW_DOWN_INCREMENT = 0.03;
+	public static final int OUTTAKE_MOTOR_AUTO_RUN_TIME = 2000;
 
 	// TESTING CONSTANTS
 

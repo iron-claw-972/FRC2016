@@ -43,6 +43,7 @@ public class Autonomous {
 				SmartDashboard.putString("Autonomous Mode", "Rough Terrain");
 				break;
 			case RobotMap.DO_NOTHING_MODE:
+				memes(r);
 				SmartDashboard.putString("Autonomous Mode", "Do Nothing Mode");
 			default:
 				// This should never happen
@@ -71,6 +72,21 @@ public class Autonomous {
 			Robot.botDrive.tankDrive(RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED, RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED);
 		}
 		Robot.botDrive.tankDrive(0, 0);
+		long startTime = System.currentTimeMillis();
+		System.out.println("Reverse Intake");
+		Robot.spoonPiston.set(DoubleSolenoid.Value.kForward);
+		Robot.outtakePiston.set(DoubleSolenoid.Value.kForward);
+		while (startTime - System.currentTimeMillis() <= RobotMap.OUTTAKE_MOTOR_AUTO_RUN_TIME) {
+			Robot.intakeMotor.set(RobotMap.INTAKE_REVERSE_MOTOR_SPEED);
+			Robot.spoonPiston.set(DoubleSolenoid.Value.kReverse);
+			// Puts the spoon back to its original state
+			Robot.outtakePiston.set(DoubleSolenoid.Value.kReverse);			// Brings the outtake piston back in
+			Robot.intakeMotor.set(0);
+		}
+	}
+	
+	public static void memes(Robot r) {
+		//THIS IS MEME
 	}
 	
 }
