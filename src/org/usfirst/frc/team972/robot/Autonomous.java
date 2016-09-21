@@ -55,6 +55,7 @@ public class Autonomous {
 	
 	public static void lowBarDrive(Robot r) {
 		// Reset encoders in AutonomousInit
+		Robot.leftDriveEncoder.reset();
 		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_DEFENSE_DRIVE_DISTANCE && r.isAutonomous() && r.isEnabled()) { // WE ONLY HAVE 1 ENCODER
 			Robot.botDrive.tankDrive(RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED, RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED);
 		}
@@ -62,6 +63,7 @@ public class Autonomous {
 	}
 	
 	public static void lowBarShoot(Robot r) {
+		Robot.leftDriveEncoder.reset();
 		lowBarDrive(r);
 		Robot.leftDriveEncoder.reset();
 		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_TURN_TO_GOAL && r.isAutonomous() && r.isEnabled()) {
@@ -76,7 +78,7 @@ public class Autonomous {
 		System.out.println("Reverse Intake");
 		Robot.spoonPiston.set(DoubleSolenoid.Value.kForward);
 		Robot.outtakePiston.set(DoubleSolenoid.Value.kForward);
-		while (startTime - System.currentTimeMillis() <= RobotMap.OUTTAKE_MOTOR_AUTO_RUN_TIME) {
+		while (startTime - System.currentTimeMillis() <= RobotMap.OUTTAKE_MOTOR_AUTO_RUN_TIME && r.isAutonomous() && r.isEnabled()) {
 			Robot.intakeMotor.set(RobotMap.INTAKE_REVERSE_MOTOR_SPEED);
 			Robot.spoonPiston.set(DoubleSolenoid.Value.kReverse);
 			// Puts the spoon back to its original state
@@ -87,6 +89,23 @@ public class Autonomous {
 	
 	public static void memes(Robot r) {
 		//THIS IS MEME
+		while(r.isAutonomous() && r.isEnabled()) {
+			System.out.println("MEMES");
+		}
+	}
+	
+	public static void lowBarForwardBack(Robot r) {
+		Robot.leftDriveEncoder.reset();
+		lowBarDrive(r);
+		Robot.leftDriveEncoder.reset();
+		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_TURN_AROUND_DISTANCE && r.isAutonomous() && r.isEnabled()) {
+			Robot.botDrive.tankDrive(RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED, -RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED);
+		}
+		Robot.leftDriveEncoder.reset();
+		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_DEFENSE_DRIVE_DISTANCE && r.isAutonomous() && r.isEnabled()) { // WE ONLY HAVE 1 ENCODER
+			Robot.botDrive.tankDrive(RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED, RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED);
+		}
+		Robot.botDrive.tankDrive(0, 0);
 	}
 	
 }

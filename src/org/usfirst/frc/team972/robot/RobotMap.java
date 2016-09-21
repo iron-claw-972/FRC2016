@@ -254,6 +254,7 @@ public class RobotMap {
 	// These constants are used to test various functions
 	public static final boolean USE_OLD_CAM = false;
 	public static final boolean USE_SHOOTER_PID = false;
+	public static final int LOW_BAR_TURN_AROUND_DISTANCE = 800;
 
 	public static boolean haveCam = true;
 }
