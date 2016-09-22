@@ -119,74 +119,22 @@ public class RobotMap {
 	public static final int SHOOTER_PISTON_DOWN_STATE = 3;
 	public static int currentState = DO_NOTHING_STATE;
 
-	// AUTONOMOUS DEFENSES STATE MACHINE --- NOT ACTUALLY A STATE MACHINE...
-
+	// AUTONOMOUS MODE STATES
 	public static final int DO_NOTHING_MODE = 0;
-	public static final int AUTO_DRIVE_FORWARD_MODE = 1;
+	public static final int AUTO_CROSS_OBSTACLE_MODE = 1;
 	public static final int LOW_BAR_SHOOT_MODE = 2;
-	public static final int MOAT_MODE = 6;
-	public static final int RAMPARTS_MODE = 3;
-	public static final int ROCK_WALL_MODE = 4;
-	public static final int ROUGH_TERRAIN_MODE = 5;
-//	public static final int FORWARD = 1;
-//	public static final int FORWARD_BACK = 2;
-//	public static final int DO_NOTHING = 0;
+	public static int autonomousMode = AUTO_CROSS_OBSTACLE_MODE; // default mode
 
-	// AUTONOMOUS MODE STATE MACHINE
-
-//	public static final int FIRST_OBSTACLE_MOTOR_RAISE_MODE = 9;
-//	public static final int FIRST_OBSTACLE_MOTOR_LOWER_MODE = 0;
-	public static final int FIRST_DRIVE_FORWARD_MODE = 1;
-	public static final int TURN_AROUND_MODE = 2;
-	public static final int FIRST_DRIVE_BACKWARD_MODE = 3;
-	public static final int TURN_MODE = 4;
-	public static final int GO_TO_NEXT_DEFENSE_MODE = 5;
-	public static final int TURN_TOWARD_DEFENSE_MODE = 6;
-//	public static final int SECOND_OBSTACLE_MOTOR_MODE = 7;
-	public static final int SECOND_DRIVE_FORWARD_MODE = 8;
-
-	// AUTONOMOUS START POSITIONS
-
-	public static final int ONE_DEFENSE_ONLY = 0;
-	public static final int POSITION_1 = 1;
-	public static final int POSITION_2 = 2;
-	public static final int POSITION_3 = 3;
-	public static final int POSITION_4 = 4;
-	public static final int POSITION_5 = 5;
-
-	// AUTONOMOUS MODES
-
-//	public static int autonomousMode = FIRST_DRIVE_FORWARD_MODE;
-	public static int autonomousMode = AUTO_DRIVE_FORWARD_MODE;
-//	public static int autonomousFirstPositionMode = POSITION_1;
-//	public static int autonomousSecondDefenseMode = DO_NOTHING_MODE;
-//	public static int autonomousSecondPositionMode = POSITION_1;
-
-	// AUTONOMOUS DRIVE SPEEDS
-
-	public static final double AUTONOMOUS_SPEED_BETWEEN_DISTANCES = 1.0;
-	public static final double AUTONOMOUS_TURN_SPEED = 1.0;
-	public static final double LOW_BAR_DEFENSE_DRIVE_SPEED = 1.0;
-	public static final double MOAT_DEFENSE_DRIVE_SPEED = 1.0;
-	public static final double RAMPARTS_DEFENSE_DRIVE_SPEED = 1.0;
-	public static final double ROCK_WALL_DEFENSE_DRIVE_SPEED = 1.0;
-	public static final double ROUGH_TERRAIN_DEFENSE_DRIVE_SPEED = 1.0;
-
-	// AUTONOMOUS DEFENSE DRIVE DISTANCE
-
-	public static final int AUTONOMOUS_DISTANCE_BETWEEN_DEFENSES = 500; // TODO
-	public static final int LEFT_TURN_DISTANCE = 4000; // 470 prac
-	public static final int RIGHT_TURN_DISTANCE = 4000; // 344 prac
+	// AUTONOMOUS DRIVE SPEED
+	public static final double CROSS_OBSTACLE_DRIVE_SPEED = 1.0;
+	public static final double TURN_DRIVE_SPEED = 1.0;
+	public static final double DRIVE_TO_GOAL_SPEED = 1.0;
 	
-	public static final int LOW_BAR_DEFENSE_DRIVE_DISTANCE = 2000;
-	public static final int LOW_BAR_TURN_TO_GOAL = 700;
-	public static final int LOW_BAR_TO_GOAL_DRIVE_DISTANCE = 3000;
-	public static final int MOAT_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int RAMPARTS_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int DRAWBRIDGE_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int SALLY_PORT_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int ROCK_WALL_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
-	public static final int ROUGH_TERRAIN_DEFENSE_DRIVE_DISTANCE = 2000; // TODO
+	// AUTONOMOUS DEFENSE DRIVE DISTANCE
+	public static final int CROSS_OBSTACLE_DRIVE_DISTANCE = 2000;
+	public static final int LOW_BAR_DRIVE_DISTANCE = 2000;
+	public static final int LOW_BAR_TURN_TO_GOAL_DISTANCE = 700;
+	public static final int DRIVE_TO_GOAL_DISTANCE = 3000;
 
 	// SHOOTER MOTOR PID
 
