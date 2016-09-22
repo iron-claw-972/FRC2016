@@ -352,8 +352,6 @@ public class Robot extends IterativeRobot {
 		cameraSwitchPressedLastTime = cameraToggleButtonPressed;
 		// end switch front of robot
 
-		driveMultiplier = driveController.setDriveMultiplier(driveMultiplier);
-
 		leftJoystickY = joystickLeft.getY();
 		rightJoystickY = joystickRight.getY();
 

@@ -96,12 +96,6 @@ public class RobotMap {
 	public static final double OBSTACLE_MOTOR_SPEED = 0.2;
 
 	// DRIVE MULTIPLIERS
-
-//	public static final double DRIVE_MODE_1 = 0.6; These were used; they suck.
-//	public static final double DRIVE_MODE_2 = 0.7;
-//	public static final double DRIVE_MODE_3 = 0.8;
-//	public static final double DRIVE_MODE_4 = 0.9;
-//	public static final double DRIVE_MODE_5 = 1.0;
 	public static final double DEFAULT_DRIVE_MODE = 1.0; //was previously DRIVE_MODE_5;
 
 	// PISTONS
