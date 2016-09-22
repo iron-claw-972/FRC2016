@@ -180,7 +180,7 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
-		System.out.println("robotInit()");
+		System.out.println("Start robotInit()");
 
 		// This is for Shooter PID, which we are not using
 		// shooterTopMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -213,10 +213,8 @@ public class Robot extends IterativeRobot {
 			System.out.println("Gyro fail: " + e);
 		}
 
-		/*
-		 * shooterBottomEncoder.setPIDSourceType(PIDSourceType.kRate);
-		 * shooterTopEncoder.setPIDSourceType(PIDSourceType.kRate);
-		 */
+		// shooterBottomEncoder.setPIDSourceType(PIDSourceType.kRate);
+		// shooterTopEncoder.setPIDSourceType(PIDSourceType.kRate);
 		// backLeftMotor.changeControlMode(TalonControlMode.Follower);
 		// backRightMotor.changeControlMode(TalonControlMode.Follower); // only
 		// for testing shooter PID on practice bot
@@ -244,53 +242,26 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	public void autonomousInit() {
-		System.out.println("autonomousInit()");
+		System.out.println("Start autonomousInit()");
+		
 		compressor.stop(); // To keep consistent voltage while moving
-
 		driveController.switchToLowGear(gearboxPiston);
-
 		intakeSystem.spoonUp();
-		botDrive.setSafetyEnabled(false);
-		// Prevents "output not updated enough" error message
-
+		
 		frontLeftMotor.enableBrakeMode(true);
 		frontRightMotor.enableBrakeMode(true);
 		backLeftMotor.enableBrakeMode(true);
 		backRightMotor.enableBrakeMode(true);
 
-		// TODO REMOVE -- This way uses time in lieu of encoders (which don't
-		// currently work)
-		// long start = System.currentTimeMillis();
-		// while(System.currentTimeMillis() - start < 2000) {
-		// driveController.botDrive.tankDrive(1.0, 1.0);
-		// }
-		// driveController.botDrive.tankDrive(0, 0);
+		Autonomous.createChooser(); // creates the button choices on SmartDashboards
+		Autonomous.runAutonomous(this); // runs the autonomous routine selected on SmartDashboard
 
-//		switch (autonomousDefenseMode) {
-//		case RobotMap.FORWARD:
-//			autonomousForward();
-//			break;
-//		// case RobotMap.FORWARD_BACK:
-//		// autonomousForwardBack();
-//		// break;
-//		case RobotMap.DO_NOTHING:
-//			botDrive.tankDrive(0, 0);
-//			return;
-//		default:
-//			botDrive.tankDrive(0, 0);
-//			return;
-//		}
-		
-		Autonomous.createChooser();
-		Autonomous.checkChoices(this);
-		
 		leftDriveEncoder.reset();
-		
-		SmartDashboard.putString("Autonomous Mode", "Done");
-		botDrive.setSafetyEnabled(false);
-		// Prevents "output not updated enough" error message
+		rightDriveEncoder.reset();
 
+		SmartDashboard.putString("Autonomous Mode", "Done");
 		System.out.println("End autonomousInit()");
+
 	} // autonomous brace
 
 	/**
@@ -298,7 +269,9 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void autonomousPeriodic() {
-//		 Autonomous.lowBarDrive();
+		System.out.println("Start autonomousPeriodic()");
+		// our autonomous runs exclusively in autonomousInit()
+		System.out.println("End autonomousPeriodic()");
 	}
 
 	public void teleopInit() {
@@ -406,7 +379,7 @@ public class Robot extends IterativeRobot {
 		kD = RobotMap.D_BRAKE;
 
 		// Separate brake/coast buttons replaced with a toggle
-		
+
 		// if (joystickRight.getRawButton(RobotMap.JOYSTICK_BRAKE_BUTTON)) {
 		// frontLeftMotor.enableBrakeMode(true);
 		// frontRightMotor.enableBrakeMode(true);

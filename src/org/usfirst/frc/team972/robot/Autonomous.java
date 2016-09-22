@@ -14,7 +14,7 @@ public class Autonomous {
 		SmartDashboard.putData("Autonomous Mode Chooser", autonomousModeChooser);
 	}
 	
-	public static void checkChoices(Robot r) {
+	public static void runAutonomous(Robot r) {
 		RobotMap.autonomousMode = ((Integer) (autonomousModeChooser.getSelected())).intValue();
 		
 		switch (RobotMap.autonomousMode) {
