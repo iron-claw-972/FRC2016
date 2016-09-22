@@ -111,8 +111,6 @@ public class Robot extends IterativeRobot {
 	static Intake intakeSystem = new Intake(intakeMotor, spoonPiston, outtakePiston, ballOpticalSensor);
 	static Shooter shooterSystem = new Shooter(shooterTopMotor, shooterBottomMotor, spoonPiston);
 	static Drive driveController = new Drive(botDrive, frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor);
-	// static AutonomousChooser autonomousChooserSystem = new
-	// AutonomousChooser();
 
 	public static Thread cstThread;
 	// This is a thread to stream camera while not lagging the robot
@@ -184,23 +182,6 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		System.out.println("robotInit()");
 
-		// autonomousDefenseChooser.addObject("Low Bar", new
-		// Integer(RobotMap.LOW_BAR_MODE));
-		// autonomousDefenseChooser.addObject("Moat", new
-		// Integer(RobotMap.MOAT_MODE));
-		// autonomousDefenseChooser.addObject("Ramparts", new
-		// Integer(RobotMap.RAMPARTS_MODE));
-		// autonomousDefenseChooser.addObject("Rock Wall", new
-		// Integer(RobotMap.ROCK_WALL_MODE));
-		// autonomousDefenseChooser.addObject("Rough Terrain", new
-		// Integer(RobotMap.ROUGH_TERRAIN_MODE));
-		// autonomousDefenseChooser.addDefault("Do Nothing", new
-		// Integer(RobotMap.DO_NOTHING_MODE));
-		// autonomousDefenseChooser.addObject("Foward", new Integer(RobotMap.FORWARD));
-		// autonomousDefenseChooser.addObject("Forward Back", new
-		// Integer(RobotMap.FORWARD_BACK));
-		autonomousDefenseChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
-		SmartDashboard.putData("Autonomous Defense Chooser", autonomousDefenseChooser);
 		// This is for Shooter PID, which we are not using
 		// shooterTopMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		// shooterBottomMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -224,8 +205,6 @@ public class Robot extends IterativeRobot {
 
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" message mostly
-
-		// autonomousChooserSystem.createChooser();
 
 		// TODO: Fix gyro
 		try {
@@ -286,13 +265,6 @@ public class Robot extends IterativeRobot {
 		// driveController.botDrive.tankDrive(1.0, 1.0);
 		// }
 		// driveController.botDrive.tankDrive(0, 0);
-
-		// TODO UNCOMMENT
-		// NOTE: ENCODERS RETURN ZERO CONSTANTLY
-		// autonomousChooserSystem.checkChoices();
-		// Autonomous.startAutonomous(this, autonomousChooserSystem);
-
-//		int autonomousDefenseMode = ((Integer) (autonomousDefenseChooser.getSelected())).intValue();
 
 //		switch (autonomousDefenseMode) {
 //		case RobotMap.FORWARD:

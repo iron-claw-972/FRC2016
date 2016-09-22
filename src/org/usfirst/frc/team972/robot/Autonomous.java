@@ -8,7 +8,7 @@ public class Autonomous {
 	static SendableChooser autonomousModeChooser = new SendableChooser();
 	
 	public static void createChooser() {
-		autonomousModeChooser.addObject("Low Bar", new Integer(RobotMap.AUTO_DRIVE_FORWARD_MODE));
+		autonomousModeChooser.addObject("Drive Forward", new Integer(RobotMap.AUTO_DRIVE_FORWARD_MODE));
 		autonomousModeChooser.addObject("Low Bar Shoot", new Integer(RobotMap.LOW_BAR_SHOOT_MODE));
 		autonomousModeChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
 		SmartDashboard.putData("Autonomous Mode Chooser", autonomousModeChooser);
@@ -39,6 +39,7 @@ public class Autonomous {
 	public static void lowBarDrive(Robot r) {
 		// Reset encoders in AutonomousInit
 		Robot.leftDriveEncoder.reset();
+		Robot.rightDriveEncoder.reset();
 		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_DEFENSE_DRIVE_DISTANCE && r.isAutonomous() && r.isEnabled()) { // WE ONLY HAVE 1 ENCODER
 			Robot.botDrive.tankDrive(RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED, RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED);
 		}
@@ -47,12 +48,15 @@ public class Autonomous {
 	
 	public static void lowBarShoot(Robot r) {
 		Robot.leftDriveEncoder.reset();
+		Robot.rightDriveEncoder.reset();
 		lowBarDrive(r);
 		Robot.leftDriveEncoder.reset();
+		Robot.rightDriveEncoder.reset();
 		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_TURN_TO_GOAL && r.isAutonomous() && r.isEnabled()) {
 			Robot.botDrive.tankDrive(RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED, -RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED);
 		}
 		Robot.leftDriveEncoder.reset();
+		Robot.rightDriveEncoder.reset();
 		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_TO_GOAL_DRIVE_DISTANCE && r.isAutonomous() && r.isEnabled()) { // WE ONLY HAVE 1 ENCODER
 			Robot.botDrive.tankDrive(RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED, RobotMap.LOW_BAR_DEFENSE_DRIVE_SPEED);
 		}
