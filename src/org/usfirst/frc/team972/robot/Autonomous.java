@@ -38,6 +38,11 @@ public class Autonomous {
 			break;
 		}
 	}
+	
+	public static void printEncoders() {
+		SmartDashboard.putNumber("Auto Left Encoder", Robot.leftDriveEncoder.get());
+		SmartDashboard.putNumber("Auto Right Encoder", Robot.rightDriveEncoder.get());
+	}
 
 	// crosses the obstacle and then stops
 	public static void autoCrossObstacle(Robot r) {
@@ -46,6 +51,7 @@ public class Autonomous {
 		// drive until we drive the designated distance, then stop
 		while (Robot.leftDriveEncoder.get() <= RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous()) {
 			// WE ONLY HAVE 1 ENCODER - CHANGE CODE WHEN WE FIX SECOND DRIVE ENCODER
+			printEncoders();
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.botDrive.tankDrive(0, 0);
@@ -58,6 +64,7 @@ public class Autonomous {
 		
 		// drive under low bar
 		while (Robot.leftDriveEncoder.get() <= RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous()) {
+			printEncoders();
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.leftDriveEncoder.reset();
@@ -65,6 +72,7 @@ public class Autonomous {
 		
 		// turn to the right towards the goal
 		while (Robot.leftDriveEncoder.get() <= RobotMap.LOW_BAR_TURN_TO_GOAL_DISTANCE && r.isAutonomous()) {
+			printEncoders();
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, -RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.leftDriveEncoder.reset();
@@ -72,6 +80,7 @@ public class Autonomous {
 		
 		// drive to goal
 		while (Robot.leftDriveEncoder.get() <= RobotMap.DRIVE_TO_GOAL_DISTANCE && r.isAutonomous()) {
+			printEncoders();
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.leftDriveEncoder.reset();
