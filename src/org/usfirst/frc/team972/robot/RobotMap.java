@@ -51,20 +51,13 @@ public class RobotMap {
 
 	public static final int JOYSTICK_CAMERA_TOGGLE_BUTTON = 1;
 	public static final int JOYSTICK_BRAKE_MODE_BUTTON = 2;
-//	public static final int JOYSTICK_SPEED_1_BUTTON = 3; //These were used; they suck and Ari hates them.
-//	public static final int JOYSTICK_SPEED_2_BUTTON = 5;
-//	public static final int JOYSTICK_SPEED_3_BUTTON = 2;
-//	public static final int JOYSTICK_SPEED_4_BUTTON = 6;
-//	public static final int JOYSTICK_SPEED_5_BUTTON = 4;
 
 	// RIGHT JOYSTICK
 
 	public static final int JOYSTICK_GEARSHIFT_BUTTON = 1;
 	public static final int JOYSTICK_TOGGLE_BRAKE_COAST_BUTTON = 2;
-//	public static final int JOYSTICK_BRAKE_BUTTON = 3;
-//	public static final int JOYSTICK_COAST_BUTTON = 5;
-	//public static final int JOYSTICK_SPLIT_ARCADE_DRIVE_BUTTON = 3; //Never used in code because Split Arcade sucks.
-	//public static final int JOYSTICK_DRIVE_SET_DISTANCE_BUTTON = 2; //Too annoying to implement for a very unused feature.
+	public static final int JOYSTICK_BRAKE_BUTTON = 3;
+	public static final int JOYSTICK_COAST_BUTTON = 5;
 
 	// OPERATOR JOYSTICK
 
