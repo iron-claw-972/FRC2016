@@ -41,9 +41,9 @@ import edu.wpi.first.wpilibj.vision.USBCamera;
 public class Robot extends IterativeRobot {
 
 	// joysticks
-	public static Joystick joystickLeft = new Joystick(RobotMap.JOYSTICK_LEFT_USB_PORT);
-	public static Joystick joystickRight = new Joystick(RobotMap.JOYSTICK_RIGHT_USB_PORT);
-	public static Joystick joystickOp = new Joystick(RobotMap.JOYSTICK_OP_USB_PORT);
+	public static Joystick joystickLeft = new Joystick(RobotMap.JOYSTICK_LEFT_USB_PORT); // left joystick
+	public static Joystick joystickRight = new Joystick(RobotMap.JOYSTICK_RIGHT_USB_PORT); // right joystick
+	public static Joystick joystickOp = new Joystick(RobotMap.JOYSTICK_OP_USB_PORT); // operator joystick
 
 	// motors
 	public static CANTalon frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CAN_ID);
@@ -65,7 +65,7 @@ public class Robot extends IterativeRobot {
 	public static CANTalon shooterBottomMotor = new CANTalon(RobotMap.SHOOTER_BOTTOM_MOTOR_CAN_ID);
 	public static CANTalon shooterTopMotor = new CANTalon(RobotMap.SHOOTER_TOP_MOTOR_CAN_ID);
 	public static CANTalon intakeMotor = new CANTalon(RobotMap.INTAKE_MOTOR_CAN_ID);
-	public static CANTalon obstacleMotor = new CANTalon(RobotMap.OBSTACLE_MOTOR_CAN_ID);
+	public static CANTalon flippyMotor = new CANTalon(RobotMap.FLIPPY_MOTOR_CAN_ID);
 
 	public static RobotDrive botDrive = new RobotDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
@@ -98,14 +98,10 @@ public class Robot extends IterativeRobot {
 
 	// sensors
 	public static DigitalInput ballOpticalSensor = new DigitalInput(RobotMap.BALL_OPTICAL_SENSOR_PORT);
-	public static DigitalInput obstacleMotorUpperLimitSwitch = new DigitalInput(
+	public static DigitalInput flippyMotorUpperLimitSwitch = new DigitalInput(
 			RobotMap.FLIPPY_THING_UPPER_LIMIT_SWITCH);
-	public static DigitalInput obstacleMotorLowerLimitSwitch = new DigitalInput(
+	public static DigitalInput flippyMotorLowerLimitSwitch = new DigitalInput(
 			RobotMap.FLIPPY_THING_LOWER_LIMIT_SWITCH);
-	// TODO: Pick a name, flippy thing or obstacle motor
-
-	// TODO: Make this work
-	public static AnalogGyro gyro;
 
 	// intake
 	static Intake intakeSystem = new Intake(intakeMotor, spoonPiston, outtakePiston, ballOpticalSensor);
@@ -143,13 +139,13 @@ public class Robot extends IterativeRobot {
 	boolean intakeButtonPressed = false;
 	boolean intakeReverseButtonPressed = false;
 
-	// obstacle motor variables
+	// flippy motor variables
 	boolean flippyUpMode = false;
 
 	static long autonomousDelayStartTime;
 
-	static double obstacleMotorSpeed;
-	static boolean obstacleMotorManualOverride;
+	static double flippyMotorSpeed;
+	static boolean flippyMotorManualOverride;
 
 	// shooter variables
 	double shooterTopSpeed = 0;
@@ -309,21 +305,21 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(true);
 		// Helps prevent "output not updated enough"
 
-		if (joystickOp.getRawButton(RobotMap.JOYSTICK_OBSTACLE_MOTOR_KEEP_FLIPPY_UP_BUTTON)) {
+		if (joystickOp.getRawButton(RobotMap.JOYSTICK_KEEP_FLIPPY_UP_BUTTON)) {
 			flippyUpMode = true;
 		}
 
-		obstacleMotorSpeed = (((-joystickOp.getThrottle()) + 1) / 2);
+		flippyMotorSpeed = (((-joystickOp.getThrottle()) + 1) / 2);
 		// Operator joystick throttle (0.0 bottom to 1.0 top)
 
 		// MAKE SURE YOU HAVE FLIPPY SPEED AT NOT ZERO (not down)
-		obstacleMotorManualOverride = joystickOp.getRawButton(RobotMap.JOYSTICK_OBSTACLE_MOTOR_MANUAL_OVERRIDE_BUTTON);
-		if (obstacleMotorManualOverride) {
+		flippyMotorManualOverride = joystickOp.getRawButton(RobotMap.JOYSTICK_FLIPPY_MOTOR_MANUAL_OVERRIDE_BUTTON);
+		if (flippyMotorManualOverride) {
 			flippyUpMode = false;
 		}
 
-		if (obstacleMotorUpperLimitSwitch.get() && obstacleMotorLowerLimitSwitch.get()) {
-			obstacleMotorManualOverride = true;
+		if (flippyMotorUpperLimitSwitch.get() && flippyMotorLowerLimitSwitch.get()) {
+			flippyMotorManualOverride = true;
 			// If both limit switches are triggered, automatically manual
 			// override (shouldn't happen)
 		}
@@ -333,13 +329,13 @@ public class Robot extends IterativeRobot {
 			// the joystickOp POV is the hat
 			// Limit Switch true when not pressed due to wiring
 			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
-					&& (obstacleMotorUpperLimitSwitch.get() || obstacleMotorManualOverride)) {
-				obstacleMotor.set(-obstacleMotorSpeed); // Go up
+					&& (flippyMotorUpperLimitSwitch.get() || flippyMotorManualOverride)) {
+				flippyMotor.set(-flippyMotorSpeed); // Go up
 			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
-					&& (obstacleMotorLowerLimitSwitch.get() || obstacleMotorManualOverride)) {
-				obstacleMotor.set(obstacleMotorSpeed); // Go down
+					&& (flippyMotorLowerLimitSwitch.get() || flippyMotorManualOverride)) {
+				flippyMotor.set(flippyMotorSpeed); // Go down
 			} else {
-				obstacleMotor.set(0);
+				flippyMotor.set(0);
 			}
 		}
 
@@ -439,11 +435,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Left Encoder Value", leftDriveEncoder.get());
 		SmartDashboard.putNumber("Right Encoder Value", -rightDriveEncoder.get());
 		SmartDashboard.putBoolean("Ball Present", !ballOpticalSensor.get()); // true with ball
-		SmartDashboard.putNumber("Flippy Speed", obstacleMotorSpeed);
-		SmartDashboard.putBoolean("Upper LS", !obstacleMotorUpperLimitSwitch.get()); // true default
-		SmartDashboard.putBoolean("Lower LS", !obstacleMotorLowerLimitSwitch.get()); // true default
+		SmartDashboard.putNumber("Flippy Speed", flippyMotorSpeed);
+		SmartDashboard.putBoolean("Upper LS", !flippyMotorUpperLimitSwitch.get()); // true default
+		SmartDashboard.putBoolean("Lower LS", !flippyMotorLowerLimitSwitch.get()); // true default
 		 SmartDashboard.putBoolean("Flippy Thing Manual Override",
-		 obstacleMotorManualOverride);
+		 flippyMotorManualOverride);
 		if (rearCam) {
 			SmartDashboard.putString("Front Side", "BATTERY");
 		} else {
@@ -486,16 +482,16 @@ public class Robot extends IterativeRobot {
 		intakeMotor.set(0);
 		shooterBottomMotor.set(0);
 		shooterTopMotor.set(0);
-		obstacleMotor.set(0);
+		flippyMotor.set(0);
 		shooterTopSpeed = 0;
 		pidMode = false;
 	}
 
 	public void keepFlippyUp() {
-		if (obstacleMotorUpperLimitSwitch.get()) {
-			obstacleMotor.set(-0.5);
+		if (flippyMotorUpperLimitSwitch.get()) {
+			flippyMotor.set(-0.5);
 		} else {
-			obstacleMotor.set(0.0);
+			flippyMotor.set(0.0);
 		}
 	}
 }
