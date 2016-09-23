@@ -206,13 +206,6 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(false);
 		// Prevents "output not updated enough" message mostly
 
-		// TODO: Fix gyro
-		try {
-			gyro = new AnalogGyro(0);
-		} catch (Exception e) {
-			System.out.println("Gyro fail: " + e);
-		}
-
 		// shooterBottomEncoder.setPIDSourceType(PIDSourceType.kRate);
 		// shooterTopEncoder.setPIDSourceType(PIDSourceType.kRate);
 		// backLeftMotor.changeControlMode(TalonControlMode.Follower);

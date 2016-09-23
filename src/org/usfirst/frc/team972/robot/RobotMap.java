@@ -113,9 +113,9 @@ public class RobotMap {
 	public static int autonomousMode = AUTO_CROSS_OBSTACLE_MODE; // default mode
 
 	// AUTONOMOUS DRIVE SPEED
-	public static final double CROSS_OBSTACLE_DRIVE_SPEED = 1.0;
-	public static final double TURN_DRIVE_SPEED = 1.0;
-	public static final double DRIVE_TO_GOAL_SPEED = 1.0;
+	public static final double CROSS_OBSTACLE_DRIVE_SPEED = 0.7;
+	public static final double TURN_DRIVE_SPEED = 0.4;
+	public static final double DRIVE_TO_GOAL_SPEED = 0.7;
 	
 	// AUTONOMOUS DEFENSE DRIVE DISTANCE
 	public static final int CROSS_OBSTACLE_DRIVE_DISTANCE = 2000;

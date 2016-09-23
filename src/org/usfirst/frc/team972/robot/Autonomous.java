@@ -42,6 +42,8 @@ public class Autonomous {
 	public static void printEncoders() {
 		SmartDashboard.putNumber("Auto Left Encoder", Robot.leftDriveEncoder.get());
 		SmartDashboard.putNumber("Auto Right Encoder", Robot.rightDriveEncoder.get());
+		System.out.println(Robot.leftDriveEncoder.get());
+		System.out.println(Robot.rightDriveEncoder.get());
 	}
 
 	// crosses the obstacle and then stops
