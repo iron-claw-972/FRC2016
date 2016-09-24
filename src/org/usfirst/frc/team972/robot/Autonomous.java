@@ -29,6 +29,10 @@ public class Autonomous {
 			lowBarShoot(r);
 			SmartDashboard.putString("Autonomous Mode", "Low Bar Shoot Mode");
 			break;
+		case RobotMap.NO_ENCODER_CROSS_OBSTACLE_MODE: // Use only when encoders die (which is always)
+			noEncoderAutoCrossObstacle(r);
+			SmartDashboard.putString("Autonomous Mode", "No Encoder Drive Forward Mode");
+			break;
 		case RobotMap.DO_NOTHING_MODE:
 			SmartDashboard.putString("Autonomous Mode", "Do Nothing Mode");
 		default:
@@ -39,11 +43,12 @@ public class Autonomous {
 		}
 	}
 	
-	public static void printEncoders() {
+	public static void printEncoders(Encoder driveEncoder) {
 		SmartDashboard.putNumber("Auto Left Encoder", Robot.leftDriveEncoder.get());
 		SmartDashboard.putNumber("Auto Right Encoder", Robot.rightDriveEncoder.get());
 		System.out.println(Robot.leftDriveEncoder.get());
 		System.out.println(Robot.rightDriveEncoder.get());
+		System.out.println(driveEncoder.get());
 	}
 
 	// crosses the obstacle and then stops
@@ -51,9 +56,9 @@ public class Autonomous {
 		Robot.leftDriveEncoder.reset();
 		Robot.rightDriveEncoder.reset();
 		// drive until we drive the designated distance, then stop
-		while (Robot.rightDriveEncoder.get() <= RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous()) {
+		while ((Robot.rightDriveEncoder.get() <= RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous()) || (Robot.rightDriveEncoder.get() >= -RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous())) {
 			// TODO: WE ONLY HAVE 1 ENCODER - CHANGE CODE WHEN WE FIX SECOND DRIVE ENCODER
-			printEncoders();
+			printEncoders(Robot.rightDriveEncoder);
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.botDrive.tankDrive(0, 0);
@@ -66,24 +71,24 @@ public class Autonomous {
 		Robot.rightDriveEncoder.reset(); 
 		
 		// drive under low bar
-		while (Robot.rightDriveEncoder.get() <= RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous()) {
-			printEncoders();
+		while ((Robot.rightDriveEncoder.get() <= RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous()) || (Robot.rightDriveEncoder.get() >= -RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous())) {
+			printEncoders(Robot.rightDriveEncoder);
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.leftDriveEncoder.reset();
 		Robot.rightDriveEncoder.reset();
 		
 		// turn to the right towards the low goal
-		while (Robot.rightDriveEncoder.get() <= RobotMap.LOW_BAR_TURN_TO_GOAL_DISTANCE && r.isAutonomous()) {
-			printEncoders();
+		while ((Robot.rightDriveEncoder.get() <= RobotMap.LOW_BAR_TURN_TO_GOAL_DISTANCE && r.isAutonomous()) || (Robot.rightDriveEncoder.get() >= -RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous())) {
+			printEncoders(Robot.rightDriveEncoder);
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, -RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.leftDriveEncoder.reset();
 		Robot.rightDriveEncoder.reset();
 		
 		// drive to low goal
-		while (Robot.rightDriveEncoder.get() <= RobotMap.DRIVE_TO_GOAL_DISTANCE && r.isAutonomous()) {
-			printEncoders();
+		while ((Robot.rightDriveEncoder.get() <= RobotMap.DRIVE_TO_GOAL_DISTANCE && r.isAutonomous()) || (Robot.rightDriveEncoder.get() >= -RobotMap.CROSS_OBSTACLE_DRIVE_DISTANCE && r.isAutonomous())) {
+			printEncoders(Robot.rightDriveEncoder);
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.leftDriveEncoder.reset();
@@ -104,5 +109,14 @@ public class Autonomous {
 			Robot.outtakePiston.set(DoubleSolenoid.Value.kReverse); // Pushes ball out 
 			Robot.intakeMotor.set(0); // Stops intake motor once completed
 		}
+	}
+	
+	public static void noEncoderAutoCrossObstacle(Robot r) {
+		// drive until we drive the designated distance, then stop
+		long startTime = System.currentTimeMillis();
+		while (startTime - System.currentTimeMillis() <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) {
+			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
+		}
+		Robot.botDrive.tankDrive(0, 0);
 	}
 }

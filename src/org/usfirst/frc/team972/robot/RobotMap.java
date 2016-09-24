@@ -80,8 +80,8 @@ public class RobotMap {
 	public static final double SHOOTER_BOTTOM_MEDIUM_SPEED = 0.575;
 	public static final double SHOOTER_TOP_LOW_SPEED = -0.4;
 	public static final double SHOOTER_BOTTOM_LOW_SPEED = 0.35;
-	public static final double SHOOTER_TOP_REVERSE_SPEED = 0.7;
-	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = -0.7;
+	public static final double SHOOTER_TOP_REVERSE_SPEED = 0.3;
+	public static final double SHOOTER_BOTTOM_REVERSE_SPEED = -0.3;
 
 	// shooter speeds will not happen in actual bot because of PID
 	public static final double INTAKE_MOTOR_SPEED = 0.8;
@@ -110,6 +110,7 @@ public class RobotMap {
 	public static final int DO_NOTHING_MODE = 0;
 	public static final int AUTO_CROSS_OBSTACLE_MODE = 1;
 	public static final int LOW_BAR_SHOOT_MODE = 2;
+	public static final int NO_ENCODER_CROSS_OBSTACLE_MODE = 3;
 	public static int autonomousMode = AUTO_CROSS_OBSTACLE_MODE; // default mode
 
 	// AUTONOMOUS DRIVE SPEED
@@ -183,6 +184,7 @@ public class RobotMap {
 	public static final int LOWER_OBSTACLE_MOTOR_TIME = 300; // In ms
 	public static final double AUTONOMOUS_SLOW_DOWN_INCREMENT = 0.03;
 	public static final int OUTTAKE_MOTOR_AUTO_RUN_TIME = 2000;
+	public static final int AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME = 6000;
 
 	// TESTING CONSTANTS
 
