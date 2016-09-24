@@ -8,7 +8,7 @@ public class Intake {
 	DoubleSolenoid spoonPiston, outtakePiston;
 	DigitalInput ballSensor;
 	long startTime = -1, reverseStartTime = -1;
-	boolean lastTimePressed = false;
+	boolean lastTimePressed = false; 
 
 	public Intake(CANTalon intakeMotor, DoubleSolenoid spoonPiston, DoubleSolenoid outtakePiston,
 			DigitalInput ballSensor) {

@@ -11,6 +11,8 @@ public class Autonomous {
 	public static void createChooser() {
 		autonomousModeChooser.addObject("Drive Forward", new Integer(RobotMap.AUTO_CROSS_OBSTACLE_MODE));
 		autonomousModeChooser.addObject("Low Bar Shoot", new Integer(RobotMap.LOW_BAR_SHOOT_MODE));
+		autonomousModeChooser.addObject("Low Bar Timer", new Integer(RobotMap.NO_ENCODER_LOW_GOAL_MODE));
+		autonomousModeChooser.addObject("Other Defense Timer", new Integer(RobotMap.NO_ENCODER_OTHER_DEFENSE_MODE));
 		autonomousModeChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
 		SmartDashboard.putData("Autonomous Mode Chooser", autonomousModeChooser); 
 	}
@@ -115,26 +117,31 @@ public class Autonomous {
 		}
 	}
 	
+	// NOTE WHEN YOU USE TIME, USE MATH.ABS BECAUSE IT MIGHT BE NEGATIVE
 	public static void noEncoderAutoCrossLowGoal(Robot r) {
 		// drive until we drive the designated distance, then stop
 		long flippyStartTime = System.currentTimeMillis();
 		
-		while((flippyStartTime - System.currentTimeMillis() <= 500) && r.isAutonomous() && r.isEnabled()) {
-			Robot.flippyMotor.set(-0.4);
-		}
-		
+//		while((Math.abs(flippyStartTime - System.currentTimeMillis()) <= 10) && r.isAutonomous()) {
+			Robot.flippyMotor.set(-0.2);
+			System.out.println("In the while" + (flippyStartTime - System.currentTimeMillis()));
+//		}
+		System.out.println("HI");
 		long startTime = System.currentTimeMillis();
-		while ((startTime - System.currentTimeMillis() <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) && r.isAutonomous() && r.isEnabled()) {
+		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) && r.isAutonomous() && r.isEnabled()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.botDrive.tankDrive(0, 0);
 	}
 	
 	public static void noEncoderAutoCrossOtherDefense(Robot r) {
+		// drive until we drive the designated distance, then stop
+		long flippyStartTime = System.currentTimeMillis();
+		
+		System.out.println("HI");
 		long startTime = System.currentTimeMillis();
-		while ((startTime - System.currentTimeMillis() <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) && r.isAutonomous() && r.isEnabled()) {
+		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) && r.isAutonomous() && r.isEnabled()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
-		Robot.botDrive.tankDrive(0, 0);
-	}
+		Robot.botDrive.tankDrive(0, 0);	}
 }
