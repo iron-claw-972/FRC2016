@@ -132,22 +132,26 @@ public class Autonomous {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.botDrive.tankDrive(0, 0);
-	}
+	} 
 	
 	public static void noEncoderAutoCrossOtherDefense(Robot r) {
 		// drive until we drive the designated distance, then stop
 		System.out.println("HI");
 		long startTime = System.currentTimeMillis();
+		System.out.println(startTime);
 		while ((System.currentTimeMillis() <= startTime + 450) && r.isAutonomous()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2);
+			System.out.println(startTime);
 		}
 		startTime = System.currentTimeMillis();
 		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME - 1350) && r.isAutonomous() && r.isEnabled()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
+			System.out.println(startTime);
 		}
 		startTime = System.currentTimeMillis();
 		while ((System.currentTimeMillis() >= startTime + 750) && r.isAutonomous()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2);
+			System.out.println(startTime);
 		}
 		Robot.botDrive.tankDrive(0, 0);	
 	}
