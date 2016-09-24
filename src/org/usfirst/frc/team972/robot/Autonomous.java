@@ -136,12 +136,35 @@ public class Autonomous {
 	
 	public static void noEncoderAutoCrossOtherDefense(Robot r) {
 		// drive until we drive the designated distance, then stop
-		long flippyStartTime = System.currentTimeMillis();
-		
 		System.out.println("HI");
 		long startTime = System.currentTimeMillis();
-		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) && r.isAutonomous() && r.isEnabled()) {
+		while ((System.currentTimeMillis() <= startTime + 450) && r.isAutonomous()) {
+			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2);
+		}
+		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME - 1200) && r.isAutonomous() && r.isEnabled()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
-		Robot.botDrive.tankDrive(0, 0);	}
+		while ((System.currentTimeMillis() >= startTime + 750) && r.isAutonomous()) {
+			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2);
+		}
+		Robot.botDrive.tankDrive(0, 0);	
+	}
+	
+	// MEMES - this probably doesn't work. but yeah
+	public static void memes(Robot r) {
+		long startTime = System.currentTimeMillis();
+		double driveSpeed = RobotMap.CROSS_OBSTACLE_DRIVE_SPEED;
+		while ((System.currentTimeMillis() <= startTime + 450) && r.isAutonomous()) {
+			driveSpeed = driveSpeed + (1/450);
+			Robot.botDrive.tankDrive(driveSpeed, driveSpeed);
+		}
+		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME - 1200) && r.isAutonomous() && r.isEnabled()) {
+			driveSpeed = 1.0;
+			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
+		}
+		while ((System.currentTimeMillis() <= startTime + 450) && r.isAutonomous()) {
+			driveSpeed = driveSpeed - (1/450);
+			Robot.botDrive.tankDrive(driveSpeed, driveSpeed);
+		}
+	}
 }

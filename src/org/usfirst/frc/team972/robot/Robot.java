@@ -323,10 +323,10 @@ public class Robot extends IterativeRobot {
 			// Limit Switch true when not pressed due to wiring
 			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
 					&& (flippyMotorUpperLimitSwitch.get() || flippyMotorManualOverride)) {
-				flippyMotor.set(-flippyMotorSpeed); // Go up
+				flippyMotor.set(flippyMotorSpeed); // Go up
 			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
 					&& (flippyMotorLowerLimitSwitch.get() || flippyMotorManualOverride)) {
-				flippyMotor.set(flippyMotorSpeed); // Go down
+				flippyMotor.set(-flippyMotorSpeed); // Go down
 			} else {
 				flippyMotor.set(0);
 			}
