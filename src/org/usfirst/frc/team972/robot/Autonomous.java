@@ -29,9 +29,13 @@ public class Autonomous {
 			lowBarShoot(r);
 			SmartDashboard.putString("Autonomous Mode", "Low Bar Shoot Mode");
 			break;
-		case RobotMap.NO_ENCODER_CROSS_OBSTACLE_MODE: // Use only when encoders die (which is always)
-			noEncoderAutoCrossObstacle(r);
-			SmartDashboard.putString("Autonomous Mode", "No Encoder Drive Forward Mode");
+		case RobotMap.NO_ENCODER_LOW_GOAL_MODE: // Use only when encoders die (which is always)
+			noEncoderAutoCrossLowGoal(r);
+			SmartDashboard.putString("Autonomous Mode", "No Encoder Low Goal Mode");
+			break;
+		case RobotMap.NO_ENCODER_OTHER_DEFENSE_MODE:
+			noEncoderAutoCrossOtherDefense(r);
+			SmartDashboard.putString("Autonomous Mode", "No Encoder Other Defense Mode");
 			break;
 		case RobotMap.DO_NOTHING_MODE:
 			SmartDashboard.putString("Autonomous Mode", "Do Nothing Mode");
@@ -111,10 +115,24 @@ public class Autonomous {
 		}
 	}
 	
-	public static void noEncoderAutoCrossObstacle(Robot r) {
+	public static void noEncoderAutoCrossLowGoal(Robot r) {
 		// drive until we drive the designated distance, then stop
+		long flippyStartTime = System.currentTimeMillis();
+		
+		while((flippyStartTime - System.currentTimeMillis() <= 500) && r.isAutonomous() && r.isEnabled()) {
+			Robot.flippyMotor.set(-0.4);
+		}
+		
 		long startTime = System.currentTimeMillis();
-		while (startTime - System.currentTimeMillis() <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) {
+		while ((startTime - System.currentTimeMillis() <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) && r.isAutonomous() && r.isEnabled()) {
+			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
+		}
+		Robot.botDrive.tankDrive(0, 0);
+	}
+	
+	public static void noEncoderAutoCrossOtherDefense(Robot r) {
+		long startTime = System.currentTimeMillis();
+		while ((startTime - System.currentTimeMillis() <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) && r.isAutonomous() && r.isEnabled()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.botDrive.tankDrive(0, 0);
