@@ -141,9 +141,11 @@ public class Autonomous {
 		while ((System.currentTimeMillis() <= startTime + 450) && r.isAutonomous()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2);
 		}
+		startTime = System.currentTimeMillis();
 		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME - 1350) && r.isAutonomous() && r.isEnabled()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
+		startTime = System.currentTimeMillis();
 		while ((System.currentTimeMillis() >= startTime + 750) && r.isAutonomous()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2);
 		}
@@ -158,10 +160,12 @@ public class Autonomous {
 			driveSpeed = driveSpeed + (1/450);
 			Robot.botDrive.tankDrive(driveSpeed, driveSpeed);
 		}
+		startTime = System.currentTimeMillis();
 		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME - 1300) && r.isAutonomous() && r.isEnabled()) {
 			driveSpeed = 1.0;
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
+		startTime = System.currentTimeMillis();
 		while ((System.currentTimeMillis() <= startTime + 450) && r.isAutonomous()) {
 			driveSpeed = driveSpeed - (1/450);
 			Robot.botDrive.tankDrive(driveSpeed, driveSpeed);
