@@ -112,6 +112,7 @@ public class RobotMap {
 	public static final int LOW_BAR_SHOOT_MODE = 2;
 	public static final int NO_ENCODER_LOW_GOAL_MODE = 3;
 	public static final int NO_ENCODER_OTHER_DEFENSE_MODE = 4;
+	public static final int MEME_MODE = 5;
 	public static int autonomousMode = AUTO_CROSS_OBSTACLE_MODE; // default mode
 
 	// AUTONOMOUS DRIVE SPEED

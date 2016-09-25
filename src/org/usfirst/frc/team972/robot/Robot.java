@@ -264,9 +264,9 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void autonomousPeriodic() {
-		System.out.println("Start autonomousPeriodic()");
+//		System.out.println("Start autonomousPeriodic()");
 		// our autonomous runs exclusively in autonomousInit()
-		System.out.println("End autonomousPeriodic()");
+//		System.out.println("End autonomousPeriodic()");
 	}
 
 	public void teleopInit() {
