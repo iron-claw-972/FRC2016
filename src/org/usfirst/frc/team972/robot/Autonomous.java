@@ -11,6 +11,9 @@ public class Autonomous {
 	public static void createChooser() {
 		autonomousModeChooser.addObject("Drive Forward", new Integer(RobotMap.AUTO_CROSS_OBSTACLE_MODE));
 		autonomousModeChooser.addObject("Low Bar Shoot", new Integer(RobotMap.LOW_BAR_SHOOT_MODE));
+		autonomousModeChooser.addObject("Low Bar Timer", new Integer(RobotMap.NO_ENCODER_LOW_GOAL_MODE));
+		autonomousModeChooser.addObject("Other Defense Timer", new Integer(RobotMap.NO_ENCODER_OTHER_DEFENSE_MODE));
+		autonomousModeChooser.addObject("MEME MODE", new Integer(RobotMap.MEME_MODE));
 		autonomousModeChooser.addDefault("Do Nothing", new Integer(RobotMap.DO_NOTHING_MODE));
 		SmartDashboard.putData("Autonomous Mode Chooser", autonomousModeChooser); 
 	}
@@ -23,17 +26,31 @@ public class Autonomous {
 		switch (RobotMap.autonomousMode) {
 		case RobotMap.AUTO_CROSS_OBSTACLE_MODE: // Drives straight over obstacle
 			autoCrossObstacle(r);
+			System.out.println("NO");
 			SmartDashboard.putString("Autonomous Mode", "Drive Forward Mode");
 			break;
 		case RobotMap.LOW_BAR_SHOOT_MODE: // Drives over low bar, positions itself in front of the low goal, and shoots
-			lowBarShoot(r);
+			lowBarShoot(r);			
+			System.out.println("NO");
 			SmartDashboard.putString("Autonomous Mode", "Low Bar Shoot Mode");
 			break;
-		case RobotMap.NO_ENCODER_CROSS_OBSTACLE_MODE: // Use only when encoders die (which is always)
-			noEncoderAutoCrossObstacle(r);
-			SmartDashboard.putString("Autonomous Mode", "No Encoder Drive Forward Mode");
+		case RobotMap.NO_ENCODER_LOW_GOAL_MODE: // Use only when encoders die (which is always)
+			noEncoderAutoCrossLowGoal(r);
+			System.out.println("NO");
+			SmartDashboard.putString("Autonomous Mode", "No Encoder Low Goal Mode");
+			break;
+		case RobotMap.NO_ENCODER_OTHER_DEFENSE_MODE:
+			noEncoderAutoCrossOtherDefense(r);
+			System.out.println("AUTORUN");
+			SmartDashboard.putString("Autonomous Mode", "No Encoder Other Defense Mode");
+			break;
+		case RobotMap.MEME_MODE:
+			moreMemes(r);
+			System.out.println("NO");
+			SmartDashboard.putString("Autonomous Mode", "MEME MODE");
 			break;
 		case RobotMap.DO_NOTHING_MODE:
+			System.out.println("NO");
 			SmartDashboard.putString("Autonomous Mode", "Do Nothing Mode");
 		default:
 			// This should never happen
@@ -111,12 +128,86 @@ public class Autonomous {
 		}
 	}
 	
-	public static void noEncoderAutoCrossObstacle(Robot r) {
+	// NOTE WHEN YOU USE TIME, USE MATH.ABS BECAUSE IT MIGHT BE NEGATIVE
+	public static void noEncoderAutoCrossLowGoal(Robot r) {
 		// drive until we drive the designated distance, then stop
+		long flippyStartTime = System.currentTimeMillis();
+		
+//		while((Math.abs(flippyStartTime - System.currentTimeMillis()) <= 10) && r.isAutonomous()) {
+			Robot.flippyMotor.set(-0.2);
+			System.out.println("In the while" + (flippyStartTime - System.currentTimeMillis()));
+//		}
+		System.out.println("HI");
 		long startTime = System.currentTimeMillis();
-		while (startTime - System.currentTimeMillis() <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) {
+		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME) && r.isAutonomous() && r.isEnabled()) {
 			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
 		}
 		Robot.botDrive.tankDrive(0, 0);
+	} 
+	
+	public static void noEncoderAutoCrossOtherDefense(Robot r) {
+		// drive until we drive the designated distance, then stop
+		System.out.println("HI");
+		long slowStartTime = System.currentTimeMillis();
+		System.out.println(slowStartTime);
+		while ((System.currentTimeMillis() <= slowStartTime + 750) && r.isAutonomous()) {
+			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2);
+//			System.out.println(slowStartTime);
+		}
+		long normalStartTime = System.currentTimeMillis();
+		while ((Math.abs(normalStartTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME - 1300) && r.isAutonomous() && r.isEnabled()) {
+			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
+//			System.out.println(normalStartTime);
+		}
+		long thirdStartTime = System.currentTimeMillis();
+		System.out.println("BYE");
+		while ((System.currentTimeMillis() <= thirdStartTime + 900) && r.isAutonomous()) {
+			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED/2);
+//			System.out.println(thirdStartTime);
+			System.out.println("THIRD");
+		}
+		Robot.botDrive.tankDrive(0, 0);	
+	}
+	
+	// MEMES - this probably doesn't work. but yeah
+	public static void memes(Robot r) {
+		long startTime = System.currentTimeMillis();
+		double driveSpeed = RobotMap.CROSS_OBSTACLE_DRIVE_SPEED;
+		while ((System.currentTimeMillis() <= startTime + 450) && r.isAutonomous()) {
+			driveSpeed = driveSpeed + (1/450);
+			Robot.botDrive.tankDrive(driveSpeed, driveSpeed);
+		}
+		startTime = System.currentTimeMillis();
+		while ((Math.abs(startTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME - 1300) && r.isAutonomous() && r.isEnabled()) {
+			driveSpeed = 1.0;
+			Robot.botDrive.tankDrive(RobotMap.CROSS_OBSTACLE_DRIVE_SPEED, RobotMap.CROSS_OBSTACLE_DRIVE_SPEED);
+		}
+		startTime = System.currentTimeMillis();
+		while ((System.currentTimeMillis() <= startTime + 450) && r.isAutonomous()) {
+			driveSpeed = driveSpeed - (1/450);
+			Robot.botDrive.tankDrive(driveSpeed, driveSpeed);
+		}
+	}
+	
+	public static void moreMemes(Robot r) {
+		// drive until we drive the designated distance, then stop
+		System.out.println("HI");
+		long slowStartTime = System.currentTimeMillis();
+		System.out.println(slowStartTime);
+		while ((System.currentTimeMillis() <= slowStartTime + 750) && r.isAutonomous()) {
+			Robot.frontLeftMotor.set(0.5);
+//			System.out.println(slowStartTime);
+		}
+		long normalStartTime = System.currentTimeMillis();
+		while ((Math.abs(normalStartTime - System.currentTimeMillis()) <= RobotMap.AUTONOMOUS_DRIVE_OVER_OBSTACLE_TIME - 1450) && r.isAutonomous() && r.isEnabled()) {
+			Robot.frontLeftMotor.set(1.0);
+			System.out.println("SECOND");
+		}
+		long thirdStartTime = System.currentTimeMillis();
+		while ((System.currentTimeMillis() >= thirdStartTime + 500) && r.isAutonomous()) {
+			Robot.frontLeftMotor.set(0.5);
+			System.out.println("THIRD");
+		}
+		Robot.frontLeftMotor.set(0.0);
 	}
 }

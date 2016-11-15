@@ -264,9 +264,9 @@ public class Robot extends IterativeRobot {
 	 */
 
 	public void autonomousPeriodic() {
-		System.out.println("Start autonomousPeriodic()");
+//		System.out.println("Start autonomousPeriodic()");
 		// our autonomous runs exclusively in autonomousInit()
-		System.out.println("End autonomousPeriodic()");
+//		System.out.println("End autonomousPeriodic()");
 	}
 
 	public void teleopInit() {
@@ -298,9 +298,9 @@ public class Robot extends IterativeRobot {
 		botDrive.setSafetyEnabled(true);
 		// Helps prevent "output not updated enough"
 
-		if (joystickOp.getRawButton(RobotMap.JOYSTICK_KEEP_FLIPPY_UP_BUTTON)) {
-			flippyUpMode = true;
-		}
+//		if (joystickOp.getRawButton(RobotMap.JOYSTICK_KEEP_FLIPPY_UP_BUTTON)) {
+//			flippyUpMode = true;
+//		}
 
 		flippyMotorSpeed = (((-joystickOp.getThrottle()) + 1) / 2);
 		// Operator joystick throttle (0.0 bottom to 1.0 top)
@@ -311,26 +311,26 @@ public class Robot extends IterativeRobot {
 			flippyUpMode = false;
 		}
 
-		if (flippyMotorUpperLimitSwitch.get() && flippyMotorLowerLimitSwitch.get()) {
-			flippyMotorManualOverride = true;
-			// If both limit switches are triggered, automatically manual
-			// override (shouldn't happen)
-		}
-		if (flippyUpMode) {
-			keepFlippyUp();
-		} else {
+//		if (flippyMotorUpperLimitSwitch.get() && flippyMotorLowerLimitSwitch.get()) {
+//			flippyMotorManualOverride = true;
+//			// If both limit switches are triggered, automatically manual
+//			// override (shouldn't happen)
+//		}
+//		if (flippyUpMode) {
+//			keepFlippyUp();
+//		} else {
 			// the joystickOp POV is the hat
 			// Limit Switch true when not pressed due to wiring
 			if ((joystickOp.getPOV(0) == 0 || joystickOp.getPOV(0) == 45 || joystickOp.getPOV(0) == 315)
 					&& (flippyMotorUpperLimitSwitch.get() || flippyMotorManualOverride)) {
-				flippyMotor.set(-flippyMotorSpeed); // Go up
+				flippyMotor.set(flippyMotorSpeed); // Go up
 			} else if ((joystickOp.getPOV(0) == 180 || joystickOp.getPOV(0) == 225 || joystickOp.getPOV(0) == 135)
 					&& (flippyMotorLowerLimitSwitch.get() || flippyMotorManualOverride)) {
-				flippyMotor.set(flippyMotorSpeed); // Go down
+				flippyMotor.set(-flippyMotorSpeed); // Go down
 			} else {
 				flippyMotor.set(0);
 			}
-		}
+//		}
 
 		// gearshift
 		boolean gearboxSwitchingButtonIsPressed = joystickRight.getRawButton(RobotMap.JOYSTICK_GEARSHIFT_BUTTON);
