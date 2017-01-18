@@ -5,10 +5,10 @@ import com.ni.vision.NIVision;
 import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
 
+import com.ctre.CANTalon;
+import com.ctre.CANTalon.*;
+
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
-import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;

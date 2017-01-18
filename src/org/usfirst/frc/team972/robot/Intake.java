@@ -1,5 +1,8 @@
 package org.usfirst.frc.team972.robot;
 
+import com.ctre.*;
+import com.ctre.CANTalon.*;
+
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 
