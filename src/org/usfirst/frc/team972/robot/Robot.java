@@ -1,9 +1,9 @@
 
 package org.usfirst.frc.team972.robot;
 
-import com.ni.vision.NIVision;
-import com.ni.vision.VisionException;
-import com.ni.vision.NIVision.Image;
+//import com.ni.vision.NIVision;
+//import com.ni.vision.VisionException;
+//import com.ni.vision.NIVision.Image;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.*;
@@ -23,12 +23,12 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.image.NIVisionException;
+//import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.vision.USBCamera;
+//import edu.wpi.first.wpilibj.vision.USBCamera;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -121,8 +121,8 @@ public class Robot extends IterativeRobot {
 														// toggle
 	static boolean rearCam = true; // if streaming rear cam currently
 
-	public static USBCamera camFront;
-	public static USBCamera camBack;
+//	public static USBCamera camFront;
+//	public static USBCamera camBack;
 
 	// gearbox switching variables
 	boolean gearboxSwitchingPressedLastTime = false; // used for gearbox toggle
@@ -164,8 +164,8 @@ public class Robot extends IterativeRobot {
 	double leftJoystickY;
 	double rightJoystickY;
 
-	CameraStreamingThread cst;
-	Image img = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+//	CameraStreamingThread cst;
+//	Image img = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 	CameraServer camServer = CameraServer.getInstance();
 	public boolean shooterReverseButtonPressed;
 	public double shooterBottomSpeed = 0;
@@ -282,8 +282,8 @@ public class Robot extends IterativeRobot {
 		backLeftMotor.enableBrakeMode(false);
 		backRightMotor.enableBrakeMode(false);
 
-		cst = new CameraStreamingThread(this);
-		new Thread(cst).start();
+//		cst = new CameraStreamingThread(this);
+//		new Thread(cst).start();
 
 		intakeSystem.spoonUp(); // Move spoon up at the beginning
 		outtakePiston.set(DoubleSolenoid.Value.kReverse);
